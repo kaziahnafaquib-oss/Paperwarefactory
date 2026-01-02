@@ -1,0 +1,211 @@
+import React from "react";
+import { motion } from "motion/react";
+import { Download, ArrowRight } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
+
+interface HeroProps {
+  onExplore: () => void;
+  videoUrl?: string;
+  mobileVideoUrl?: string;
+  title?: string;
+  subtitle1?: string;
+  subtitle2?: string;
+}
+
+export const Hero = React.memo(function Hero({
+  onExplore,
+  videoUrl,
+  mobileVideoUrl,
+  title,
+  subtitle1,
+  subtitle2,
+}: HeroProps) {
+  const { t } = useLanguage();
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [videoLoaded, setVideoLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    
+    // Use requestIdleCallback for non-urgent resize check
+    let timeoutId: any;
+    const handleResize = () => {
+      if (timeoutId) cancelAnimationFrame(timeoutId);
+      timeoutId = requestAnimationFrame(checkMobile);
+    };
+    
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (timeoutId) cancelAnimationFrame(timeoutId);
+    };
+  }, []);
+
+  const activeVideo = React.useMemo(() => 
+    (isMobile && mobileVideoUrl) ? mobileVideoUrl : videoUrl
+  , [isMobile, mobileVideoUrl, videoUrl]);
+
+  return (
+    <section className="relative min-h-[85vh] md:min-h-screen flex flex-col items-center justify-center pt-20 md:pt-24 pb-16 md:pb-24 overflow-hidden bg-[#fabf37]">
+      {/* Primary Background Video */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {(() => {
+          const getYoutubeId = (url: string) => {
+            const regExp =
+              /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return match && match[2].length === 11
+              ? match[2]
+              : null;
+          };
+          const youtubeId = getYoutubeId(activeVideo || "");
+
+          if (youtubeId) {
+            return (
+              <iframe
+                key={youtubeId}
+                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1`}
+                className="w-full h-full object-cover opacity-50 mix-blend-multiply grayscale pointer-events-none scale-110"
+                allow="autoplay; encrypted-media"
+                loading="lazy"
+              />
+            );
+          }
+
+          return (
+            <video
+              key={activeVideo}
+              src={
+                activeVideo ||
+                "https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4"
+              }
+              muted
+              loop
+              playsInline
+              preload="auto"
+              onLoadedData={() => setVideoLoaded(true)}
+              ref={(el) => {
+                if (!el) return;
+                const startVideo = () => {
+                  if (window.scrollY > 20) {
+                    el.play().catch(() => {});
+                    window.removeEventListener('scroll', startVideo);
+                  }
+                };
+                window.addEventListener('scroll', startVideo);
+              }}
+              className={`w-full h-full object-cover opacity-50 mix-blend-multiply grayscale transition-opacity duration-1000 ${videoLoaded ? 'opacity-50' : 'opacity-0'}`}
+            />
+          );
+        })()}
+        {/* Updated Gradient Overlay to black */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#fabf37]/80 via-[#fabf37]/40 to-zinc-950 pointer-events-none" />
+      </div>
+
+      {/* Background Polish */}
+      <div
+        className="absolute inset-0 opacity-20 pointer-events-none z-[1]"
+        style={{
+          backgroundImage:
+            "radial-gradient(#000 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+
+      <div className="container mx-auto px-4 relative z-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-[1100px] mx-auto space-y-6 md:space-y-8 relative z-10"
+        >
+          {/* Removed the redundant internal video */}
+
+          <div className="space-y-2 md:space-y-4">
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-black font-black uppercase tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-xs bg-white/20 px-4 py-1 rounded-full backdrop-blur-sm"
+            >
+              {t("premium_manufacturing")}
+            </motion.span>
+            <h1 className="text-[32px] sm:text-[45px] md:text-[96px] font-black text-white leading-[0.95] uppercase tracking-tighter drop-shadow-2xl">
+              {title || t("hero_title")}
+            </h1>
+          </div>
+
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="text-[30px] md:text-[86px] font-black text-black/10 leading-none select-none origin-top"
+          >
+            ↓
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="max-w-4xl mx-auto space-y-4 px-4"
+          >
+            <p className="text-[14px] md:text-[26px] font-black text-black leading-tight uppercase tracking-tighter">
+              {subtitle1 || t("hero_subtitle_1")}
+            </p>
+            <p className="text-[12px] md:text-[18px] font-bold text-white/90 leading-relaxed tracking-widest uppercase">
+              {subtitle2 || t("hero_subtitle_2")}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+            className="pt-6 md:pt-12 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6"
+          >
+            <motion.a
+              href="https://paperwarefactory.com/wp-content/uploads/2025/10/PAPERWARE-brochure-comp-2024.compressed-compressed-2.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => {
+                // Predictive pre-fetching logic
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = 'https://paperwarefactory.com/wp-content/uploads/2025/10/PAPERWARE-brochure-comp-2024.compressed-compressed-2.pdf';
+                document.head.appendChild(link);
+              }}
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#111",
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full md:w-auto mt-32 md:mt-0 inline-flex items-center justify-center gap-3 md:gap-4 bg-black text-white px-8 md:px-12 py-4 md:py-6 rounded-full font-black text-xs md:text-xl uppercase tracking-wider shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-none transition-all group"
+            >
+              <Download
+                className="size-4 md:size-6 text-[#fabf37]"
+                strokeWidth={3}
+              />
+              <span>{t("e_brochure")}</span>
+              
+              {/* HUD Decor within button */}
+              <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[#fabf37] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#fabf37] opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.a>
+
+            <button
+              onClick={onExplore}
+              className="text-black font-black uppercase tracking-widest text-[11px] md:text-sm flex items-center gap-2 hover:gap-4 transition-all py-2"
+            >
+              {t("explore_products")}{" "}
+              <ArrowRight className="size-4 md:size-5" />
+            </button>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+});
