@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { MapPin, Activity, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 

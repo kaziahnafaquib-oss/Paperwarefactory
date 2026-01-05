@@ -4,7 +4,9 @@ import { BottomNav } from "./components/paperware/bottom-nav";
 import { HUDOverlay as SharedHUDOverlay } from "./components/paperware/hud-overlay";
 import { ImmersiveHero } from "./components/paperware/immersive-hero";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
-import { Card3D, FloatingCard3D, Particle3DField, Grid3DBackground, Parallax3DContainer, DepthLayers } from "./components/paperware/3d-card";
+import { Card3D, FloatingCard3D, Parallax3DContainer, DepthLayers } from "./components/paperware/3d-card";
+const Particle3DField = React.lazy(() => import("./components/paperware/3d-card").then(m => ({ default: m.Particle3DField })));
+const Grid3DBackground = React.lazy(() => import("./components/paperware/3d-card").then(m => ({ default: m.Grid3DBackground })));
 import { 
   ArrowRight, ShoppingBasket as BasketIcon,
   Settings, Search, Globe, ShieldCheck, Award, Leaf, Zap, CircleCheck,
@@ -473,12 +475,16 @@ export function MainContent() {
       case "home":
         return (
           <div className="bg-white relative overflow-hidden font-['Poppins',sans-serif]">
-            {/* Global 3D Particle Field */}
-            <Particle3DField />
+            {/* Global 3D Particle Field - Lazy Loaded */}
+            <React.Suspense fallback={null}>
+              <Particle3DField />
+            </React.Suspense>
             
             {/* 1. IMMERSIVE VIDEO STARTING SECTION */}
             <div className="relative">
-              <Grid3DBackground />
+              <React.Suspense fallback={<div className="absolute inset-0 bg-zinc-50/50" />}>
+                <Grid3DBackground />
+              </React.Suspense>
               <ImmersiveHero 
                 videoUrl={heroVideoUrl} 
                 onExplore={handlePageChange} 
@@ -492,7 +498,9 @@ export function MainContent() {
 
             {/* 3. FEATURED SOLUTIONS SLIDER */}
             <section className="bg-zinc-50 py-32 border-y border-zinc-200 overflow-hidden relative">
-              <Particle3DField />
+              <React.Suspense fallback={null}>
+                <Particle3DField />
+              </React.Suspense>
                <motion.div 
                  initial={{ opacity: 0, y: 40 }}
                  whileInView={{ opacity: 1, y: 0 }}

@@ -1,10 +1,11 @@
 import React from "react";
 import image_2cf02ce26ccdbb62dfe9c412f2f673ebd0977bb2 from 'figma:asset/2cf02ce26ccdbb62dfe9c412f2f673ebd0977bb2.png';
 import { Button } from "../ui/button";
-import { Search, Phone, Send, ChevronDown, ShoppingBasket, Globe, Menu, X, Zap, Activity, Cpu } from "lucide-react";
+import { Search, Phone, Send, ChevronDown, ShoppingBasket, Globe, Menu, X, Zap, Activity, Cpu, Facebook, Instagram, Linkedin, MapPin, Youtube } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useLanguage } from "../../context/LanguageContext";
+import { useSocialMedia } from "../../context/SocialMediaContext";
 import { LanguageCode, TranslationKey } from "../../lib/translations";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -39,39 +40,39 @@ const getLinks = (t: (key: string) => string) => [
     isMega: true,
     categories: [
       { 
-        title: "PAPER CUPS", 
-        id: "papercups",
-        items: ["Single Wall", "Double Wall", "Ripple Wall", "Ice Cream Cups", "Vending Cups"]
-      },
-      { 
-        title: "FOOD PACKAGING", 
-        id: "restaurant-supplies",
-        items: ["Lunch Boxes", "Burger Boxes", "Food Trays", "Pizza Boxes", "Noodle Boxes"]
-      },
-      { 
-        title: "BAGS & CARRIERS", 
-        id: "products",
-        items: ["Handle Bags", "SOS Bags", "Flat Bags", "Bakery Bags", "Luxury Bags"]
-      },
-      { 
-        title: "STATIONARY", 
+        title: "OFFICE STATIONARY SUPPLIES", 
         id: "office-stationary",
-        items: ["Notebooks", "Envelopes", "Folders", "Letterheads", "Business Cards"]
+        items: ["Business Card", "Envelope", "Invoice Pad", "Letterhead Pad", "Money Receipt Book", "Delivery Note Book", "Note Book", "Diary", "File Folder"]
       },
       { 
-        title: "INDUSTRIAL", 
-        id: "fmcg-supplies",
-        items: ["Corrugated Boxes", "Shipping Cartons", "Protective Wraps", "Edge Protectors"]
+        title: "PAPER CUP SUPPLIES", 
+        id: "papercups",
+        items: ["Paper Cup", "Paper Cup Holder", "Paper Cup Jacket/Sleeve", "Paper Cup Carrier"]
       },
       { 
-        title: "SPECIALTY", 
-        id: "specialty",
-        items: ["Gift Boxes", "Jewelry Boxes", "Display Stands"]
+        title: "RESTAURANT SUPPLIES", 
+        id: "restaurant-supplies",
+        items: ["Food Box", "Chowmein Box", "Meat Box", "Sandwich Box", "Burger Box", "Pizza Box", "Cake Box", "Sweet Box", "Fries Box", "Shawrma Box", "Waffle Box & Tray", "Wedges Cone", "Ice Cream Cone", "Sugar Sachet", "Table Mat", "Carry Bag", "Food Menu"]
       },
       { 
-        title: "MEDICAL & PHARMA", 
+        title: "MARKETING MATERIALS SUPPLIES", 
+        id: "marketing-materials",
+        items: ["Paper Bag", "Brochure / Catalog", "Premium Magazine", "Flyer & Leaflet", "Sticker", "Calendar", "Tissue Box"]
+      },
+      { 
+        title: "HOSPITALS & PHARMA SUPPLIES", 
         id: "pharma-supplies",
-        items: ["Medicine Boxes", "Blister Cards", "Leaflets", "Surgical Wraps"]
+        items: ["Patient File", "X-Ray File", "Doctor's Prescription Pad", "Report Envelope", "Medicine Box", "Medicine Literature"]
+      },
+      { 
+        title: "FMCG PRODUCTS SUPPLIES", 
+        id: "fmcg-supplies",
+        items: ["Food & Beverage Packaging", "Personal Care Product Packaging", "Home Care Product Packaging", "Confectionary Goods Packaging"]
+      },
+      { 
+        title: "GARMENTS ACCESSORIES SUPPLIES", 
+        id: "garments-supplies",
+        items: ["Hangtag", "Label", "Sticker"]
       }
     ]
   },
@@ -136,9 +137,20 @@ export const Navbar = React.memo(({
   quoteBasketCount = 0
 }: NavbarProps) => {
   const { t, language, setLanguage, tone, setTone } = useLanguage();
+  const { posts } = useSocialMedia();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = React.useState<string | null>(null);
   const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  
   const isOpeningRef = React.useRef(false);
   const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -171,17 +183,26 @@ export const Navbar = React.memo(({
     if (bottomNav) {
       (bottomNav as HTMLElement).style.display = isMobileMenuOpen ? 'none' : '';
     }
+
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMobileMenuOpen]);
 
   const handleDropdownToggle = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
-    isOpeningRef.current = true;
-    const newState = activeDropdown === id ? null : id;
-    setActiveDropdown(newState);
-    setTimeout(() => {
-      isOpeningRef.current = false;
-    }, 100);
+    // e.preventDefault(); // Removed preventDefault to allow natural click behavior
+    if (activeDropdown === id) {
+      setActiveDropdown(null);
+    } else {
+      setActiveDropdown(id);
+    }
   };
 
   React.useEffect(() => {
@@ -204,7 +225,7 @@ export const Navbar = React.memo(({
   return (
     <Tooltip.Provider>
       <nav 
-        className={`${isMobileMenuOpen ? 'top-0 left-0 w-full h-full z-[2000]' : 'top-0 left-0 w-full z-[1001]'} font-['Poppins',sans-serif]`}
+        className={`${isMobileMenuOpen ? 'top-0 left-0 w-full h-full z-[99999]' : 'top-0 left-0 w-full z-[1001]'} font-['Poppins',sans-serif]`}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0,
           transform: 'translate3d(0, 0, 0)', willChange: 'transform',
@@ -223,7 +244,7 @@ export const Navbar = React.memo(({
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-md z-[1000] lg:hidden"
+              className="fixed inset-0 bg-black/40 backdrop-blur-md z-[1000]"
             />
           )}
         </AnimatePresence>
@@ -484,8 +505,20 @@ export const Navbar = React.memo(({
                           <DropdownMenu.Portal>
                             <DropdownMenu.Content className="z-[6000] outline-none" side="bottom" align="end" sideOffset={8}>
                               <motion.div initial={{ opacity: 0, y: 5, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.15 }} className="min-w-[200px]">
-                                <div className="bg-white border border-black/10 rounded-2xl p-2.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden relative">
-                                   <div className="absolute top-2 left-2 size-2">
+                                <div className="bg-white border border-black/10 rounded-2xl p-2.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden font-['Poppins',sans-serif]">
+                                   <div className="absolute top-0 left-0 w-full h-1 bg-[#fabf37]" />
+                                   
+                                   <div className="mb-2 px-2 pt-1 flex items-center justify-between">
+                                      <span className="text-[8px] font-black uppercase tracking-widest text-black/40">Secure Access</span>
+                                      <div className="size-1.5 bg-green-500 rounded-full animate-pulse" />
+                                   </div>
+
+                                   <div className="space-y-1 relative z-10">
+                                      <div className="absolute left-2 top-2 bottom-2 w-[1px] h-auto bg-black/5 z-0" />
+                                      <div className="absolute top-2 left-2 right-2 h-[1px] w-auto bg-black/5 z-0" />
+                                      <div className="absolute bottom-2 left-2 right-2 h-[1px] w-auto bg-black/5 z-0" />
+                                      <div className="absolute right-2 top-2 bottom-2 w-[1px] h-auto bg-black/5 z-0" />
+
                                       <div className="absolute top-0 left-0 w-1.5 h-[1px] bg-[#fabf37]/30" />
                                       <div className="absolute top-0 left-0 w-[1px] h-1.5 bg-[#fabf37]/30" />
                                    </div>
@@ -521,7 +554,19 @@ export const Navbar = React.memo(({
 
                 <Tooltip.Root>
                   <Tooltip.Trigger asChild>
-                    <motion.button onClick={() => handleInternalPageChange('quotation-basket')} className="relative size-[28px] md:size-[34px] bg-black rounded-full flex items-center justify-center shadow-lg mx-1 group overflow-hidden" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                    <motion.button 
+                      onClick={() => handleInternalPageChange('quotation-basket')} 
+                      className="relative size-[28px] md:size-[34px] bg-black rounded-full flex items-center justify-center shadow-lg mx-1 group overflow-hidden" 
+                      whileHover={{ scale: 1.1 }} 
+                      whileTap={{ scale: 0.95 }}
+                      animate={{ rotate: 360 }}
+                      transition={{ 
+                        duration: 1, // 1 সেকেন্ড ধরে ঘুরবে
+                        repeat: Infinity, // চলতেই থাকবে
+                        repeatDelay: 5, // প্রতি ৫ সেকেন্ড পর প��
+                        ease: "easeInOut"
+                      }}
+                    >
                       <motion.div className="absolute inset-0 bg-gradient-to-br from-[#fabf37]/20 to-transparent" initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} transition={{ duration: 0.3 }} />
                       <ShoppingBasket className="size-3 md:size-3.5 text-[#fabf37] relative z-10" />
                       {quoteBasketCount > 0 && (
@@ -547,27 +592,29 @@ export const Navbar = React.memo(({
                       <Tooltip.Trigger asChild>
                         <DropdownMenu.Trigger asChild>
                           <button 
-                            className="p-1 text-black transition-all relative group flex items-center justify-center outline-none"
+                            className="p-1.5 md:p-2 text-black transition-all relative group flex items-center justify-center outline-none hover:bg-black/5 rounded-full"
                           >
-                             <div className="absolute inset-0 bg-[#fabf37]/20 rounded-full" />
                              <motion.span 
                                key={language} 
-                               animate={{ 
-                                 rotate: [0, 15, -10, 5, 0],
-                                 scale: [1, 1.1, 1],
-                                 filter: ["drop-shadow(0 0 0px rgba(0,0,0,0))", "drop-shadow(0 4px 6px rgba(0,0,0,0.2))", "drop-shadow(0 0 0px rgba(0,0,0,0))"]
-                               }}
-                               transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.5 }}
-                               className="text-[14px] leading-none relative z-10 origin-bottom inline-block"
+                               initial={{ scale: 0.8, opacity: 0 }}
+                               animate={{ scale: 1, opacity: 1 }}
+                               transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                               className="text-[16px] md:text-[18px] leading-none relative z-10 inline-block filter drop-shadow-sm"
                              >
-                               {(() => {
-                                  const flags: Record<string, string> = {
-                                    'EN': '🇺🇸', 'BN': '🇧🇩', 'AR': '🇸🇦', 'TR': '🇹🇷', 'ES': '🇪🇸', 'FR': '🇫🇷', 
-                                    'DE': '🇩🇪', 'JP': '🇯🇵', 'CN': '🇨🇳', 'IN': '🇮🇳', 'RU': '🇷🇺', 'PT': '🇵🇹',
-                                    'IT': '🇮🇹', 'KR': '🇰🇷', 'VN': '🇻🇳', 'TH': '🇹🇭', 'NL': '🇳🇱', 'ID': '🇮🇩'
-                                  };
-                                  return flags[language] || '🌐';
-                               })()}
+                               <motion.span
+                                 animate={{ rotate: [0, 15, 0, -10, 0] }}
+                                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                                 className="inline-block origin-bottom"
+                               >
+                                 {(() => {
+                                    const flags: Record<string, string> = {
+                                      'EN': '🇺🇸', 'BN': '🇧🇩', 'AR': '🇸🇦', 'TR': '🇹🇷', 'ES': '🇪🇸', 'FR': '🇫🇷', 
+                                      'DE': '🇩🇪', 'JP': '🇯🇵', 'CN': '🇨🇳', 'IN': '🇮🇳', 'RU': '🇷🇺', 'PT': '🇵🇹',
+                                      'IT': '🇮🇹', 'KR': '🇰🇷', 'VN': '🇻🇳', 'TH': '🇹🇭', 'NL': '🇳🇱', 'ID': '🇮🇩'
+                                    };
+                                    return flags[language] || '🌐';
+                                 })()}
+                               </motion.span>
                              </motion.span>
                           </button>
                         </DropdownMenu.Trigger>
@@ -687,7 +734,21 @@ export const Navbar = React.memo(({
                   ].map((item, idx) => (
                     <Tooltip.Root key={idx}>
                       <Tooltip.Trigger asChild>
-                        <motion.button type="button" onClick={(e) => { e.stopPropagation(); item.action(); }} className="p-1 text-black/60 hover:text-black transition-all relative group" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                        <motion.button 
+                          type="button" 
+                          onClick={(e) => { e.stopPropagation(); item.action(); }} 
+                          className="p-1 text-black/60 hover:text-black transition-all relative group" 
+                          whileHover={{ scale: 1.1 }} 
+                          whileTap={{ scale: 0.9 }}
+                          animate={{ rotate: 360 }}
+                          transition={{ 
+                            duration: 15,
+                            repeat: Infinity,
+                            repeatDelay: 15,
+                            delay: (idx + 1) * 8,
+                            ease: "easeInOut"
+                          }}
+                        >
                           <motion.div className="absolute inset-0 bg-[#fabf37]/10 rounded-full" initial={{ scale: 0, opacity: 0 }} whileHover={{ scale: 1, opacity: 1 }} />
                           <item.icon className="size-3 md:size-3.5 relative z-10" />
                         </motion.button>
@@ -703,37 +764,39 @@ export const Navbar = React.memo(({
                 </div>
               </div>
 
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <motion.button 
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setIsMobileMenuOpen(prev => !prev);
-                    }} 
-                    className="p-1.5 md:p-2 text-black/60 hover:text-black transition-all ml-0.5 relative group cursor-pointer" 
-                    whileHover={{ scale: 1.05 }} 
-                    whileTap={{ scale: 0.95 }}
-                    style={{ pointerEvents: 'auto' }}
+              <motion.button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMobileMenuOpen(prev => !prev);
+                }} 
+                className="p-1.5 md:p-2 text-black/60 hover:text-black transition-all ml-0.5 relative group cursor-pointer" 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }}
+                style={{ pointerEvents: 'auto' }}
+              >
+                <motion.div className="absolute inset-0 bg-[#fabf37]/10 rounded-full pointer-events-none" initial={{ scale: 0, opacity: 0 }} whileHover={{ scale: 1, opacity: 1 }} />
+                {isMobileMenuOpen ? (
+                  <motion.div initial={{ rotate: 0 }} animate={{ rotate: 90 }} transition={{ duration: 0.3 }} className="pointer-events-none">
+                    <X className="size-5 text-[#fabf37] relative z-10" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    animate={{ 
+                       rotate: [0, 12, -12, 0]
+                    }}
+                    transition={{ 
+                       duration: 8,
+                       repeat: Infinity,
+                       repeatDelay: 3,
+                       ease: "easeInOut"
+                    }}
+                    className="pointer-events-none"
                   >
-                    <motion.div className="absolute inset-0 bg-[#fabf37]/10 rounded-full" initial={{ scale: 0, opacity: 0 }} whileHover={{ scale: 1, opacity: 1 }} />
-                    {isMobileMenuOpen ? (
-                      <motion.div initial={{ rotate: 0 }} animate={{ rotate: 90 }} transition={{ duration: 0.3 }}>
-                        <X className="size-5 text-[#fabf37] relative z-10" />
-                      </motion.div>
-                    ) : (
-                      <Menu className="size-5 relative z-10" />
-                    )}
-                  </motion.button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content className="bg-black text-white px-2 py-1 rounded-md text-[7px] font-bold uppercase tracking-wider shadow-xl" sideOffset={5}>
-                    {isMobileMenuOpen ? 'Close' : 'Menu'}
-                    <Tooltip.Arrow className="fill-black" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+                    <Menu className="size-5 relative z-10" />
+                  </motion.div>
+                )}
+              </motion.button>
             </div>
           </div>
         </div>
@@ -745,15 +808,16 @@ export const Navbar = React.memo(({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.3 }}
-              className="fixed top-[80px] left-1/2 -translate-x-1/2 w-[94%] max-w-[1180px] bg-[#d6c8a9] border-2 border-black rounded-[32px] md:rounded-[48px] shadow-2xl p-4 md:p-6 font-['Poppins',sans-serif] max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar z-[1100] lg:hidden"
+              className="fixed top-[115px] right-[10%] w-[320px] bg-[#d6c8a9] border-2 border-black rounded-[24px] shadow-2xl p-4 font-['Poppins',sans-serif] max-h-[65vh] overflow-y-auto custom-scrollbar z-[4000] pointer-events-auto"
             >
                <div className="flex flex-col gap-2">
                  {links.map((link) => (
                    <div key={link.id} className="border-b border-black/10 last:border-0 pb-2 last:pb-0">
                      <button 
-                       onClick={() => {
+                       onClick={(e) => {
+                         e.stopPropagation();
                          if (link.hasDropdown || link.isMega) {
-                           setActiveDropdown(activeDropdown === link.id ? null : link.id);
+                           setMobileExpanded(mobileExpanded === link.id ? null : link.id);
                          } else {
                            handleInternalPageChange(link.id || "home");
                          }
@@ -761,11 +825,11 @@ export const Navbar = React.memo(({
                        className="w-full flex items-center justify-between py-2 text-left"
                      >
                        <span className="text-sm font-bold uppercase tracking-wider text-black">{link.name}</span>
-                       {(link.hasDropdown || link.isMega) && <ChevronDown className={`size-4 transition-transform ${activeDropdown === link.id ? 'rotate-180' : ''}`} />}
+                       {(link.hasDropdown || link.isMega) && <ChevronDown className={`size-4 transition-transform ${mobileExpanded === link.id ? 'rotate-180' : ''}`} />}
                      </button>
                      
                      <AnimatePresence>
-                       {(activeDropdown === link.id && (link.hasDropdown || link.isMega)) && (
+                       {(mobileExpanded === link.id && (link.hasDropdown || link.isMega)) && (
                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pl-4">
                            {link.isMega ? link.categories?.map((cat: any) => (
                              <div key={cat.id} className="py-2">
@@ -775,7 +839,7 @@ export const Navbar = React.memo(({
                                ))}
                              </div>
                            )) : link.items?.map((item: any) => (
-                             <button key={item.id} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-2 text-[11px] font-bold uppercase text-black/70 hover:text-black">
+                             <button key={item.id + item.name} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-2 text-[11px] font-bold uppercase text-black/70 hover:text-black">
                                {item.name}
                              </button>
                            ))}
@@ -784,6 +848,222 @@ export const Navbar = React.memo(({
                      </AnimatePresence>
                    </div>
                  ))}
+               </div>
+
+               <div className="mt-6 border-t border-black/10 pt-6 flex flex-col gap-4">
+                  {/* Sustainability Promo */}
+                  <div className="bg-[#fabf37]/10 p-4 rounded-2xl border border-[#fabf37]/20 relative overflow-hidden group cursor-pointer hover:bg-[#fabf37]/15 transition-all">
+                      <div className="absolute -top-2 -right-2 p-2 opacity-10 group-hover:opacity-20 transition-opacity rotate-12">
+                          <Globe className="size-16 text-[#fabf37]" />
+                      </div>
+                      <div className="relative z-10">
+                          <div className="flex items-center gap-2 mb-2">
+                              <div className="size-1.5 rounded-full bg-green-500 animate-pulse" />
+                              <span className="text-[9px] font-black uppercase text-[rgb(255,255,255)] tracking-widest">Sustainability</span>
+                          </div>
+                          <h4 className="text-base font-black text-black mb-1 uppercase tracking-tight">100% Eco-Friendly</h4>
+                          <p className="text-[11px] font-medium text-black/60 leading-relaxed max-w-[90%]">Our commitment to a greener future starts with every package we produce.</p>
+                      </div>
+                  </div>
+
+                  <div className="flex flex-col items-center gap-6">
+                     {/* Language Dropdown */}
+                     <div className="flex items-center justify-center relative z-20">
+                       <DropdownMenu.Root modal={false}>
+                         <DropdownMenu.Trigger asChild>
+                           <button 
+                             type="button"
+                             className="flex items-center text-[10px] font-black uppercase text-black/60 hover:text-black outline-none"
+                           >
+
+                           </button>
+                         </DropdownMenu.Trigger>
+                         <DropdownMenu.Portal>
+                           <DropdownMenu.Content className="z-[6000] outline-none" side="top" align="start" sideOffset={10}>
+                              <motion.div
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="w-[340px] bg-white border border-black/10 rounded-[24px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] overflow-hidden p-3 font-['Poppins',sans-serif]"
+                              >
+                                 <div className="flex items-center justify-between mb-3 pb-2 border-b border-black/5">
+                                   <h4 className="text-[9px] font-black text-black/40 uppercase tracking-[0.2em]">Neural Node Selection</h4>
+                                   <div className="flex items-center gap-2">
+                                       <div className="size-1.5 rounded-full bg-green-500 animate-pulse" />
+                                       <span className="text-[8px] font-bold text-black/40 uppercase tracking-widest">OS v2.5 Terminal</span>
+                                   </div>
+                                 </div>
+      
+                                 <div className="grid grid-cols-2 gap-1.5 max-h-[350px] overflow-y-auto custom-scrollbar pr-1">
+                                    {[
+                                      { code: "EN", name: "English", flag: "🇺🇸" },
+                                      { code: "BN", name: "বাংলা", flag: "🇧🇩" },
+                                      { code: "AR", name: "العربية", flag: "🇸🇦" },
+                                      { code: "TR", name: "Türkçe", flag: "🇹🇷" },
+                                      { code: "ES", name: "Español", flag: "🇪🇸" },
+                                      { code: "FR", name: "Français", flag: "🇫🇷" },
+                                      { code: "DE", name: "Deutsch", flag: "🇩🇪" },
+                                      { code: "IT", name: "Italiano", flag: "🇮🇹" },
+                                      { code: "PT", name: "Português", flag: "🇵🇹" },
+                                      { code: "RU", name: "Русский", flag: "🇷🇺" },
+                                      { code: "ZH", name: "中文", flag: "🇨🇳" },
+                                      { code: "JA", name: "日本語", flag: "🇯🇵" },
+                                      { code: "KO", name: "한국어", flag: "🇰🇷" },
+                                      { code: "HI", name: "हिन्दी", flag: "🇮🇳" },
+                                      { code: "ID", name: "Indonesia", flag: "🇮��" },
+                                      { code: "MS", name: "Malay", flag: "🇲🇾" },
+                                      { code: "VI", name: "Tiếng Việt", flag: "🇻🇳" },
+                                      { code: "TH", name: "ไทย", flag: "🇹🇭" },
+                                      { code: "NL", name: "Nederlands", flag: "🇳🇱" },
+                                      { code: "PL", name: "Polski", flag: "🇵🇱" },
+                                      { code: "SV", name: "Svenska", flag: "🇸🇪" },
+                                      { code: "NO", name: "Norsk", flag: "🇳🇴" },
+                                      { code: "FI", name: "Suomi", flag: "🇫🇮" },
+                                      { code: "DA", name: "Dansk", flag: "🇩🇰" },
+                                      { code: "EL", name: "Ελληνικά", flag: "🇬🇷" },
+                                      { code: "HE", name: "עברית", flag: "🇮🇱" },
+                                      { code: "CS", name: "Čeština", flag: "🇨🇿" },
+                                      { code: "HU", name: "Magyar", flag: "🇭🇺" },
+                                      { code: "RO", name: "Română", flag: "🇷🇴" },
+                                      { code: "UK", name: "Українська", flag: "🇺🇦" },
+                                      { code: "SK", name: "Slovenčina", flag: "🇸🇰" },
+                                      { code: "BG", name: "Български", flag: "🇧🇬" },
+                                      { code: "HR", name: "Hrvatski", flag: "🇭🇷" },
+                                      { code: "LT", name: "Lietuvių", flag: "🇱🇹" },
+                                      { code: "LV", name: "Latviešu", flag: "🇱🇻" },
+                                      { code: "ET", name: "Eesti", flag: "🇪🇪" },
+                                      { code: "SL", name: "Slovenščina", flag: "🇸🇮" },
+                                      { code: "MT", name: "Malti", flag: "🇲🇹" },
+                                      { code: "IS", name: "Íslenska", flag: "🇮🇸" },
+                                      { code: "GA", name: "Gaeilge", flag: "🇮🇪" },
+                                      { code: "SQ", name: "Shqip", flag: "🇦🇱" },
+                                      { code: "MK", name: "Македонски", flag: "🇲🇰" },
+                                      { code: "HY", name: "Հայերեն", flag: "🇦🇲" },
+                                      { code: "KA", name: "ქართული", flag: "🇬🇪" }
+                                    ].map((lang) => (
+                                      <DropdownMenu.Item 
+                                        asChild 
+                                        key={lang.code}
+                                        onSelect={() => setLanguage(lang.code as LanguageCode)}
+                                      >
+                                        <button
+                                          className={`relative w-full text-left px-3 py-2 rounded-xl transition-all flex items-center gap-2 group/lang overflow-hidden outline-none ${
+                                            language === lang.code 
+                                              ? "bg-[#fabf37] text-black shadow-sm" 
+                                              : "bg-zinc-50 hover:bg-zinc-100 text-black/70"
+                                          }`}
+                                        >
+                                          <span className="text-xl shadow-sm rounded-sm overflow-hidden">{lang.flag}</span>
+                                          <div className="flex flex-col">
+                                             <span className={`text-[10px] font-black uppercase tracking-wider ${language === lang.code ? "text-black" : "text-black/80 group-hover/lang:text-black transition-colors"}`}>{lang.code}</span>
+                                             <span className={`text-[8px] font-bold uppercase tracking-wider ${language === lang.code ? "text-black/60" : "text-black/40"}`}>{lang.name}</span>
+                                          </div>
+                                          
+                                          {language === lang.code && (
+                                             <div className="absolute right-3 top-1/2 -translate-y-1/2 size-1.5 bg-black rounded-full" />
+                                          )}
+                                        </button>
+                                      </DropdownMenu.Item>
+                                    ))}
+                                 </div>
+      
+                                 {/* Dropdown Footer */}
+                                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-black/5">
+                                   <span className="text-[8px] font-black text-black/30 uppercase tracking-[0.2em]">46 Neural Nodes Active</span>
+                                   <span className="text-[8px] font-black text-black/30 uppercase tracking-[0.2em]">Sync: Optimal</span>
+                                 </div>
+                              </motion.div>
+                           </DropdownMenu.Content>
+                         </DropdownMenu.Portal>
+                       </DropdownMenu.Root>
+                     </div>
+
+                     <div className="flex flex-col items-center gap-2">
+                        {/* System Time & Quick Actions */}
+
+
+                        <div className="flex flex-col items-center gap-4 mt-6 mb-2">
+                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black -mt-8">Made in Bangladesh 🇧🇩</span>
+                           <div className="flex items-center gap-3">
+                              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="size-10 flex items-center justify-center bg-black/5 rounded-full text-black/40 hover:text-[#1877F2] hover:bg-[#1877F2]/10 transition-all border border-black/5"><Facebook className="size-5" /></a>
+                              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="size-10 flex items-center justify-center bg-black/5 rounded-full text-black/40 hover:text-[#E4405F] hover:bg-[#E4405F]/10 transition-all border border-black/5"><Instagram className="size-5" /></a>
+                              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="size-10 flex items-center justify-center bg-black/5 rounded-full text-black/40 hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 transition-all border border-black/5"><Linkedin className="size-5" /></a>
+                           </div>
+                        </div>
+
+                        {/* Digital Live Feed Ticker */}
+                        {/* Social Live Feed Ticker */}
+                        <div className="mt-6 w-full overflow-hidden bg-black/5 py-5 rounded-lg border border-black/5 relative group cursor-pointer" onClick={() => onPageChange('socials')}>
+                          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-zinc-50 to-transparent z-10" />
+                          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-zinc-50 to-transparent z-10" />
+                          
+                          {/* Live Indicator */}
+                          <div className="absolute top-2 right-2 z-20">
+                             <span className="flex size-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full size-2 bg-red-500"></span>
+                             </span>
+                          </div>
+
+                          <motion.div 
+                            animate={{ x: ["0%", "-50%"] }}
+                            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                            className="flex whitespace-nowrap gap-8"
+                          >
+                            {[...posts.filter(p => !p.isHidden).slice(0, 6), ...posts.filter(p => !p.isHidden).slice(0, 6)].map((post, i) => (
+                              <div key={`${post.id}-${i}`} className="flex items-center gap-5">
+                                <div className="relative shrink-0">
+                                   <img src={post.img} alt={post.platform} className="size-24 rounded-lg object-cover border border-black/10 shadow-sm" />
+                                   <div className={`absolute -bottom-2 -right-2 p-1.5 rounded-full border-2 border-white shadow-sm ${
+                                      post.platform === 'Instagram' ? 'bg-pink-500 text-white' : 
+                                      post.platform === 'Facebook' ? 'bg-blue-600 text-white' : 
+                                      post.platform === 'LinkedIn' ? 'bg-sky-700 text-white' : 
+                                      'bg-red-600 text-white'
+                                    }`}>
+                                        {post.platform === 'Instagram' ? <Instagram className="size-3.5" /> :
+                                         post.platform === 'Facebook' ? <Facebook className="size-3.5" /> :
+                                         post.platform === 'LinkedIn' ? <Linkedin className="size-3.5" /> :
+                                         <Youtube className="size-3.5" />}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                   <span className="text-xs font-bold uppercase tracking-wide text-black/90 max-w-[240px] truncate">{post.caption}</span>
+                                   <span className="text-[10px] font-medium text-black/50 flex items-center gap-2">
+                                      {post.platform} <span className="size-1 rounded-full bg-black/30" /> {post.date}
+                                   </span>
+                                </div>
+                                <div className="w-px h-16 bg-black/5 mx-2" />
+                              </div>
+                            ))}
+                          </motion.div>
+                        </div>
+                     </div>
+
+                     <div className="w-full overflow-hidden bg-black/5 py-2.5 rounded-lg border border-black/5 mt-2">
+                        <motion.div 
+                          animate={{ x: ["0%", "-50%"] }}
+                          transition={{ 
+                            duration: 10, 
+                            repeat: Infinity, 
+                            ease: "linear"
+                          }}
+                          className="flex items-center gap-8 whitespace-nowrap"
+                        >
+                           {[...Array(4)].map((_, i) => (
+                             <div key={i} className="flex items-center gap-8">
+                               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">System Status: Online</span>
+                               <span className="text-[9px] text-[#fabf37]">●</span>
+                               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Secure Connection</span>
+                               <span className="text-[9px] text-[#fabf37]">●</span>
+                               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">v2.5.0-beta</span>
+                               <span className="text-[9px] text-[#fabf37]">●</span>
+                               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Paperware OS</span>
+                               <span className="text-[9px] text-[#fabf37]">●</span>
+                             </div>
+                           ))}
+                        </motion.div>
+                     </div>
+                  </div>
                </div>
             </motion.div>
           )}

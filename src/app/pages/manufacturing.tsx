@@ -2,12 +2,9 @@ import React from "react";
 import { motion } from "motion/react";
 import { Factory, Zap, ShieldCheck, Activity, Cpu, Wind, Droplets, Gauge, ArrowUpRight, CircleCheck, Cog, Server } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { useLanguage } from "../context/LanguageContext";
 import { ERPSyncTerminal } from "../components/paperware/erp-sync-terminal";
 
 export function ManufacturingPage() {
-  const { t } = useLanguage();
-
   const metrics = [
     { label: "Production Capacity", value: "2M+", unit: "PCS/DAY", icon: <Factory className="size-5" /> },
     { label: "Automation Level", value: "94%", unit: "INTEGRATED", icon: <Cpu className="size-5" /> },
@@ -247,23 +244,6 @@ export function ManufacturingPage() {
           </div>
         </div>
       </section>
-
-      {/* Call to Action - Removed as per user request */}
-      {/* <section className="py-24 bg-[#fabf37]">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-            <div className="space-y-4 text-center md:text-left">
-              <h2 className="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter leading-none">
-                READY FOR <br />INDUSTRIAL SCALE?
-              </h2>
-              <p className="text-black/60 font-black uppercase tracking-widest text-[11px]">Contact our production engineers for high-volume inquiries.</p>
-            </div>
-            <button className="bg-black text-[#fabf37] px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-2xl active:scale-95">
-              Request Factory Access
-            </button>
-          </div>
-        </div>
-      </section> */}
     </div>
   );
 }

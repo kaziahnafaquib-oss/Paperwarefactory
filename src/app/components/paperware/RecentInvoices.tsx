@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { FileText, ChevronRight } from 'lucide-react';
 
 interface RecentInvoicesProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 interface SpendingChartProps {
   data: { month: string; amount: number }[];

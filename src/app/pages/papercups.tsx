@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "mot
 import { 
   ArrowRight, Send, CircleCheck, ShieldCheck, Thermometer, 
   Leaf, Zap, Globe, Recycle, Award, Eye, Settings, 
-  Box, Truck, ShoppingBag, Clock, Heart, Sparkles, Filter, Activity, MapPin, Maximize2
+  Box, Truck, ShoppingBag, Clock, Heart, Sparkles, Filter, Activity, MapPin, Maximize2, MousePointer2, CheckCircle2
 } from "lucide-react";
 
 // Asset imports

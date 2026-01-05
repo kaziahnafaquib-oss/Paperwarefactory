@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { LayoutDashboard, Package, Truck, FileText, Settings, Bell, Search, Filter, ArrowUpRight, Clock, MapPin, CircleCheck, ChevronRight, Download, CreditCard, Activity, User, Lock, Mail, Building2, ArrowRight, Eye, EyeOff, X, MoreHorizontal, ShieldCheck, History, ChartBar, Globe, Zap, Phone, Map, Briefcase, Ticket, Plus, RefreshCw, MessageSquare, FileQuestion, Gift, Megaphone, AlertCircle, ShoppingBag, Tag, Star, Share2, Camera, Play, Facebook, Instagram, Linkedin, Copy, Sparkles, Trash2, Users, ChevronDown } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { ImageWithFallback } from "../figma/ImageWithFallback";

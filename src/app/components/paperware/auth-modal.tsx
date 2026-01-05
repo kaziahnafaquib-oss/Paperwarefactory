@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, Lock, Mail, ArrowRight, Eye, EyeOff, ShieldCheck, User, Building2, Phone, Briefcase, Activity, ChevronRight } from "lucide-react";
 
 interface AuthModalProps {
