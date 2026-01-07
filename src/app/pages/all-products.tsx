@@ -1,44 +1,13 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, ShoppingBag, Filter, ArrowRight, Zap, Info, ChevronRight, Scale, X, Plus, Building2, CupSoda, Pizza, Megaphone, Hospital, Package as PackageIcon, Bot, Send, User, Sparkles, Activity, Box, Rotate3d, Maximize2, Move3d, MousePointer2, Tag, Pill } from "lucide-react";
+import { Search, ShoppingBag, Filter, ArrowRight, Zap, Info, ChevronRight, Scale, X, Plus, Building2, CupSoda, Pizza, Megaphone, Hospital, Package as PackageIcon, Bot, Send, User, Sparkles, Activity, Box, Rotate3d, Maximize2, Move3d, MousePointer2, Tag, Pill, Shirt, Facebook, Instagram, Linkedin, ThumbsUp, MessageCircle, Share2 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-// Remove Canvas and Fiber imports as they are causing environment crashes
+import { Hero3DBox } from "../components/Hero3DBox";
 
-function PaperBox3D() {
-  return (
-    <div className="relative size-full preserve-3d" style={{ perspective: "1000px" }}>
-      <motion.div
-        animate={{ 
-          rotateY: [0, 360],
-          rotateX: [10, -10, 10],
-          y: [0, -10, 0]
-        }}
-        transition={{ 
-          rotateY: { duration: 5, repeat: Infinity, ease: "linear" },
-          rotateX: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
-          y: { duration: 1, repeat: Infinity, ease: "easeInOut" }
-        }}
-        className="relative size-24 md:size-32 mx-auto mt-8 preserve-3d"
-      >
-        {/* Front */}
-        <div className="absolute inset-0 bg-white border-2 border-[#fabf37]/30 shadow-xl flex items-center justify-center translate-z-12 md:translate-z-16">
-          <div className="size-8 md:size-12 border border-[#fabf37]/20 rounded-lg" />
-        </div>
-        {/* Back */}
-        <div className="absolute inset-0 bg-zinc-50 border-2 border-[#fabf37]/20 -translate-z-12 md:-translate-z-16 rotate-y-180" />
-        {/* Left */}
-        <div className="absolute inset-0 bg-zinc-100 border-2 border-[#fabf37]/20 -translate-x-12 md:-translate-x-16 rotate-y-90" />
-        {/* Right */}
-        <div className="absolute inset-0 bg-zinc-100 border-2 border-[#fabf37]/20 translate-x-12 md:translate-x-16 -rotate-y-90" />
-        {/* Top */}
-        <div className="absolute inset-0 bg-white border-2 border-[#fabf37]/20 -translate-y-12 md:-translate-y-16 rotate-x-90" />
-        {/* Bottom */}
-        <div className="absolute inset-0 bg-zinc-200 border-2 border-[#fabf37]/20 translate-y-12 md:translate-y-16 -rotate-x-90" />
-      </motion.div>
-    </div>
-  );
-}
+const SocialMediaFeed = React.lazy(() => import("../components/SocialMediaFeed").then(module => ({ default: module.SocialMediaFeed })));
+const TopSellingProducts = React.lazy(() => import("../components/TopSellingProducts").then(module => ({ default: module.TopSellingProducts })));
+// Remove Canvas and Fiber imports as they are causing environment crashes
 
 const categoryDetails = (t: any) => [
   { 
@@ -78,10 +47,17 @@ const categoryDetails = (t: any) => [
   },
   { 
     id: "fmcg-supplies", 
-    title: t('fmcg_supplies_title'), 
+    title: "FMCG", 
     subtitle: t('supplies_subtitle'), 
     icon: <PackageIcon strokeWidth={1.5} className="size-12" />,
     color: "#f9a8d4"
+  },
+  { 
+    id: "garments", 
+    title: "Garments", 
+    subtitle: t('supplies_subtitle'), 
+    icon: <Shirt strokeWidth={1.5} className="size-12" />,
+    color: "#c084fc"
   }
 ];
 
@@ -103,15 +79,6 @@ const tickerItems = (t: any) => [
   t('global_logistics'),
   t('custom_branding_title'),
   t('production_inventory')
-];
-
-const rotatingIconsData = [
-  { icon: Building2, label: "Office Stationary" },
-  { icon: CupSoda, label: "Paper Cup" },
-  { icon: Pizza, label: "Food Box" },
-  { icon: Megaphone, label: "Marketing" },
-  { icon: Hospital, label: "Pharma" },
-  { icon: PackageIcon, label: "FMCG" },
 ];
 
 const DEFAULT_CLIENT_PROJECTS = [
@@ -164,35 +131,12 @@ export function AllProductsPage({
   const [aiInput, setAiInput] = React.useState("");
   const [hoveredCat, setHoveredCat] = React.useState<string | null>(null);
 
-  // Mouse 3D Tracking for the hero box
-  const boxX = React.useRef(0);
-  const boxY = React.useRef(0);
-  const [boxRotation, setBoxRotation] = React.useState({ x: 20, y: 0 });
-
-  const [currentIconIndex, setCurrentIconIndex] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIconIndex((prev) => (prev + 1) % rotatingIconsData.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleBoxMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const x = (clientX - centerX) / 50;
-    const y = (clientY - centerY) / 50;
-    setBoxRotation({ x: 20 - y, y: x });
-  };
-
   const categories = React.useMemo(() => categoryDetails(t), [t]);
   const defaultProducts = React.useMemo(() => products(t), [t]);
   const tickerData = React.useMemo(() => tickerItems(t), [t]);
 
   return (
-    <div onMouseMove={handleBoxMouseMove} className="bg-white min-h-screen relative overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px]">
+    <div className="bg-white min-h-screen relative overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px]">
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.div 
           animate={{ 
@@ -228,7 +172,7 @@ export function AllProductsPage({
           <span className="text-[#fabf37] font-black uppercase tracking-[0.4em] text-[8px] md:text-[10px]">
             {t('production_inventory')}
           </span>
-          <motion.h1 
+          <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -252,59 +196,15 @@ export function AllProductsPage({
             </motion.span>
             
             {/* High-Fidelity Pseudo-3D Animated Box */}
-            <div className="absolute -top-20 -right-4 md:-top-32 md:-right-32 size-40 md:size-64 z-20 pointer-events-none flex items-center justify-center">
-               <div className="relative size-24 md:size-32 preserve-3d" style={{ perspective: "1200px" }}>
-                 <motion.div
-                   animate={{ 
-                     rotateY: [boxRotation.y, boxRotation.y + 360],
-                     rotateX: [boxRotation.x, boxRotation.x + 10, boxRotation.x],
-                     y: [0, -15, 0]
-                   }}
-                   transition={{ 
-                     rotateY: { duration: 20, repeat: Infinity, ease: "linear" },
-                     rotateX: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-                     y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-                   }}
-                   className="relative size-full preserve-3d will-change-transform"
-                 >
-                   {/* 3D Cube Faces */}
-                   <div className="absolute inset-0 bg-white/90 backdrop-blur-sm border-2 border-[#fabf37] shadow-[0_0_30px_rgba(250,191,55,0.2)] flex items-center justify-center [transform:translateZ(3rem)] md:[transform:translateZ(4rem)] overflow-hidden">
-                     <AnimatePresence mode="popLayout">
-                       <motion.div
-                         key={currentIconIndex}
-                         initial={{ opacity: 0, scale: 0.5, rotateY: -90 }}
-                         animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                         exit={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-                         transition={{ duration: 0.5, ease: "backOut" }}
-                         className="absolute inset-0 flex items-center justify-center"
-                       >
-                         {React.createElement(rotatingIconsData[currentIconIndex].icon, {
-                           className: "size-12 md:size-16 text-[#fabf37] stroke-[1.5]"
-                         })}
-                       </motion.div>
-                     </AnimatePresence>
-                   </div>
-                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm border-2 border-[#fabf37]/40 [transform:translateZ(-3rem)_rotateY(180deg)] md:[transform:translateZ(-4rem)_rotateY(180deg)]" />
-                   <div className="absolute inset-0 bg-zinc-50/90 backdrop-blur-sm border-2 border-[#fabf37]/40 -translate-x-12 md:-translate-x-16 -rotate-y-90" />
-                   <div className="absolute inset-0 bg-zinc-50/90 backdrop-blur-sm border-2 border-[#fabf37]/40 translate-x-12 md:translate-x-16 rotate-y-90" />
-                   <div className="absolute inset-0 bg-white border-2 border-[#fabf37]/40 -translate-y-12 md:-translate-y-16 rotate-x-90 flex items-center justify-center overflow-hidden">
-                      <div className="absolute inset-0 bg-[#fabf37]/5" />
-                   </div>
-                   <div className="absolute inset-0 bg-zinc-100 border-2 border-[#fabf37]/40 translate-y-12 md:translate-y-16 -rotate-x-90" />
-                   
-                   {/* HUD Wireframe Detail */}
-                   <div className="absolute inset-0 border border-[#fabf37] scale-110 opacity-20 pointer-events-none" />
-                 </motion.div>
-               </div>
-            </div>
-          </motion.h1>
+            <Hero3DBox />
+          </motion.div>
         </div>
 
         <motion.div 
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, ease: "easeOut", delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 border border-zinc-100 mb-20 md:mb-32 bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)]"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 border border-zinc-100 mb-20 md:mb-32 bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)]"
         >
           {categories.map((cat, idx) => (
             <motion.button
@@ -315,7 +215,7 @@ export function AllProductsPage({
               onClick={() => onPageChange(cat.id)}
               onMouseEnter={() => setHoveredCat(cat.id)}
               onMouseLeave={() => setHoveredCat(null)}
-              className={`group relative p-10 md:p-16 flex flex-col items-center justify-center text-center gap-8 md:gap-12 transition-all hover:bg-zinc-50/80 perspective-[1000px] ${
+              className={`group relative p-10 md:p-12 flex flex-col items-center justify-center text-center gap-6 md:gap-8 transition-all hover:bg-zinc-50/80 perspective-[1000px] ${
                 idx !== categories.length - 1 ? 'xl:border-r border-zinc-100' : ''
               } border-b xl:border-b-0`}
             >
@@ -352,76 +252,17 @@ export function AllProductsPage({
           ))}
         </motion.div>
 
-        <div className="mb-32">
-          <div className="flex items-end justify-between mb-12">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="size-2 bg-[#fabf37] rounded-full" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">{t('production_inventory')}</span>
-              </div>
-              <motion.h2 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none"
-              >
-                {t('featured_skus')}
-              </motion.h2>
-            </div>
-
-          </div>
-          <div className="relative w-full overflow-hidden">
-            {/* Gradient Masks */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-            
-            <motion.div 
-              className="flex gap-6"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              style={{ width: "fit-content" }}
-              onHoverStart={() => {}} // Placeholder to handle hover pause if needed later
-            >
-              {[...(dynamicProducts || defaultProducts), ...(dynamicProducts || defaultProducts)].map((product, idx) => (
-                <motion.div 
-                  key={`${product.id}-${idx}`}
-                  whileHover={{ scale: 0.98, y: -5 }}
-                  className="w-[280px] md:w-[320px] shrink-0 group bg-zinc-50 rounded-[32px] p-5 border border-black/5 hover:bg-white hover:border-[#fabf37]/50 hover:shadow-xl transition-all duration-500 flex flex-col gap-5 relative overflow-hidden"
-                >
-                  <div className="h-40 rounded-[24px] overflow-hidden bg-white border border-black/5 relative">
-                    <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
-                    <div className="absolute top-3 left-3 bg-black text-[#fabf37] px-3 py-1 rounded-full text-[7px] font-black uppercase tracking-widest">
-                      {product.category}
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-black uppercase tracking-tighter line-clamp-1">{product.name}</h3>
-                    <p className="text-zinc-400 text-[10px] font-bold leading-relaxed line-clamp-2">
-                      {product.desc}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 pt-4 border-t border-black/5">
-                     <button 
-                       onClick={() => onProductClick(product)}
-                       className="flex-1 bg-black text-white px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#fabf37] hover:text-black transition-all"
-                     >
-                       {t('view_specs')}
-                     </button>
-                     <button 
-                       onClick={() => onAddToQuote(product)}
-                       className="size-10 bg-[#fabf37] rounded-xl flex items-center justify-center text-black hover:scale-110 transition-transform shadow-lg"
-                     >
-                       <Plus className="size-4" />
-                     </button>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
         </div>
+        
+        <React.Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
+          <TopSellingProducts onProductClick={onProductClick} products={dynamicProducts} />
+        </React.Suspense>
+        
+        <React.Suspense fallback={<div className="h-64 flex items-center justify-center">Loading...</div>}>
+          <SocialMediaFeed />
+        </React.Suspense>
 
-        <div className="max-w-5xl mx-auto mb-32 relative">
+        <div className="max-w-5xl mx-auto mb-32 relative px-4">
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-[#fabf37]/5 via-transparent to-transparent blur-[100px] pointer-events-none" />
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -635,6 +476,5 @@ export function AllProductsPage({
            </div>
         </div>
       </div>
-    </div>
   );
 }

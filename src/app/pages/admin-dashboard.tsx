@@ -136,6 +136,14 @@ export default function AdminDashboard({
   const [viewingImage, setViewingImage] = React.useState<string | null>(null);
   const [viewingVideo, setViewingVideo] = React.useState<string | null>(null);
   const [isProductionExpanded, setIsProductionExpanded] = React.useState(false);
+  const [foodBoxAttributes, setFoodBoxAttributes] = React.useState([
+    { title: "Paper Material", options: ["Premium Swedish Pulp", "Recycled Kraft", "Luxury Art Paper"] },
+    { title: "GSM", options: ["280 GSM", "300 GSM", "350 GSM", "400 GSM"] },
+    { title: "Finish", options: ["Matte UV", "Gloss Laminated", "Soft Touch", "Metallic Foil"] }
+  ]);
+  const [addingOptionFor, setAddingOptionFor] = React.useState<string | null>(null);
+  const [isAddingAttribute, setIsAddingAttribute] = React.useState(false);
+  const [itemAttributes, setItemAttributes] = React.useState<Record<string, string[]>>({});
   const [productionFeed, setProductionFeed] = React.useState(
     Array.from({ length: 20 }).map((_, i) => {
       const clients = ["Greenleaf Organics", "Urban Brew Co.", "Medisafe Pharma", "Velocity Logistics", "EcoWare Solutions", "BioPack Industries", "PureFiber Tech", "NatureFirst Packaging"];
@@ -174,13 +182,13 @@ export default function AdminDashboard({
     })
   );
   const [productCategories, setProductCategories] = React.useState([
-    { id: "01", name: "Paper Cups", items: ["Single Wall", "Double Wall", "Ripple Wall", "Ice Cream Cups", "Vending Cups"] },
-    { id: "02", name: "Food Packaging", items: ["Lunch Boxes", "Burger Boxes", "Food Trays", "Pizza Boxes", "Noodle Boxes"] },
-    { id: "03", name: "Bags & Carriers", items: ["Handle Bags", "SOS Bags", "Flat Bags", "Bakery Bags", "Luxury Bags"] },
-    { id: "04", name: "Stationary", items: ["Notebooks", "Envelopes", "Folders", "Letterheads", "Business Cards"] },
-    { id: "05", name: "Industrial", items: ["Corrugated Boxes", "Shipping Cartons", "Protective Wraps", "Edge Protectors"] },
-    { id: "06", name: "Specialty", items: ["Gift Boxes", "Jewelry Boxes", "Display Stands"] },
-    { id: "07", name: "Medical & Pharma", items: ["Medicine Boxes", "Blister Cards", "Leaflets", "Surgical Wraps"] },
+    { id: "01", name: "Office Stationary Supplies", items: ["Business Card", "Envelope", "Invoice Pad", "Letterhead Pad", "Money Receipt Book", "Delivery Note Book", "Note Book", "Diary", "File Folder"] },
+    { id: "02", name: "Paper Cup Supplies", items: ["Paper Cup", "Paper Cup Holder", "Paper Cup Jacket/Sleeve", "Paper Cup Carrier"] },
+    { id: "03", name: "Restaurant Supplies", items: ["FOOD BOX", "CHOWMEIN BOX", "MEAT BOX", "SANDWICH BOX", "BURGER BOX", "PIZZA BOX", "CAKE BOX", "SWEET BOX", "FRIES BOX", "SHAWARMA BOX", "WAFFLE BOX & TRAY", "WEDGES CONE", "ICE CREAM CONE", "SUGAR SACHET", "TABLE MAT", "CARRY BAG", "FOOD MENU"] },
+    { id: "04", name: "Marketing Materials Supplies", items: ["Paper Bag", "Brochure / Catalog", "Premium Magazine", "Flyer & Leaflet", "Sticker", "Calendar", "Tissue Box"] },
+    { id: "05", name: "Hospitals & Pharmaceuticals Supplies", items: ["Patient File", "X-Ray File", "Doctor's Prescription Pad", "Report Envelope", "Medicine Box", "Medicine Literature"] },
+    { id: "06", name: "FMCG Products Supplies", items: ["Food & Beverage Packaging", "Personal Care Product Packaging", "Home Care Product Packaging", "Confectionary Goods Packaging"] },
+    { id: "07", name: "Garments Accessories Supplies", items: ["Hangtag", "Label", "Sticker"] },
   ]);
 
   const renderView = () => {
@@ -649,13 +657,29 @@ export default function AdminDashboard({
                                           `}
                                        >
                                           {/* Editable Item Name (simulated with click propagation stop) */}
-                                          <input 
-                                            defaultValue={item}
-                                            onClick={(e) => e.stopPropagation()}
-                                            className={`bg-transparent border-none p-0 focus:ring-0 w-full text-[9px] font-bold uppercase tracking-wide cursor-text ${isActive ? "text-black placeholder:text-black/50" : "text-zinc-700 placeholder:text-zinc-300"}`}
-                                          />
+                                          <span className={`block w-full text-[9px] font-bold uppercase tracking-wide ${isActive ? "text-black" : "text-zinc-900"}`}>
+                                            {item}
+                                          </span>
                                           <ChevronDown className={`size-3 transition-transform duration-300 ${isActive ? "rotate-180 text-black" : "-rotate-90 text-zinc-300 group-hover/handle:text-black"}`} />
                                        </div>
+                                       
+                                       {item === "Paper Cup" && !isActive && (
+                                          <div className="mt-1 ml-6 space-y-1 border-l-2 border-black/5 pl-2">
+                                              {["Single Wall", "Double Wall", "Ripple Wall"].map((sub) => (
+                                                  <div 
+                                                    key={sub} 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveDropdown(itemId);
+                                                    }}
+                                                    className="px-3 py-1.5 border border-black/5 bg-zinc-50 rounded-lg text-[8px] font-bold uppercase tracking-wide text-zinc-500 flex items-center gap-2 cursor-pointer hover:bg-white hover:border-[#fabf37] hover:text-black transition-all group/sub"
+                                                  >
+                                                      <div className="size-1 rounded-full bg-zinc-300 group-hover/sub:bg-[#fabf37] transition-colors" />
+                                                      {sub}
+                                                  </div>
+                                              ))}
+                                          </div>
+                                       )}
 
                                        <AnimatePresence>
                                          {isActive && (
@@ -734,7 +758,12 @@ export default function AdminDashboard({
                                                      onClick={(e) => {
                                                        e.stopPropagation();
                                                        const attr = prompt("Add new attribute (e.g. Size, Color):");
-                                                       if(attr) alert(`Attribute "${attr}" added to ${item}`);
+                                                       if(attr) {
+                                                           setItemAttributes(prev => {
+                                                               const current = prev[item] || ['In Stock', 'Premium Grade', 'Eco-Friendly'];
+                                                               return { ...prev, [item]: [...current, attr] };
+                                                           });
+                                                       }
                                                      }}
                                                      className="text-[8px] font-bold text-[#fabf37] bg-black px-1.5 py-0.5 rounded hover:bg-zinc-800 transition-colors"
                                                    >
@@ -742,10 +771,19 @@ export default function AdminDashboard({
                                                    </button>
                                                  </div>
                                                  <div className="flex flex-wrap gap-1.5">
-                                                    {['In Stock', 'Premium Grade', 'Eco-Friendly'].map(tag => (
-                                                      <div key={tag} className="flex items-center gap-1 px-2 py-1 bg-zinc-50 border border-zinc-100 rounded text-[9px] text-zinc-600 font-medium group/tag hover:border-red-200 hover:bg-red-50 cursor-pointer">
+                                                    {(itemAttributes[item] || ['In Stock', 'Premium Grade', 'Eco-Friendly']).map((tag, idx) => (
+                                                      <div key={`${tag}-${idx}`} className="flex items-center gap-1 px-2 py-1 bg-zinc-50 border border-zinc-100 rounded text-[9px] text-zinc-600 font-medium group/tag hover:border-red-200 hover:bg-red-50 cursor-pointer">
                                                         <span>{tag}</span>
-                                                        <X className="size-2 text-zinc-300 group-hover/tag:text-red-400" />
+                                                        <X 
+                                                            className="size-2 text-zinc-300 group-hover/tag:text-red-400" 
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setItemAttributes(prev => {
+                                                                    const current = prev[item] || ['In Stock', 'Premium Grade', 'Eco-Friendly'];
+                                                                    return { ...prev, [item]: current.filter((_, i) => i !== idx) };
+                                                                });
+                                                            }}
+                                                        />
                                                       </div>
                                                     ))}
                                                  </div>
@@ -859,7 +897,74 @@ export default function AdminDashboard({
                                                            <span className="text-[7px] font-black text-zinc-400 uppercase tracking-widest">Select Attributes</span>
                                                            <span className="text-[7px] font-bold text-[#fabf37] bg-black px-1.5 rounded cursor-help" title="AI will auto-suggest attributes based on product category">AI-DETECT</span>
                                                         </div>
-                                                        <div className="flex flex-wrap gap-1.5">
+                                                        {item === "FOOD BOX" && (
+                                                      <div className="mb-4 border-b border-black/5 pb-4 space-y-4">
+                                                          <div className="flex items-center justify-between border-b border-black/5 pb-2">
+                                                              <span className="text-[10px] font-black text-black uppercase tracking-widest">Food Parcel Box Configurations</span>
+                                                          </div>
+                                                          {foodBoxAttributes.map((section, sIdx) => (
+                                                              <div key={section.title}>
+                                                                  <div className="flex items-center gap-2 mb-2">
+                                                                      <h4 className="text-[9px] font-bold text-orange-500">{section.title}</h4>
+                                                                      <button 
+                                                                         type="button"
+                                                                         onClick={(e) => {
+                                                                             e.preventDefault();
+                                                                             e.stopPropagation();
+                                                                             setAddingOptionFor(section.title);
+                                                                         }}
+                                                                         className="text-[8px] font-bold text-zinc-400 hover:text-black hover:bg-zinc-200 px-1 rounded transition-colors cursor-pointer relative z-50"
+                                                                      >
+                                                                         + ADD
+                                                                      </button>
+                                                                  </div>
+                                                                  <div className="flex flex-wrap gap-2">
+                                                                      {section.options.map(opt => {
+                                                                          const isPaper = section.title === "Paper Option";
+                                                                          const [main, sub] = isPaper && opt.includes(" - ") ? opt.split(" - ") : [opt, null];
+                                                                          
+                                                                          return (
+                                                                              <button key={opt} className={`px-3 py-1.5 bg-white border border-zinc-200 rounded text-[9px] font-medium text-zinc-600 hover:border-orange-500 hover:text-black hover:bg-orange-50/50 transition-colors group ${sub ? 'flex flex-col items-start gap-1 min-w-[120px]' : ''}`}>
+                                                                                  <span>{main}</span>
+                                                                                  {sub && (
+                                                                                      <span className="text-[7px] font-bold text-zinc-400 bg-zinc-100 px-1.5 py-0.5 rounded-sm group-hover:bg-[#fabf37] group-hover:text-black transition-colors">
+                                                                                          {sub}
+                                                                                      </span>
+                                                                                  )}
+                                                                              </button>
+                                                                          );
+                                                                      })}
+                                                                      {addingOptionFor === section.title && (
+                                                                           <input
+                                                                               autoFocus
+                                                                               type="text"
+                                                                               className="px-3 py-1.5 bg-white border border-orange-500 rounded text-[9px] font-medium text-zinc-900 outline-none min-w-[60px]"
+                                                                               placeholder="Type..."
+                                                                               onBlur={(e) => {
+                                                                                   const val = e.target.value.trim();
+                                                                                   if(val) {
+                                                                                       setFoodBoxAttributes(prev => prev.map(attr => {
+                                                                                           if (attr.title === section.title) {
+                                                                                               if (attr.options.includes(val)) return attr;
+                                                                                               return { ...attr, options: [...attr.options, val] };
+                                                                                           }
+                                                                                           return attr;
+                                                                                       }));
+                                                                                   }
+                                                                                   setAddingOptionFor(null);
+                                                                               }}
+                                                                               onKeyDown={(e) => {
+                                                                                   if(e.key === 'Enter') e.currentTarget.blur();
+                                                                                   if(e.key === 'Escape') setAddingOptionFor(null);
+                                                                               }}
+                                                                           />
+                                                                      )}
+                                                                  </div>
+                                                              </div>
+                                                          ))}
+                                                      </div>
+                                                  )}
+                                                  <div className="flex flex-wrap gap-1.5">
                                                            {[
                                                              { label: "Dimensions", icon: "📏" },
                                                              { label: "Material", icon: "🧬" },
@@ -869,19 +974,63 @@ export default function AdminDashboard({
                                                            ].map((attr) => (
                                                               <button 
                                                                 key={attr.label}
-                                                                onClick={(e) => { e.stopPropagation(); alert(`Added ${attr.label} attribute schema`); }}
+                                                                onClick={(e) => { 
+                                                                    e.stopPropagation(); 
+                                                                    if (item === "FOOD BOX") {
+                                                                        setFoodBoxAttributes(prev => {
+                                                                            if (prev.find(p => p.title === attr.label)) return prev;
+                                                                            return [...prev, { title: attr.label, options: ["Standard"] }];
+                                                                        });
+                                                                    } else {
+                                                                        setItemAttributes(prev => {
+                                                                            const current = prev[item] || ['In Stock', 'Premium Grade', 'Eco-Friendly'];
+                                                                            if (current.includes(attr.label)) return prev;
+                                                                            return { ...prev, [item]: [...current, attr.label] };
+                                                                        });
+                                                                    }
+                                                                }}
                                                                 className="flex items-center gap-1 px-2 py-1 bg-white border border-zinc-200 rounded text-[8px] font-bold text-zinc-600 hover:bg-black hover:text-white hover:border-black transition-all shadow-sm active:scale-95"
                                                               >
                                                                 <span className="opacity-70 grayscale text-[10px]">{attr.icon}</span>
                                                                 <span>{attr.label}</span>
                                                               </button>
                                                            ))}
-                                                           <button 
-                                                              onClick={(e) => { e.stopPropagation(); prompt("Enter custom attribute name:"); }}
-                                                              className="px-2 py-1 bg-zinc-200 border border-transparent rounded text-[8px] font-bold text-zinc-500 hover:bg-[#fabf37] hover:text-black transition-colors"
-                                                           >
-                                                              + Custom
-                                                           </button>
+                                                           {isAddingAttribute ? (
+                                                               <input
+                                                                   autoFocus
+                                                                   type="text"
+                                                                   className="px-2 py-1 bg-white border border-orange-500 rounded text-[8px] font-bold text-zinc-900 outline-none min-w-[80px]"
+                                                                   placeholder="Attr Name..."
+                                                                   onBlur={(e) => {
+                                                                       const name = e.target.value.trim();
+                                                                       if (name) {
+                                                                           if (item === "FOOD BOX") {
+                                                                               setFoodBoxAttributes(prev => [...prev, { title: name, options: ["Option 1"] }]);
+                                                                           } else {
+                                                                               setItemAttributes(prev => {
+                                                                                   const current = prev[item] || ['In Stock', 'Premium Grade', 'Eco-Friendly'];
+                                                                                   return { ...prev, [item]: [...current, name] };
+                                                                               });
+                                                                           }
+                                                                       }
+                                                                       setIsAddingAttribute(false);
+                                                                   }}
+                                                                   onKeyDown={(e) => {
+                                                                       if(e.key === 'Enter') e.currentTarget.blur();
+                                                                       if(e.key === 'Escape') setIsAddingAttribute(false);
+                                                                   }}
+                                                               />
+                                                           ) : (
+                                                               <button 
+                                                                  onClick={(e) => { 
+                                                                      e.stopPropagation(); 
+                                                                      setIsAddingAttribute(true);
+                                                                  }}
+                                                                  className="px-2 py-1 bg-zinc-200 border border-transparent rounded text-[8px] font-bold text-zinc-500 hover:bg-[#fabf37] hover:text-black transition-colors"
+                                                               >
+                                                                  + Custom
+                                                               </button>
+                                                           )}
                                                         </div>
                                                      </div>
                                                   </div>

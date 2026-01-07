@@ -12,14 +12,12 @@ import { TopSellingProducts } from "../components/TopSellingProducts";
 import { SocialMediaFeed } from "../components/SocialMediaFeed";
 
 const products = [
-  { name: "Food & Beverage Packaging", desc: "Moisture-locked boxes for snacks and drinks.", category: "FMCG", image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60", price: "12.50", icon: Package },
-  { name: "Personal Care", desc: "Luxury aesthetic packaging for cosmetics.", category: "FMCG", image: "https://images.unsplash.com/photo-1596462502278-27bfdc4033c8", price: "45.00", icon: Box },
-  { name: "Product Packaging", desc: "Generic to custom high-run product boxes.", category: "FMCG", image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f", price: "18.00", icon: Box },
-  { name: "Home Care Packaging", desc: "Durable boxes for cleaning and home supplies.", category: "FMCG", image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a", price: "22.00", icon: Package },
-  { name: "Confectionary Goods", desc: "Decorative and food-safe chocolate/sweet boxes.", category: "FMCG", image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b", price: "35.00", icon: Package },
+  { name: "Hangtag", desc: "Premium textured clothing tags for apparel.", category: "GARMENTS", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633", price: "2.50", icon: Tag },
+  { name: "Label", desc: "Woven and printed care labels for garments.", category: "GARMENTS", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633", price: "1.20", icon: Ticket },
+  { name: "Garment Sticker", desc: "Size and branding stickers for retail.", category: "GARMENTS", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633", price: "0.80", icon: Sticker },
 ];
 
-export function FMCGSuppliesPage({ onProductClick }: { onProductClick: (p: any) => void }) {
+export function GarmentSuppliesPage({ onProductClick }: { onProductClick: (p: any) => void }) {
   const { t } = useLanguage();
 
   return (
@@ -33,28 +31,29 @@ export function FMCGSuppliesPage({ onProductClick }: { onProductClick: (p: any) 
             className="flex items-center gap-3 mb-6"
           >
             <div className="size-2 rounded-full bg-[#fabf37]" />
-            <span className="text-[#fabf37] font-black uppercase tracking-[0.4em] text-xs">Retail Supply</span>
+            <span className="text-[#fabf37] font-black uppercase tracking-[0.4em] text-xs">Fashion & Retail Supply</span>
           </motion.div>
           <h1 className="text-[56px] md:text-[90px] font-black uppercase tracking-tighter leading-[0.85] mb-8 text-black">
-            FMCG <br /> <span className="text-zinc-300">Supplies</span>
+            Garment <br /> <span className="text-zinc-300">Accessories</span>
           </h1>
           <p className="text-zinc-500 font-bold text-lg max-w-2xl leading-relaxed">
-            High-volume retail packaging for the world's leading consumer brands. We combine durability with high-end aesthetics to drive shelf impact.
+            High-quality accessories for the textile industry. From premium hangtags to bulk industrial labels, we provide the finishing touches for your garments.
           </p>
         </div>
       </section>
 
       {/* Featured Section */}
       <section className="container mx-auto px-4 mb-32">
-        <div className="bg-white p-12 rounded-[60px] border border-black/5 space-y-8 hover:shadow-2xl transition-all">
-          <div className="size-16 rounded-3xl bg-[#fabf37] flex items-center justify-center text-black shadow-xl">
-            <ShoppingBasket className="size-8" />
+        <div className="bg-black p-12 rounded-[60px] space-y-8 hover:shadow-2xl transition-all text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-12 opacity-10"><Shirt className="size-32" /></div>
+          <div className="size-16 rounded-3xl bg-zinc-800 flex items-center justify-center text-white shadow-xl">
+            <Shirt className="size-8" />
           </div>
-          <h2 className="text-3xl font-black uppercase tracking-tighter italic">FMCG Sector</h2>
-          <p className="text-zinc-500 font-bold leading-relaxed max-w-2xl">Focusing on high-run efficiency, moisture barriers, and vibrant color reproduction for consumer shelf dominance.</p>
+          <h2 className="text-3xl font-black uppercase tracking-tighter italic">Garment Access</h2>
+          <p className="text-zinc-500 font-bold leading-relaxed max-w-2xl">Precision accessories for the textile industry. From premium hangtags to bulk industrial labels.</p>
           <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-black/40"><CircleCheck className="size-4 text-[#fabf37]" /> Moisture Lock</li>
-              <li className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-black/40"><CircleCheck className="size-4 text-[#fabf37]" /> High Speed Die-Cut</li>
+              <li className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-white/40"><CircleCheck className="size-4 text-[#fabf37]" /> Texture Focus</li>
+              <li className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-white/40"><CircleCheck className="size-4 text-[#fabf37]" /> Eco-Fiber Tags</li>
           </ul>
         </div>
       </section>

@@ -158,6 +158,7 @@ const RestaurantSuppliesPage = React.lazy(() => import("./pages/restaurant-suppl
 const MarketingMaterialsPage = React.lazy(() => import("./pages/marketing-materials").then(module => ({ default: module.MarketingMaterialsPage })));
 const PharmaSuppliesPage = React.lazy(() => import("./pages/pharma-supplies").then(module => ({ default: module.PharmaSuppliesPage })));
 const FMCGSuppliesPage = React.lazy(() => import("./pages/fmcg-garments").then(module => ({ default: module.FMCGSuppliesPage })));
+const GarmentSuppliesPage = React.lazy(() => import("./pages/garments").then(module => ({ default: module.GarmentSuppliesPage })));
 const SustainabilityPage = React.lazy(() => import("./pages/sustainability").then(module => ({ default: module.SustainabilityPage })));
 const ContactPage = React.lazy(() => import("./pages/contact").then(module => ({ default: module.ContactPage })));
 const QuoteRequestPage = React.lazy(() => import("./pages/quote-request").then(module => ({ default: module.QuoteRequestPage })));
@@ -186,9 +187,11 @@ const SolutionsPage = React.lazy(() => import("./pages/solutions").then(module =
 const TechnicalManifestoPage = React.lazy(() => import("./pages/technical-manifesto").then(module => ({ default: module.TechnicalManifestoPage })));
 const FranchisePage = React.lazy(() => import("./pages/franchise").then(module => ({ default: module.FranchisePage })));
 const InvestorPage = React.lazy(() => import("./pages/investor").then(module => ({ default: module.InvestorPage })));
+const PartnerProgramPage = React.lazy(() => import("./pages/PartnerProgram").then(module => ({ default: module.PartnerProgramPage })));
 const PartnersPage = React.lazy(() => import("./pages/partners").then(module => ({ default: module.PartnersPage })));
 const BusinessPage = React.lazy(() => import("./pages/business").then(module => ({ default: module.BusinessPage })));
 const CompanyPage = React.lazy(() => import("./pages/company").then(module => ({ default: module.CompanyPage })));
+const CSRPage = React.lazy(() => import("./pages/csr").then(module => ({ default: module.CSRPage })));
 
 // Lazy load heavy components
 const SearchOverlay = React.lazy(() => import("./components/paperware/search-overlay").then(module => ({ default: module.SearchOverlay })));
@@ -359,6 +362,67 @@ const DEFAULT_CLIENT_PROJECTS = [
   }
 ];
 
+const DEFAULT_SIGNING_IMAGE = "https://images.unsplash.com/photo-1758599543152-a73184816eba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoYW5kc2hha2UlMjBidXNpbmVzcyUyMGRlYWwlMjBwYXJ0bmVyc2hpcHxlbnwxfHx8fDE3Njc2OTM3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+
+const DEFAULT_PARTNERS = [
+  {
+    id: "1",
+    name: "EcoPulp Industries",
+    category: "Raw Material Supplier",
+    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300&h=300&fit=crop",
+    description: "Premium sustainable paper pulp provider."
+  },
+  {
+    id: "2",
+    name: "ChemSafe Solutions",
+    category: "Chemical Partner",
+    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=300&h=300&fit=crop",
+    description: "Certified food-grade coatings."
+  },
+  {
+    id: "3",
+    name: "FastTrack Logistics",
+    category: "Delivery Partner",
+    logo: "https://images.unsplash.com/photo-1626863905121-3b0c0ed5b92c?w=300&h=300&fit=crop",
+    description: "Nationwide secure distribution network."
+  },
+  {
+    id: "4",
+    name: "ConnectTel",
+    category: "Telco Partner",
+    logo: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=300&h=300&fit=crop",
+    description: "Enterprise communication infrastructure."
+  },
+  {
+    id: "5",
+    name: "NetStream",
+    category: "Internet Partner",
+    logo: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=300&fit=crop",
+    description: "High-speed fiber connectivity."
+  },
+  {
+    id: "6",
+    name: "DigitalCore",
+    category: "Digital Partner",
+    logo: "https://images.unsplash.com/photo-1572044162444-ad6021194360?w=300&h=300&fit=crop",
+    description: "Digital transformation solutions."
+  },
+  {
+    id: "7",
+    name: "SysMaster ERP",
+    category: "ERP Partner",
+    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=300&fit=crop",
+    description: "Integrated resource planning systems."
+  },
+  {
+    id: "8",
+    name: "WebCrafters",
+    category: "Website Partner",
+    logo: "https://images.unsplash.com/photo-1496200186974-4293800e2c20?w=300&h=300&fit=crop",
+    description: "Web presence and e-commerce."
+  }
+];
+
 export function MainContent() {
   const { tier, isLowEnd } = usePerformanceOptimization();
   const [isAdminOpen, setIsAdminOpen] = React.useState(false);
@@ -398,6 +462,8 @@ export function MainContent() {
       subtitle: "AT THE TIP OF YOUR FINGERS!"
     }
   ]);
+  const [partnersData, setPartnersData] = React.useState<any[]>(DEFAULT_PARTNERS);
+  const [signingImage, setSigningImage] = React.useState(DEFAULT_SIGNING_IMAGE);
 
   // Unified useScroll at root level to ensure non-static container context
   // Remove container reference to let useScroll use window by default
@@ -420,10 +486,23 @@ export function MainContent() {
       if (productsStr) setProductsData(JSON.parse(productsStr));
       const clientProjectsStr = localStorage.getItem('paperware_client_projects');
       if (clientProjectsStr) setClientProjects(JSON.parse(clientProjectsStr));
+      const partnersStr = localStorage.getItem('paperware_partners');
+      if (partnersStr) setPartnersData(JSON.parse(partnersStr));
+      const signingImageStr = localStorage.getItem('paperware_signing_image');
+      if (signingImageStr) setSigningImage(signingImageStr);
     } catch (e) {
       console.warn('Failed to load storage:', e);
     }
   }, []);
+
+  // Persistence Effects
+  React.useEffect(() => {
+    localStorage.setItem('paperware_partners', JSON.stringify(partnersData));
+  }, [partnersData]);
+
+  React.useEffect(() => {
+    localStorage.setItem('paperware_signing_image', signingImage);
+  }, [signingImage]);
 
   const handlePageChange = React.useCallback((page: string) => {
     React.startTransition(() => {
@@ -1114,6 +1193,7 @@ export function MainContent() {
       case "marketing-materials": return <MarketingMaterialsPage onProductClick={handleProductClick} />;
       case "pharma-supplies": return <PharmaSuppliesPage onProductClick={handleProductClick} />;
       case "fmcg-supplies": return <FMCGSuppliesPage onProductClick={handleProductClick} />;
+      case "garments": return <GarmentSuppliesPage onProductClick={handleProductClick} />;
       case "sustainability": return <SustainabilityPage />;
       case "solutions": return <SolutionsPage />;
       case "contact": return <ContactPage onFeedbackClick={() => handlePageChange("product-feedback")} />;
@@ -1141,9 +1221,15 @@ export function MainContent() {
       case "technical-manifesto": return <TechnicalManifestoPage />;
       case "franchise": return <FranchisePage />;
       case "investor": return <InvestorPage />;
-      case "partners": return <PartnersPage />;
+      case "partner-program": return (
+        <React.Suspense fallback={<PageLoader />}>
+          <PartnerProgramPage />
+        </React.Suspense>
+      );
+      case "partners": return <PartnersPage partners={partnersData} signingImage={signingImage} />;
       case "business": return <BusinessPage />;
       case "company": return <CompanyPage onPageChange={handlePageChange} />;
+      case "csr": return <CSRPage />;
       case "admin": return (
         <AdminDashboardPage 
           onLogout={() => handlePageChange("home")} 
@@ -1209,7 +1295,18 @@ export function MainContent() {
         )}
         {isAuthModalOpen && <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} type={authType} onLoginSuccess={() => handlePageChange(authType === 'admin' ? 'admin' : 'client-portal')} />}
       </React.Suspense>
-      <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} videoData={factoryVideos} onUpdateVideos={setFactoryVideos} heroVideoUrl={heroVideoUrl} onUpdateHeroVideo={setHeroVideoUrl} />
+      <AdminPanel 
+        isOpen={isAdminOpen} 
+        onClose={() => setIsAdminOpen(false)} 
+        videoData={factoryVideos} 
+        onUpdateVideos={setFactoryVideos} 
+        heroVideoUrl={heroVideoUrl} 
+        onUpdateHeroVideo={setHeroVideoUrl}
+        partnersData={partnersData}
+        onUpdatePartners={setPartnersData}
+        signingImage={signingImage}
+        onUpdateSigningImage={setSigningImage}
+      />
       <HUDOverlay />
     </div>
   );

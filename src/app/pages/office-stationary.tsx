@@ -7,17 +7,19 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { TopSellingProducts } from "../components/TopSellingProducts";
+import { SocialMediaFeed } from "../components/SocialMediaFeed";
 
 const products = [
-  { name: "Business Card", desc: "Premium textured cardstock with UV spot finish.", image: "https://images.unsplash.com/photo-1707589165239-10294fab6b13" },
-  { name: "Envelope", desc: "Custom sized professional mailing solutions.", image: "https://images.unsplash.com/photo-1586717791821-3f44a563dc4c" },
-  { name: "Invoice Pad", desc: "Duplicate/Triplicate carbonless NCR pads.", image: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23" },
-  { name: "Letterhead Pad", desc: "Executive 100GSM watermarked paper.", image: "https://images.unsplash.com/photo-1522204538344-922f76cee07a" },
-  { name: "Money Receipt", desc: "Secure serialized financial documentation.", image: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5" },
-  { name: "Delivery Note", desc: "Industrial strength logbooks for logistics.", image: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55" },
-  { name: "Note Book", desc: "Custom branded corporate notebooks.", image: "https://images.unsplash.com/photo-1517842645767-c639042777db" },
-  { name: "Diary", desc: "Annual premium planners and organizers.", image: "https://images.unsplash.com/photo-1511108690759-009324a90311" },
-  { name: "File Folder", desc: "Heavy-duty laminated organizational folders.", image: "https://images.unsplash.com/photo-1595844730298-b960ff98fee0" },
+  { name: "Business Card", desc: "Premium textured cardstock with UV spot finish.", category: "Print", image: "https://images.unsplash.com/photo-1707589165239-10294fab6b13", icon: Contact },
+  { name: "Envelope", desc: "Custom sized professional mailing solutions.", category: "Mailing", image: "https://images.unsplash.com/photo-1586717791821-3f44a563dc4c", icon: Mail },
+  { name: "Invoice Pad", desc: "Duplicate/Triplicate carbonless NCR pads.", category: "Finance", image: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23", icon: FileText },
+  { name: "Letterhead Pad", desc: "Executive 100GSM watermarked paper.", category: "Branding", image: "https://images.unsplash.com/photo-1522204538344-922f76cee07a", icon: FileText },
+  { name: "Money Receipt", desc: "Secure serialized financial documentation.", category: "Finance", image: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5", icon: FileText },
+  { name: "Delivery Note", desc: "Industrial strength logbooks for logistics.", category: "Logistics", image: "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55", icon: Truck },
+  { name: "Note Book", desc: "Custom branded corporate notebooks.", category: "Office", image: "https://images.unsplash.com/photo-1517842645767-c639042777db", icon: Notebook },
+  { name: "Diary", desc: "Annual premium planners and organizers.", category: "Office", image: "https://images.unsplash.com/photo-1511108690759-009324a90311", icon: Notebook },
+  { name: "File Folder", desc: "Heavy-duty laminated organizational folders.", category: "Organization", image: "https://images.unsplash.com/photo-1595844730298-b960ff98fee0", icon: FolderOpen },
 ];
 
 export function OfficeStationaryPage({ onProductClick }: { onProductClick: (p: any) => void }) {
@@ -85,7 +87,13 @@ export function OfficeStationaryPage({ onProductClick }: { onProductClick: (p: a
                 </div>
               </div>
               <div className="p-10">
-                <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{p.name}</h3>
+                <div className="flex justify-between items-start mb-6">
+                  <div className="size-12 rounded-xl bg-zinc-50 flex items-center justify-center text-black group-hover:bg-black group-hover:text-[#fabf37] transition-all">
+                    <p.icon className="size-5" />
+                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-zinc-100 rounded-full text-[rgb(0,0,0)]">{p.category}</span>
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4 text-black">{p.name}</h3>
                 <p className="text-zinc-500 font-bold text-sm mb-8 leading-relaxed">{p.desc}</p>
                 <div className="flex items-center justify-between">
                   <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/40 group-hover:text-black transition-colors">
@@ -101,6 +109,9 @@ export function OfficeStationaryPage({ onProductClick }: { onProductClick: (p: a
           ))}
         </div>
       </section>
+
+      <TopSellingProducts onProductClick={onProductClick} />
+      <SocialMediaFeed />
 
       {/* Fast Delivery Banner */}
       <section className="container mx-auto px-4 mb-32">

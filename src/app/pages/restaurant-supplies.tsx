@@ -2,21 +2,34 @@ import React from "react";
 import { motion } from "motion/react";
 import { 
   Utensils, Box, ShoppingBag, CircleCheck as CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Thermometer, Droplets
+  ArrowRight, ShieldCheck, Zap, Thermometer, Droplets,
+  Pizza, Sandwich, Cake, Drumstick, Candy,
+  Layers, IceCream, Coffee, FileText
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Truck } from "lucide-react";
+import { TopSellingProducts } from "../components/TopSellingProducts";
+import { SocialMediaFeed } from "../components/SocialMediaFeed";
 
 const products = [
-  { name: "Food Box", desc: "Grease-resistant industrial grade food containers.", image: "https://images.unsplash.com/photo-1626253934161-08cfea22e968", price: "8.50" },
-  { name: "Chowmein Box", desc: "Leak-proof boxes with specialized thermal coating.", image: "https://images.unsplash.com/photo-1598449356475-b9f71ef7d847", price: "6.20" },
-  { name: "Meat Box", desc: "Heavy-duty boxes for raw and processed meats.", image: "https://images.unsplash.com/photo-1544378730-8b5104b18790", price: "12.00" },
-  { name: "Sandwich Box", desc: "Clear-window display boxes for freshness.", image: "https://images.unsplash.com/photo-1525351484163-7529414344d8", price: "5.50" },
-  { name: "Burger Box", desc: "Ventilated boxes to maintain crispness.", image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add", price: "7.00" },
-  { name: "Pizza Box", desc: "Triple-layer corrugated heat-retention boxes.", image: "https://images.unsplash.com/photo-1590671886396-ed1f9ec62234", price: "15.00" },
-  { name: "Cake Box", desc: "Premium handle-integrated pastry packaging.", image: "https://images.unsplash.com/photo-1572381731619-3979fd6ad16d", price: "18.50" },
-  { name: "Sweet Box", desc: "Traditional and luxury boxes with foil stamping.", image: "https://images.unsplash.com/photo-1599458252282-f472647dc64a", price: "25.00" },
+  { name: "FOOD BOX", desc: "Grease-resistant industrial grade food containers.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1567570671796-c8fed5eb1e7d", price: "8.50", icon: Box },
+  { name: "CHOWMEIN BOX", desc: "Leak-proof boxes with specialized thermal coating.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1628610688436-e635552020fc", price: "6.20", icon: Utensils },
+  { name: "MEAT BOX", desc: "Heavy-duty boxes for raw and processed meats.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1742055111926-aaf51247ce3c", price: "12.00", icon: Drumstick },
+  { name: "SANDWICH BOX", desc: "Clear-window display boxes for freshness.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1560340841-eefc7aa04432", price: "5.50", icon: Sandwich },
+  { name: "BURGER BOX", desc: "Ventilated boxes to maintain crispness.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1744842854127-2d948d9ea673", price: "7.00", icon: Sandwich },
+  { name: "PIZZA BOX", desc: "Triple-layer corrugated heat-retention boxes.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1689793600363-31a3eb87b462", price: "15.00", icon: Pizza },
+  { name: "CAKE BOX", desc: "Premium handle-integrated pastry packaging.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1759975142115-23f8862b6748", price: "18.50", icon: Cake },
+  { name: "SWEET BOX", desc: "Traditional and luxury boxes with foil stamping.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1607940471713-a9376f150a0d", price: "25.00", icon: Candy },
+  { name: "FRIES BOX", desc: "Oil-resistant scoop cups for crispy fries.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1576107232684-1279f390859f", price: "4.00", icon: Box },
+  { name: "SHAWARMA BOX", desc: "Easy-tear open boxes for wraps and rolls.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1529006557810-274bc9344389", price: "5.00", icon: Utensils },
+  { name: "WAFFLE BOX & TRAY", desc: "Sturdy trays for waffles and toppings.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1562519990-50eb51e28292", price: "6.50", icon: Layers },
+  { name: "WEDGES CONE", desc: "Conical holders for potato wedges and snacks.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1610444585193-470557e491c1", price: "3.50", icon: IceCream },
+  { name: "ICE CREAM CONE", desc: "Protective sleeves for ice cream cones.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1580915411954-282cb1b0d780", price: "2.00", icon: IceCream },
+  { name: "SUGAR SACHET", desc: "Custom branded sugar and seasoning sachets.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1585849834654-e462432a9a99", price: "0.50", icon: Coffee },
+  { name: "TABLE MAT", desc: "Disposable paper table mats with branding.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1575424909138-70b05d80c092", price: "1.00", icon: FileText },
+  { name: "CARRY BAG", desc: "Durable kraft paper bags for takeaway.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1668012509229-782623ba3306", price: "3.00", icon: ShoppingBag },
+  { name: "FOOD MENU", desc: "High-quality printed disposable or reusable menus.", category: "Restaurant Packaging", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2", price: "4.50", icon: FileText },
 ];
 
 export function RestaurantSuppliesPage({ onProductClick }: { onProductClick: (p: any) => void }) {
@@ -52,13 +65,21 @@ export function RestaurantSuppliesPage({ onProductClick }: { onProductClick: (p:
             { icon: <Droplets className="size-8" />, title: "Grease Proof", desc: "Specialized coating prevents oil leakage." },
             { icon: <ShieldCheck className="size-8" />, title: "FDA Approved", desc: "100% food-safe virgin pulp materials." },
           ].map((item, i) => (
-            <div key={i} className="p-10 bg-white border border-black/5 rounded-[40px] shadow-sm">
-              <div className="size-16 rounded-2xl bg-zinc-50 flex items-center justify-center mb-6 text-[#fabf37]">
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              whileHover={{ y: -10, transition: { duration: 0.2 } }}
+              className="p-10 bg-white border border-black/5 rounded-[40px] shadow-sm group hover:shadow-xl transition-all duration-300"
+            >
+              <div className="size-16 rounded-2xl bg-zinc-50 flex items-center justify-center mb-6 text-[#fabf37] group-hover:scale-110 transition-transform duration-300">
                 {item.icon}
               </div>
               <h4 className="text-xl font-black uppercase mb-4">{item.title}</h4>
               <p className="text-zinc-500 font-bold text-sm leading-relaxed">{item.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -79,10 +100,13 @@ export function RestaurantSuppliesPage({ onProductClick }: { onProductClick: (p:
                 <ImageWithFallback src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </div>
               <div className="p-8">
-                <div className="size-12 rounded-xl bg-zinc-50 flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-[#fabf37] transition-all">
-                  <Box className="size-5" />
+                <div className="flex justify-between items-start mb-6">
+                   <div className="size-12 rounded-xl bg-zinc-50 flex items-center justify-center text-black group-hover:bg-black group-hover:text-[#fabf37] transition-all">
+                     <p.icon className="size-5" />
+                   </div>
+                   <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-zinc-100 rounded-full text-[rgb(0,0,0)]">{p.category}</span>
                 </div>
-                <h3 className="text-lg font-black uppercase tracking-tight mb-3">{p.name}</h3>
+                <h3 className="text-lg font-black uppercase tracking-tight mb-3 text-black">{p.name}</h3>
                 <p className="text-zinc-500 font-bold text-xs mb-6 leading-relaxed line-clamp-2">{p.desc}</p>
                 <div className="flex items-center justify-between">
                   <button className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-black transition-colors">
@@ -109,6 +133,9 @@ export function RestaurantSuppliesPage({ onProductClick }: { onProductClick: (p:
           </div>
         </div>
       </section>
+
+      <TopSellingProducts onProductClick={onProductClick} />
+      <SocialMediaFeed />
 
       {/* Industrial Banner */}
       <section className="bg-black py-32 relative overflow-hidden rounded-[80px] mx-4">

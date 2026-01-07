@@ -21,6 +21,8 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Footer } from "../components/paperware/footer";
 import { toast } from "sonner";
 import { FullScreenVideoSection } from "../components/paperware/full-screen-video";
+import { TopSellingProducts } from "../components/TopSellingProducts";
+import { SocialMediaFeed } from "../components/SocialMediaFeed";
 
 const variants = [
   {
@@ -375,6 +377,9 @@ export function PaperCupsPage({
           ))}
         </div>
       </section>
+
+      <TopSellingProducts onProductClick={onProductClick} />
+      <SocialMediaFeed />
 
       {/* Industrial Video Section - Positioned after Product Tiers */}
       <FullScreenVideoSection videoData={videoUrls || []} />

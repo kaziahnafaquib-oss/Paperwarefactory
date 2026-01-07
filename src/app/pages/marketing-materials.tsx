@@ -2,20 +2,27 @@ import React from "react";
 import { motion } from "motion/react";
 import { 
   Palette, Share2, Megaphone, CircleCheck as CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Globe, Sparkles
+  ArrowRight, ShieldCheck, Zap, Globe, Sparkles,
+  ShoppingBag, BookOpen, FileText, StickyNote, Calendar, Box
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Truck } from "lucide-react";
+import { TopSellingProducts } from "../components/TopSellingProducts";
+import { SocialMediaFeed } from "../components/SocialMediaFeed";
+import imgCalendar from "figma:asset/d56cc7180a46e9766ae8656e08f26915e65b1e08.png";
+import imgSticker from "figma:asset/083092191c09807406b3ab9369303938adea8ea5.png";
+import imgTissueBox from "figma:asset/942d624f3eeb9f40ef2152028a1d1e2e73a4d226.png";
+import imgMagazine from "figma:asset/6918c60927e9f8a4474f86ad7e0b378cadd0b766.png";
 
 const products = [
-  { name: "Paper Bag", desc: "Luxury branded carry bags with premium handles.", image: "https://images.unsplash.com/photo-1668012509229-782623ba3306", price: "45.00" },
-  { name: "Brochure / Catalog", desc: "High-finish marketing literature for your brand.", image: "https://images.unsplash.com/photo-1544816155-12df9643f363", price: "25.00" },
-  { name: "Premium Magazine", desc: "Executive quality print on demand magazines.", image: "https://images.unsplash.com/photo-1544816155-12df9643f363", price: "85.00" },
-  { name: "Flyer & Leaflet", desc: "Bulk promotional prints with sharp clarity.", image: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6", price: "3.50" },
-  { name: "Sticker", desc: "Custom-cut industrial adhesive branding assets.", image: "https://images.unsplash.com/photo-1572375927083-0785f98692ce", price: "1.20" },
-  { name: "Calendar", desc: "Branded corporate desk and wall calendars.", image: "https://images.unsplash.com/photo-1563906267088-b029e7101114", price: "120.00" },
-  { name: "Tissue Box", desc: "Customized promotional facial tissue packaging.", image: "https://images.unsplash.com/photo-1627633777218-59efc58abd0c", price: "35.00" },
+  { name: "Paper Bag", desc: "Luxury branded carry bags with premium handles.", category: "Packaging", image: "https://images.unsplash.com/photo-1668012509229-782623ba3306", price: "45.00", icon: ShoppingBag },
+  { name: "Brochure / Catalog", desc: "High-finish marketing literature for your brand.", category: "Print", image: "https://images.unsplash.com/photo-1544816155-12df9643f363", price: "25.00", icon: BookOpen },
+  { name: "Premium Magazine", desc: "Executive quality print on demand magazines.", category: "Print", image: imgMagazine, price: "85.00", icon: BookOpen },
+  { name: "Flyer & Leaflet", desc: "Bulk promotional prints with sharp clarity.", category: "Print", image: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6", price: "3.50", icon: FileText },
+  { name: "Sticker", desc: "Custom-cut industrial adhesive branding assets.", category: "Branding", image: imgSticker, price: "1.20", icon: StickyNote },
+  { name: "Calendar", desc: "Branded corporate desk and wall calendars.", category: "Office", image: imgCalendar, price: "120.00", icon: Calendar },
+  { name: "Tissue Box", desc: "Customized promotional facial tissue packaging.", category: "Packaging", image: imgTissueBox, price: "35.00", icon: Box },
 ];
 
 export function MarketingMaterialsPage({ onProductClick }: { onProductClick: (p: any) => void }) {
@@ -74,38 +81,42 @@ export function MarketingMaterialsPage({ onProductClick }: { onProductClick: (p:
 
       {/* Product List */}
       <section className="container mx-auto px-4 mb-32">
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((p, i) => (
             <motion.div 
               key={p.name}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
               onClick={() => onProductClick(p)}
-              className="group bg-white p-8 md:p-12 rounded-[40px] border border-black/5 hover:bg-black transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 cursor-pointer"
+              className="group bg-white rounded-[40px] border border-black/5 hover:border-[#fabf37] hover:shadow-2xl transition-all cursor-pointer overflow-hidden"
             >
-              <div className="flex items-center gap-8">
-                <div className="size-24 rounded-3xl overflow-hidden shrink-0 border border-black/5">
-                  <ImageWithFallback src={p.image} className="w-full h-full object-cover" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter group-hover:text-[#fabf37] transition-colors">{p.name}</h3>
-                  <p className="text-zinc-500 font-bold group-hover:text-zinc-400 transition-colors">{p.desc}</p>
-                </div>
+              <div className="aspect-square overflow-hidden">
+                <ImageWithFallback src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </div>
-              <div className="flex items-center gap-6">
-                <div className="hidden md:flex flex-col items-end">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#fabf37]">Fast Track Delivery</span>
-                  <span className="text-white/40 text-xs font-bold">Dispatch in 24h</span>
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="size-12 rounded-xl bg-zinc-50 flex items-center justify-center text-black group-hover:bg-black group-hover:text-[#fabf37] transition-all">
+                    <p.icon className="size-5" />
+                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-zinc-100 rounded-full text-[rgb(0,0,0)]">{p.category}</span>
                 </div>
-                <button className="bg-[#fabf37] text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shrink-0">
-                  Order Now
-                </button>
+                <h3 className="text-lg font-black uppercase tracking-tight mb-3 text-black">{p.name}</h3>
+                <p className="text-zinc-500 font-bold text-xs mb-6 leading-relaxed line-clamp-2">{p.desc}</p>
+                <div className="flex items-center justify-between">
+                  <button className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-black transition-colors">
+                    Order Now <ArrowRight className="size-4" />
+                  </button>
+                  <Zap className="size-4 text-[#fabf37]" />
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
+
+      <TopSellingProducts onProductClick={onProductClick} />
+      <SocialMediaFeed />
 
       {/* Industrial Footer Section */}
       <section className="container mx-auto px-4">

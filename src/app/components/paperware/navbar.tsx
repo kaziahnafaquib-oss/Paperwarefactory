@@ -31,6 +31,7 @@ const getLinks = (t: (key: string) => string) => [
       { name: t('clients'), id: "clients" },
       { name: t('sustainability'), id: "sustainability" },
       { name: t('compliance'), id: "compliance" },
+      { name: "Our Partners", id: "partners" },
       { name: t('future_plan'), id: "future-plan" }
     ]
   },
@@ -52,7 +53,7 @@ const getLinks = (t: (key: string) => string) => [
       { 
         title: "RESTAURANT SUPPLIES", 
         id: "restaurant-supplies",
-        items: ["Food Box", "Chowmein Box", "Meat Box", "Sandwich Box", "Burger Box", "Pizza Box", "Cake Box", "Sweet Box", "Fries Box", "Shawrma Box", "Waffle Box & Tray", "Wedges Cone", "Ice Cream Cone", "Sugar Sachet", "Table Mat", "Carry Bag", "Food Menu"]
+        items: ["Food Box", "Chowmein Box", "Meat Box", "Sandwich Box", "Burger Box", "Pizza Box", "Cake Box", "Sweet Box", "Fries Box", "Shawarma Box", "Waffle Box & Tray", "Wedges Cone", "Ice Cream Cone", "Sugar Sachet", "Table Mat", "Carry Bag", "Food Menu"]
       },
       { 
         title: "MARKETING MATERIALS SUPPLIES", 
@@ -60,7 +61,7 @@ const getLinks = (t: (key: string) => string) => [
         items: ["Paper Bag", "Brochure / Catalog", "Premium Magazine", "Flyer & Leaflet", "Sticker", "Calendar", "Tissue Box"]
       },
       { 
-        title: "HOSPITALS & PHARMA SUPPLIES", 
+        title: "HOSPITALS & PHARMACEUTICALS SUPPLIES", 
         id: "pharma-supplies",
         items: ["Patient File", "X-Ray File", "Doctor's Prescription Pad", "Report Envelope", "Medicine Box", "Medicine Literature"]
       },
@@ -93,7 +94,7 @@ const getLinks = (t: (key: string) => string) => [
     hasDropdown: true,
     items: [
       { name: "Business Solutions", id: "business" },
-      { name: "Partner Program", id: "partners" },
+      { name: "Partner Program", id: "partner-program" },
       { name: "Investor Relations", id: "investor" },
       { name: "Franchise", id: "franchise" }
     ]
@@ -108,7 +109,8 @@ const getLinks = (t: (key: string) => string) => [
       { name: t('material_lab') || "Material Lab", id: "manufacturing" }
     ]
   },
-  { name: t('export_intelligence') || "Export intelligence", id: "export" },
+  { name: t('export_intelligence') || "Export", id: "export" },
+  { name: t('contact'), id: "contact" },
   { 
     name: t('more'), 
     id: "more",
@@ -121,10 +123,10 @@ const getLinks = (t: (key: string) => string) => [
       { name: t('product_gallery'), id: "gallery" },
       { name: t('social_hub'), id: "socials" },
       { name: t('career'), id: "career" },
-      { name: t('faq'), id: "faq" }
+      { name: t('faq'), id: "faq" },
+      { name: "CSR", id: "csr" }
     ]
-  },
-  { name: t('contact'), id: "contact" }
+  }
 ];
 
 export const Navbar = React.memo(({
@@ -394,8 +396,8 @@ export const Navbar = React.memo(({
                         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
                         <motion.div className="absolute inset-0 rounded-[32px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(250,191,55,0.1), transparent)' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} />
                         
-                        <div className="p-6 md:p-10 relative z-10">
-                          <div className="flex items-center justify-between mb-6">
+                        <div className="p-4 md:p-6 relative z-10">
+                          <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                               <motion.div className="size-2 bg-[#fabf37] rounded-full" animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }} transition={{ duration: 2, repeat: Infinity }} />
                               <span className="font-mono text-[8px] text-black/20 tracking-[0.2em] uppercase">: Manufacturing_Active_044</span>
@@ -409,26 +411,26 @@ export const Navbar = React.memo(({
                             {link.categories?.map((cat: any, idx: number) => (
                               <motion.div 
                                 key={cat.id} 
-                                className="p-6 border-r border-b border-black/[0.04] last:border-r-0 transition-all relative group/item overflow-hidden"
+                                className="p-4 border-r border-b border-black/[0.04] last:border-r-0 transition-all relative group/item overflow-hidden"
                                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
                                 whileHover={{ background: 'linear-gradient(135deg, rgba(250,191,55,0.03) 0%, rgba(250,191,55,0.01) 100%)' }}
                               >
                                 <motion.div className="absolute inset-0 bg-gradient-to-br from-[#fabf37]/5 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity pointer-events-none" />
-                                <div className="absolute top-4 right-6 font-mono text-[8px] text-black/10 tracking-widest group-hover/item:text-[#fabf37]/40 transition-colors">[{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}]</div>
+                                <div className="absolute top-3 right-4 font-mono text-[7px] text-black/10 tracking-widest group-hover/item:text-[#fabf37]/40 transition-colors">[{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}]</div>
 
-                                <div className="space-y-6 relative z-10">
+                                <div className="space-y-3 relative z-10">
                                   <div className="flex items-center gap-2">
                                     <motion.div className="size-1 bg-[#fabf37] rounded-full shadow-[0_0_8px_rgba(250,191,55,0.4)]" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity, delay: idx * 0.1 }} />
-                                    <h4 className="text-[10.5px] font-black uppercase text-black tracking-[0.15em] group-hover/item:text-[#fabf37] transition-colors">{cat.title}</h4>
+                                    <h4 className="text-[9px] font-black uppercase text-black tracking-[0.15em] group-hover/item:text-[#fabf37] transition-colors">{cat.title}</h4>
                                   </div>
-                                  <div className="flex flex-col gap-1.5">
+                                  <div className="flex flex-col gap-1">
                                     {cat.items.map((sub: string, subIdx: number) => (
                                       <motion.button
                                         key={sub} onClick={() => handleInternalPageChange(cat.id)}
-                                        className="w-full flex items-center justify-between px-3 py-1.5 rounded-full bg-[#f3f3f5] hover:bg-[#fabf37] group/subitem transition-all text-left relative overflow-hidden"
+                                        className="w-full flex items-center justify-between px-2.5 py-1 rounded-full bg-[#f3f3f5] hover:bg-[#fabf37] group/subitem transition-all text-left relative overflow-hidden"
                                         initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 + subIdx * 0.02 }}
                                       >
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-black/60 group-hover/subitem:text-black transition-colors relative z-10">{sub}</span>
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-black/60 group-hover/subitem:text-black transition-colors relative z-10">{sub}</span>
                                         <div className="absolute inset-0 bg-[#fabf37]/10 opacity-0 group-hover/subitem:opacity-100 transition-opacity" />
                                       </motion.button>
                                     ))}
@@ -570,8 +572,8 @@ export const Navbar = React.memo(({
                       <motion.div className="absolute inset-0 bg-gradient-to-br from-[#fabf37]/20 to-transparent" initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} transition={{ duration: 0.3 }} />
                       <ShoppingBasket className="size-3 md:size-3.5 text-[#fabf37] relative z-10" />
                       {quoteBasketCount > 0 && (
-                        <motion.div className="absolute -top-0.5 -right-0.5 size-3 bg-[#fabf37] rounded-full flex items-center justify-center border border-black" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 15 }}>
-                          <span className="text-[5px] font-black text-black">{quoteBasketCount}</span>
+                        <motion.div className="absolute -top-1 -right-1 size-4 bg-[#fabf37] rounded-full flex items-center justify-center border border-black shadow-sm" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 15 }}>
+                          <span className="text-[8px] font-black text-black">{quoteBasketCount}</span>
                         </motion.div>
                       )}
                     </motion.button>
@@ -808,7 +810,7 @@ export const Navbar = React.memo(({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.3 }}
-              className="fixed top-[115px] right-[10%] w-[320px] bg-[#d6c8a9] border-2 border-black rounded-[24px] shadow-2xl p-4 font-['Poppins',sans-serif] max-h-[65vh] overflow-y-auto custom-scrollbar z-[4000] pointer-events-auto"
+              className="fixed top-[115px] right-[10%] w-[320px] bg-[#d6c8a9] border-2 border-black rounded-[24px] shadow-2xl p-4 font-['Poppins',sans-serif] max-h-[40vh] overflow-y-auto custom-scrollbar z-[4000] pointer-events-auto"
             >
                <div className="flex flex-col gap-2">
                  {links.map((link) => (
@@ -822,24 +824,24 @@ export const Navbar = React.memo(({
                            handleInternalPageChange(link.id || "home");
                          }
                        }}
-                       className="w-full flex items-center justify-between py-2 text-left"
+                       className="w-full flex items-center justify-between py-1.5 text-left"
                      >
-                       <span className="text-sm font-bold uppercase tracking-wider text-black">{link.name}</span>
-                       {(link.hasDropdown || link.isMega) && <ChevronDown className={`size-4 transition-transform ${mobileExpanded === link.id ? 'rotate-180' : ''}`} />}
+                       <span className="text-[12px] font-bold uppercase tracking-wider text-black">{link.name}</span>
+                       {(link.hasDropdown || link.isMega) && <ChevronDown className={`size-3.5 transition-transform ${mobileExpanded === link.id ? 'rotate-180' : ''}`} />}
                      </button>
                      
                      <AnimatePresence>
                        {(mobileExpanded === link.id && (link.hasDropdown || link.isMega)) && (
-                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pl-4">
+                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pl-3">
                            {link.isMega ? link.categories?.map((cat: any) => (
-                             <div key={cat.id} className="py-2">
-                               <div className="text-[10px] font-black uppercase text-[#fabf37] mb-1">{cat.title}</div>
+                             <div key={cat.id} className="py-1.5">
+                               <div className="text-[9px] font-black uppercase text-[#fabf37] mb-0.5">{cat.title}</div>
                                {cat.items.map((item: string) => (
-                                 <button key={item} onClick={() => handleInternalPageChange(cat.id)} className="block w-full text-left py-1 text-[11px] text-black/70 hover:text-black">{item}</button>
+                                 <button key={item} onClick={() => handleInternalPageChange(cat.id)} className="block w-full text-left py-0.5 text-[10px] text-black/70 hover:text-black">{item}</button>
                                ))}
                              </div>
                            )) : link.items?.map((item: any) => (
-                             <button key={item.id + item.name} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-2 text-[11px] font-bold uppercase text-black/70 hover:text-black">
+                             <button key={item.id + item.name} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-1.5 text-[10px] font-bold uppercase text-black/70 hover:text-black">
                                {item.name}
                              </button>
                            ))}

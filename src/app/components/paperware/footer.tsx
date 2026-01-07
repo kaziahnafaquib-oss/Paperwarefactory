@@ -203,7 +203,7 @@ export function Footer({ onPageChange }: { onPageChange: (page: string) => void 
             ))}
           </div>
           
-          <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2 opacity-80">
+          <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2 opacity-80 mr-8">
             Made in Bangladesh 
             <Motion.span
               animate={{

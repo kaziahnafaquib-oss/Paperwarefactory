@@ -2,19 +2,22 @@ import React from "react";
 import { motion } from "motion/react";
 import { 
   HeartPulse, ShieldAlert, Microscope, CircleCheck as CheckCircle2, 
-  ArrowRight, ShieldCheck, Zap, Layers, Cpu, FileBadge
+  ArrowRight, ShieldCheck, Zap, Layers, Cpu, FileBadge,
+  FileText, FolderOpen, ClipboardList, Pill, BookOpen
 } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Truck } from "lucide-react";
+import { TopSellingProducts } from "../components/TopSellingProducts";
+import { SocialMediaFeed } from "../components/SocialMediaFeed";
 
 const products = [
-  { name: "Patient File", desc: "Durable medical record folders with antimicrobial coating.", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "22.00" },
-  { name: "X-Ray File", desc: "Large-format protective envelopes for diagnostic films.", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "35.00" },
-  { name: "Doctor's Prescription Pad", desc: "Secure serialized prescription pads with security features.", image: "https://images.unsplash.com/photo-1505751172107-573225a96220", price: "12.00" },
-  { name: "Report Envelope", desc: "Privacy-guaranteed clinical report packaging.", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "8.50" },
-  { name: "Medicine Box", desc: "Precision-molded drug packaging with braille support.", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "14.50" },
-  { name: "Medicine Literature", desc: "Micro-folded dosage guides and safety leaflets.", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "2.50" },
+  { name: "Patient File", desc: "Durable medical record folders with antimicrobial coating.", category: "Record", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "22.00", icon: FolderOpen },
+  { name: "X-Ray File", desc: "Large-format protective envelopes for diagnostic films.", category: "Record", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "35.00", icon: FileText },
+  { name: "Doctor's Prescription Pad", desc: "Secure serialized prescription pads with security features.", category: "Prescription", image: "https://images.unsplash.com/photo-1505751172107-573225a96220", price: "12.00", icon: ClipboardList },
+  { name: "Report Envelope", desc: "Privacy-guaranteed clinical report packaging.", category: "Envelope", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "8.50", icon: FileText },
+  { name: "Medicine Box", desc: "Precision-molded drug packaging with braille support.", category: "Packaging", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "14.50", icon: Pill },
+  { name: "Medicine Literature", desc: "Micro-folded dosage guides and safety leaflets.", category: "Print", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "2.50", icon: BookOpen },
 ];
 
 export function PharmaSuppliesPage({ onProductClick }: { onProductClick: (p: any) => void }) {
@@ -62,30 +65,42 @@ export function PharmaSuppliesPage({ onProductClick }: { onProductClick: (p: any
 
       {/* Product Display */}
       <section className="container mx-auto px-4 mb-32">
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((p, i) => (
             <motion.div 
               key={p.name}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
               onClick={() => onProductClick(p)}
-              className="group bg-white rounded-[50px] p-12 border border-black/5 flex items-start gap-8 hover:shadow-2xl transition-all cursor-pointer"
+              className="group bg-white rounded-[40px] border border-black/5 hover:border-[#fabf37] hover:shadow-2xl transition-all cursor-pointer overflow-hidden"
             >
-              <div className="size-32 rounded-[32px] overflow-hidden shrink-0 border border-black/5">
+              <div className="aspect-square overflow-hidden">
                 <ImageWithFallback src={p.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </div>
-              <div className="space-y-4">
-                <h3 className="text-2xl font-black uppercase tracking-tighter">{p.name}</h3>
-                <p className="text-zinc-500 font-bold leading-relaxed">{p.desc}</p>
-                <div className="flex items-center gap-4 pt-4">
-                   <span className="text-[9px] font-black uppercase px-3 py-1 bg-[#fabf37] text-black rounded-full">Ships in 24h</span>
-                   <button className="text-[9px] font-black uppercase text-zinc-400 group-hover:text-black transition-colors">Order Samples</button>
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="size-12 rounded-xl bg-zinc-50 flex items-center justify-center text-black group-hover:bg-black group-hover:text-[#fabf37] transition-all">
+                    <p.icon className="size-5" />
+                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-widest px-3 py-1 bg-zinc-100 rounded-full text-[rgb(0,0,0)]">{p.category}</span>
+                </div>
+                <h3 className="text-lg font-black uppercase tracking-tight mb-3 text-black">{p.name}</h3>
+                <p className="text-zinc-500 font-bold text-xs mb-6 leading-relaxed line-clamp-2">{p.desc}</p>
+                <div className="flex items-center justify-between">
+                  <button className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-black transition-colors">
+                    Order Now <ArrowRight className="size-4" />
+                  </button>
+                  <Zap className="size-4 text-[#fabf37]" />
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
+
+      <TopSellingProducts onProductClick={onProductClick} />
+      <SocialMediaFeed />
 
       {/* Pharma Logistics Banner */}
       <section className="container mx-auto px-4 mb-32">
