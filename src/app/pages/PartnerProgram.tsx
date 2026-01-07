@@ -364,10 +364,10 @@ export function PartnerProgramPage() {
       </section>
 
       {/* Client Portal Preview Section - Scroll Linked */}
-      <div ref={portalSectionRef} className="relative h-[250vh] bg-white text-zinc-900">
-          <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+      <div ref={portalSectionRef} className="relative h-[110vh] lg:h-[150vh] bg-white text-zinc-900">
+          <div className="sticky top-0 h-screen flex items-start lg:items-center overflow-hidden pt-24 lg:pt-0">
               <div className="container mx-auto px-4 relative z-10">
-                  <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                  <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20">
                       <div className="lg:w-1/2">
                           <motion.div
                               initial={{ opacity: 0, y: 30 }}
@@ -375,16 +375,16 @@ export function PartnerProgramPage() {
                               viewport={{ once: true }}
                               transition={{ duration: 0.6 }}
                           >
-                              <div className="flex items-center gap-2 mb-6 text-[#fabf37]">
+                              <div className="flex items-center gap-2 mb-4 lg:mb-6 text-[#fabf37]">
                                   <Users className="size-5" />
                                   <span className="font-bold uppercase tracking-widest text-sm">Partner Portal</span>
                               </div>
-                              <h2 className="text-4xl md:text-5xl font-black uppercase mb-6 leading-tight text-black">Everything You Need <br/><span className="text-[#fabf37]">In One Place</span></h2>
-                              <p className="text-zinc-500 text-lg mb-8 leading-relaxed">
+                              <h2 className="text-3xl md:text-5xl font-black uppercase mb-4 lg:mb-6 leading-tight text-black">Everything You Need <br/><span className="text-[#fabf37]">In One Place</span></h2>
+                              <p className="text-zinc-500 text-base lg:text-lg mb-6 lg:mb-8 leading-relaxed">
                                   Gain complete control over your wholesale operations with our state-of-the-art client portal. Track orders, manage inventory, and access exclusive resources instantly.
                               </p>
                               
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4">
                                   {[
                                       "Real-time Order Tracking",
                                       "Instant Invoices & Billing",
@@ -407,9 +407,9 @@ export function PartnerProgramPage() {
                           </motion.div>
                       </div>
                       
-                      <div className="lg:w-1/2 w-full flex justify-center items-center h-[500px]">
-                          {/* Composition Wrapper - Centered to prevent clipping */}
-                          <div className="relative w-[480px] h-[400px]">
+                      <div className="lg:w-1/2 w-full flex justify-center items-center h-[350px] sm:h-[450px] lg:h-[500px]">
+                          {/* Composition Wrapper - Centered to prevent clipping, Scaled for mobile */}
+                          <div className="relative w-[480px] h-[400px] scale-[0.65] sm:scale-[0.85] md:scale-100 origin-center">
                               
                               {/* Desktop View (Background) */}
                               <motion.div
@@ -637,8 +637,7 @@ export function PartnerProgramPage() {
                                   <div className="absolute top-24 -right-[6px] w-[6px] h-12 bg-zinc-800 rounded-r-md" />
                                   <div className="absolute top-40 -right-[6px] w-[6px] h-12 bg-zinc-800 rounded-r-md" />
                                   <div className="absolute top-24 -left-[6px] w-[6px] h-8 bg-zinc-800 rounded-l-md" />
-                              </div>
-                          </motion.div>
+                              </motion.div>
                       </div>
                   </div>
               </div>
@@ -647,7 +646,7 @@ export function PartnerProgramPage() {
   </div>
 
       {/* Application Section */}
-      <section id="application-form" className="py-24 bg-white text-zinc-900 relative overflow-hidden">
+      <section id="application-form" className="-mt-32 pt-0 pb-24 bg-white text-zinc-900 relative overflow-hidden z-20">
         {/* Decorative elements */}
         <motion.div 
             style={{ y: blobY }}
