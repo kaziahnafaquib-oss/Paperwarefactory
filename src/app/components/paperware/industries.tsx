@@ -43,19 +43,46 @@ export const Industries = React.memo(function Industries({ onExplore }: { onExpl
   const industries = React.useMemo(() => getIndustries(t), [t]);
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-zinc-950 via-black to-zinc-900 relative overflow-hidden">
-      {/* 3D Grid Background */}
+    <section className="py-20 md:py-32 bg-zinc-50 relative overflow-hidden perspective-1000">
+      {/* 3D Grid Background - Simplified for White Tone */}
       <div className="absolute inset-0 opacity-20" style={{
         backgroundImage: `
-          linear-gradient(rgba(250,191,55,0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(250,191,55,0.1) 1px, transparent 1px)
+          linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
         `,
         backgroundSize: '60px 60px',
         transform: 'perspective(1000px) rotateX(60deg) translateZ(-200px)',
         transformOrigin: 'center top',
       }} />
 
-      {/* Floating Particles */}
+      {/* Floating Cubes 3D - Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+         {[...Array(5)].map((_, i) => (
+            <motion.div 
+               key={`cube-${i}`}
+               animate={{ 
+                  y: [0, -40, 0],
+                  rotateX: [0, 360],
+                  rotateY: [0, 360]
+               }}
+               transition={{ 
+                  duration: 20 + i * 5,
+                  repeat: Infinity,
+                  ease: "linear"
+               }}
+               className="absolute opacity-[0.03] border border-black/20"
+               style={{
+                  width: 50 + i * 20,
+                  height: 50 + i * 20,
+                  left: `${10 + i * 20}%`,
+                  top: `${20 + i * 15}%`,
+               }}
+            />
+         ))}
+      </div>
+
+
+      {/* Floating Particles - Adjusted for light background */}
       <div className="absolute inset-0">
         {[...Array(20)].map((_, i) => (
           <motion.div
@@ -72,7 +99,7 @@ export const Industries = React.memo(function Industries({ onExplore }: { onExpl
               ease: "easeInOut",
               delay: i * 0.3,
             }}
-            className="absolute size-1 bg-[#fabf37] rounded-full blur-sm"
+            className="absolute size-1 bg-zinc-400 rounded-full blur-sm"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -80,35 +107,21 @@ export const Industries = React.memo(function Industries({ onExplore }: { onExpl
           />
         ))}
       </div>
-
-      {/* Animated Gradient Orb */}
-      <motion.div
-        animate={{
-          opacity: [0.1, 0.2, 0.1],
-          scale: [1, 1.3, 1],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 bg-[#fabf37]/20 rounded-full blur-3xl"
-      />
       
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Compact 3D Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 30, z: -100 }}
-          whileInView={{ opacity: 1, y: 0, z: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, x: -100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-3xl mb-16 md:mb-24"
         >
           <span className="inline-block text-[#fabf37] font-bold uppercase tracking-[0.25em] text-[8px] md:text-[9px] mb-4 md:mb-6 px-3 py-1 bg-[#fabf37]/10 border border-[#fabf37]/30 rounded backdrop-blur-sm">
             {t('sectors_tag')}
           </span>
           
-          <h2 className="text-[28px] md:text-[42px] lg:text-[52px] font-black text-white leading-[0.95] tracking-tight mb-6 md:mb-8 bg-gradient-to-r from-white via-zinc-100 to-white bg-clip-text text-transparent">
+          <h2 className="text-[28px] md:text-[42px] lg:text-[52px] font-black text-black leading-[0.95] tracking-tight mb-6 md:mb-8">
             {t('industries_subtitle')}
           </h2>
 
@@ -118,111 +131,57 @@ export const Industries = React.memo(function Industries({ onExplore }: { onExpl
               transition={{ duration: 3, repeat: Infinity }}
               className="w-0.5 h-16 bg-gradient-to-b from-[#fabf37] to-transparent" 
             />
-            <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl font-medium">
+            <p className="text-zinc-600 text-sm md:text-base leading-relaxed max-w-xl font-medium">
               {t('industries_desc')}
             </p>
           </div>
         </motion.div>
 
         {/* 3D Card List */}
-        <div className="space-y-4 md:space-y-6 mb-16 md:mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 md:mb-24 perspective-1000">
           {industries.map((item, i) => (
-            <Card3D key={i} intensity={12}>
+            <Card3D key={i} intensity={20}>
               <motion.div
-                initial={{ opacity: 0, x: -50, rotateY: -15 }}
-                whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ x: 12, z: 40, scale: 1.02 }}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.1, duration: 0.6, ease: "easeOut" }}
+                whileHover={{ y: -8 }}
                 onClick={onExplore}
-                className="group cursor-pointer relative overflow-hidden rounded-2xl"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                }}
+                style={{ transformStyle: 'preserve-3d' }}
+                className="group h-full bg-white p-8 rounded-[32px] border border-zinc-100 hover:border-[#fabf37]/50 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer relative overflow-hidden"
               >
-                {/* Glass Reflection */}
-                <motion.div
-                  animate={{
-                    x: ['-200%', '200%'],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    delay: i * 0.7,
-                    ease: "linear",
-                  }}
-                  className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"
-                />
+                {/* Hover Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#fabf37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ transform: 'translateZ(-20px)' }} />
 
-                {/* Hover Glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#fabf37]/0 via-[#fabf37]/0 to-[#fabf37]/0 group-hover:from-[#fabf37]/10 group-hover:via-[#fabf37]/5 group-hover:to-transparent transition-all duration-500" />
-
-                <div className="py-6 md:py-8 px-6 md:px-8 grid grid-cols-12 gap-3 md:gap-6 items-center relative">
-                  {/* 3D Number */}
-                  <div className="col-span-2 md:col-span-1">
-                    <motion.span 
-                      whileHover={{ scale: 1.2, rotateY: 360 }}
-                      transition={{ duration: 0.6 }}
-                      className="inline-block text-2xl md:text-3xl lg:text-4xl font-black text-white/20 group-hover:text-[#fabf37]/50 transition-colors duration-300"
-                      style={{ transform: 'translateZ(30px)' }}
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </motion.span>
+                <div className="relative z-10 flex justify-between items-start mb-8" style={{ transform: 'translateZ(30px)' }}>
+                  <div className="size-14 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center group-hover:bg-[#fabf37] group-hover:border-[#fabf37] transition-all duration-300 shadow-xl group-hover:shadow-[#fabf37]/30">
+                    <div className="text-zinc-600 group-hover:text-black transition-colors">
+                      {item.icon}
+                    </div>
                   </div>
-
-                  {/* 3D Icon */}
-                  <div className="col-span-2 md:col-span-1 flex justify-center">
-                    <motion.div
-                      whileHover={{ rotate: 360, scale: 1.15, z: 50 }}
-                      transition={{ duration: 0.7, ease: "easeOut" }}
-                      className="size-10 md:size-12 lg:size-14 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:from-[#fabf37] group-hover:to-[#d6a32e] flex items-center justify-center transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_rgba(250,191,55,0.4)]"
-                      style={{ transform: 'translateZ(40px)' }}
-                    >
-                      <div className="text-zinc-400 group-hover:text-black transition-colors duration-300">
-                        {item.icon}
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  {/* Title */}
-                  <div className="col-span-8 md:col-span-4 lg:col-span-3">
-                    <h3 className="text-base md:text-xl lg:text-2xl font-black text-white uppercase tracking-tight leading-none group-hover:text-[#fabf37] transition-colors duration-300" style={{ transform: 'translateZ(20px)' }}>
-                      {item.title}
-                    </h3>
-                  </div>
-
-                  {/* Description */}
-                  <div className="col-span-12 md:col-span-5 lg:col-span-6 md:col-start-8 lg:col-start-6">
-                    <p className="text-zinc-500 group-hover:text-zinc-300 text-xs md:text-sm leading-relaxed font-medium transition-colors duration-300" style={{ transform: 'translateZ(15px)' }}>
-                      {item.desc}
-                    </p>
-                  </div>
-
-                  {/* 3D Arrow */}
-                  <div className="hidden md:block col-span-1 justify-self-end">
-                    <motion.div
-                      initial={{ x: -10, opacity: 0 }}
-                      whileHover={{ x: 0, opacity: 1, z: 60, rotate: 45 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                      className="size-10 lg:size-12 rounded-full bg-gradient-to-br from-black to-zinc-900 group-hover:from-[#fabf37] group-hover:to-[#d6a32e] flex items-center justify-center transition-all duration-300 shadow-xl"
-                      style={{ transform: 'translateZ(50px)' }}
-                    >
-                      <ArrowRight className="size-4 lg:size-5 text-[#fabf37] group-hover:text-black transition-colors duration-300" />
-                    </motion.div>
-                  </div>
+                  <span className="text-5xl font-black text-zinc-100 group-hover:text-zinc-900/5 transition-colors duration-300 select-none" style={{ transform: 'translateZ(10px)' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                
+                <div className="relative z-10 space-y-3 flex-grow" style={{ transform: 'translateZ(20px)' }}>
+                  <h3 className="text-xl font-black text-zinc-900 group-hover:text-[#fabf37] transition-colors duration-300">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm font-medium text-zinc-500 leading-relaxed group-hover:text-zinc-600 transition-colors">
+                    {item.desc}
+                  </p>
                 </div>
 
-                {/* 3D Bottom Accent */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="h-0.5 bg-gradient-to-r from-[#fabf37] via-[#fabf37] to-transparent origin-left shadow-[0_0_15px_rgba(250,191,55,0.6)]"
-                  style={{ transform: 'translateZ(10px)' }}
-                />
+                <div className="relative z-10 mt-8 pt-6 border-t border-zinc-100 group-hover:border-[#fabf37]/20 flex items-center justify-between transition-colors" style={{ transform: 'translateZ(25px)' }}>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-zinc-900 transition-colors">
+                    View Solutions
+                  </span>
+                  <div className="size-8 rounded-full bg-zinc-50 group-hover:bg-zinc-900 flex items-center justify-center transition-colors duration-300 shadow-md">
+                    <ArrowRight className="size-3 text-zinc-400 group-hover:text-white -rotate-45 group-hover:rotate-0 transition-all duration-300" />
+                  </div>
+                </div>
               </motion.div>
             </Card3D>
           ))}
@@ -230,59 +189,47 @@ export const Industries = React.memo(function Industries({ onExplore }: { onExpl
 
         {/* 3D CTA */}
         <motion.div 
-          initial={{ opacity: 0, y: 30, z: -50 }}
-          whileInView={{ opacity: 1, y: 0, z: 0 }}
+          initial={{ opacity: 0, x: 100 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 p-8 md:p-10 rounded-2xl relative overflow-hidden"
-          style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative bg-zinc-900 rounded-[3rem] p-8 md:p-16 overflow-hidden group shadow-2xl"
         >
-          {/* Background Glow */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#fabf37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-          <div className="max-w-lg relative z-10" style={{ transform: 'translateZ(20px)' }}>
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-black text-white mb-3">
-              {t('explore_all_sectors')}
-            </h3>
-            <p className="text-zinc-400 text-xs md:text-sm font-medium">
-              Discover how we serve diverse industries with tailored packaging solutions
-            </p>
-          </div>
-
-          <motion.button 
-            whileHover={{ scale: 1.08, z: 40 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onExplore}
-            className="group relative px-8 md:px-10 py-4 md:py-5 bg-gradient-to-r from-[#fabf37] to-[#d6a32e] text-black rounded-full overflow-hidden shadow-[0_0_30px_rgba(250,191,55,0.3)] hover:shadow-[0_0_50px_rgba(250,191,55,0.6)] transition-all duration-300"
-            style={{ transform: 'translateZ(30px)' }}
-          >
-            <motion.div
-              animate={{
-                x: ['-100%', '100%'],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-            />
+          {/* Background Effects */}
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-96 h-96 bg-[#fabf37] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-700" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-12">
             
-            <div className="relative flex items-center gap-3">
-              <span className="font-black uppercase text-[10px] md:text-xs tracking-widest">
-                View All
-              </span>
-              <motion.div
-                whileHover={{ x: 5, rotate: 45 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <MoveRight className="size-4" />
-              </motion.div>
+            <div className="space-y-6 max-w-xl">
+               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <div className="size-1.5 rounded-full bg-[#fabf37] animate-pulse" />
+                  <span className="text-[#fabf37] text-[10px] font-mono uppercase tracking-widest">
+                    Industry Wide Impact
+                  </span>
+               </div>
+               
+               <h3 className="text-3xl md:text-5xl font-black text-white leading-[0.95] tracking-tight">
+                  {t('explore_all_sectors')}
+               </h3>
+               
+               <p className="text-zinc-400 font-medium text-sm leading-relaxed max-w-sm">
+                  Discover how we serve diverse industries with tailored packaging solutions that prioritize sustainability.
+               </p>
             </div>
-          </motion.button>
+
+            <motion.button 
+               whileHover={{ scale: 1.05 }}
+               whileTap={{ scale: 0.95 }}
+               onClick={onExplore}
+               className="group relative h-16 px-8 rounded-full bg-white text-zinc-900 flex items-center gap-4 font-black uppercase text-xs tracking-widest hover:bg-[#fabf37] transition-colors duration-300 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(250,191,55,0.3)]"
+            >
+               <span>View All Industries</span>
+               <div className="size-8 rounded-full bg-zinc-900 text-white flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
+                  <ArrowRight className="size-4" />
+               </div>
+            </motion.button>
+          </div>
         </motion.div>
       </div>
     </section>

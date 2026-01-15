@@ -1,41 +1,28 @@
-import React from "react";
-import { Navbar } from "./components/paperware/navbar";
-import { BottomNav } from "./components/paperware/bottom-nav";
-import { HUDOverlay as SharedHUDOverlay } from "./components/paperware/hud-overlay";
-import { ImmersiveHero } from "./components/paperware/immersive-hero";
-import { ImageWithFallback } from "./components/figma/ImageWithFallback";
-import { Card3D, FloatingCard3D, Parallax3DContainer, DepthLayers } from "./components/paperware/3d-card";
-const Particle3DField = React.lazy(() => import("./components/paperware/3d-card").then(m => ({ default: m.Particle3DField })));
-const Grid3DBackground = React.lazy(() => import("./components/paperware/3d-card").then(m => ({ default: m.Grid3DBackground })));
-import { 
-  ArrowRight, ShoppingBasket as BasketIcon,
-  Settings, Search, Globe, ShieldCheck, Award, Leaf, Zap, CircleCheck,
-  Download, Utensils, Coffee, Hospital, Pill, Building2, ShoppingBag, BedDouble,
-  Activity, Cpu, Factory, Droplets, Microscope, TreeDeciduous, Terminal, Layers, Target,
-  Truck, Ship, Plane, Boxes, ChartBar, Radio, ExternalLink
-} from "lucide-react";
-import { Hero } from "./components/paperware/hero";
-import { Industries } from "./components/paperware/industries";
-import { AboutUs } from "./components/paperware/about-us";
-import { AdminPanel } from "./components/paperware/admin-panel";
-import { ProductionTimeline } from "./components/paperware/production-timeline";
-import { Footer } from "./components/paperware/footer";
-import { Ticker } from "./components/paperware/ticker";
-
-// Import home sections lazily to optimize initial bundle size
-const MaterialLab = React.lazy(() => import("./components/paperware/material-lab").then(m => ({ default: m.MaterialLab })));
-const CarbonCalculator = React.lazy(() => import("./components/paperware/carbon-calculator").then(m => ({ default: m.CarbonCalculator })));
-const MachineryShowcase = React.lazy(() => import("./components/paperware/machinery-showcase").then(m => ({ default: m.MachineryShowcase })));
-const ProductViewer3D = React.lazy(() => import("./components/paperware/product-viewer-3d").then(m => ({ default: m.ProductViewer3D })));
-const LogisticsCommand = React.lazy(() => import("./components/paperware/logistics-command").then(m => ({ default: m.LogisticsCommand })));
-const RealtimeOps = React.lazy(() => import("./components/paperware/realtime-ops").then(m => ({ default: m.RealtimeOps })));
-const Certifications = React.lazy(() => import("./components/paperware/certifications").then(m => ({ default: m.Certifications })));
-const ImpactMetrics = React.lazy(() => import("./components/paperware/impact-metrics").then(m => ({ default: m.ImpactMetrics })));
-const AIGlobalConfig = React.lazy(() => import("./components/paperware/ai-global-config").then(m => ({ default: m.AIGlobalConfig })));
-
-import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
+import React, { Suspense } from "react";
 import { useLanguage } from "./context/LanguageContext";
 import { debounce, prefersReducedMotion, runWhenIdle, getDevicePerformanceTier } from "./lib/performance";
+import { projectId, publicAnonKey } from "@/utils/supabase/info";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { Zap, ArrowRight, ShoppingBasket as BasketIcon } from "lucide-react";
+
+// CRITICAL FIX: Re-import all components with explicit paths - cache bust
+import { Ticker } from "./components/paperware/ticker";
+import { Industries } from "./components/paperware/industries";
+import { AboutUs } from "./components/paperware/about-us";
+import { ProductionTimeline } from "./components/paperware/production-timeline";
+import { Hero } from "./components/paperware/hero";
+import { ImmersiveHero } from "./components/paperware/immersive-hero";
+import { Navbar } from "./components/paperware/navbar";
+import { Footer } from "./components/paperware/footer";
+import { AdminPanel } from "./components/paperware/admin-panel";
+import { BackToTop } from "./components/paperware/back-to-top";
+import { BottomNav } from "./components/paperware/bottom-nav";
+import { HUDOverlay as SharedHUDOverlay } from "./components/paperware/hud-overlay";
+import { WhoWeAreSection } from "./components/paperware/who-we-are";
+import { ImpactMetrics } from "./components/paperware/impact-metrics";
+import { PageDiscovery } from "./components/paperware/page-discovery";
+import { RealtimeOps } from "./components/paperware/realtime-ops";
+import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 
 // Advanced Performance Hook
 const usePerformanceOptimization = () => {
@@ -141,16 +128,10 @@ const HUDOverlay = React.memo(() => {
   );
 });
 
-// Memoize section components for performance
-const MemoTicker = React.memo(Ticker);
-const MemoIndustries = React.memo(Industries);
-const MemoAboutUs = React.memo(AboutUs);
-const MemoProductionTimeline = React.memo(ProductionTimeline);
-
 // Use lazy loading for all non-essential pages to optimize initial bundle size
 const AllProductsPage = React.lazy(() => import("./pages/all-products").then(module => ({ default: module.AllProductsPage })));
 const PaperCupsPage = React.lazy(() => import("./pages/papercups").then(module => ({ default: module.PaperCupsPage })));
-const AboutPage = React.lazy(() => import("./pages/about-us").then(module => ({ default: module.AboutPage })));
+const AboutPage = React.lazy(() => import("./pages/about-us"));
 const ClientsPage = React.lazy(() => import("./pages/clients").then(module => ({ default: module.ClientsPage })));
 const ProductDetailsPage = React.lazy(() => import("./pages/product-details").then(module => ({ default: module.ProductDetailsPage })));
 const OfficeStationaryPage = React.lazy(() => import("./pages/office-stationary").then(module => ({ default: module.OfficeStationaryPage })));
@@ -192,6 +173,7 @@ const PartnersPage = React.lazy(() => import("./pages/partners").then(module => 
 const BusinessPage = React.lazy(() => import("./pages/business").then(module => ({ default: module.BusinessPage })));
 const CompanyPage = React.lazy(() => import("./pages/company").then(module => ({ default: module.CompanyPage })));
 const CSRPage = React.lazy(() => import("./pages/csr").then(module => ({ default: module.CSRPage })));
+const PrivacyPolicyPage = React.lazy(() => import("./pages/privacy-policy").then(module => ({ default: module.PrivacyPolicy })));
 
 // Lazy load heavy components
 const SearchOverlay = React.lazy(() => import("./components/paperware/search-overlay").then(module => ({ default: module.SearchOverlay })));
@@ -217,6 +199,8 @@ import imgFresh from "figma:asset/5b67be8022542584cc3586961212c32c1ef3b5f5.png";
 import imgCardBg1 from "figma:asset/deb0797add19956888ddfd67b88ff75ecb592792.png";
 import imgCardBg2 from "figma:asset/047a125a2726498b23eb2e792cd9129a5e35bd9f.png";
 import imgCardBg3 from "figma:asset/ecae8d654e0ece711f117e96df44a7742af71120.png";
+import imgFactoryIllustration from "figma:asset/f509e99bb4cc15f45dbb0d895480da5f9027b46c.png";
+import imgHeroMobile from "figma:asset/7355363d5bbe4910fbf181181e9702179c6c7d50.png";
 
 // Neural Language Transition Effect
 function NeuralTransition({ isVisible, language }: { isVisible: boolean, language: string }) {
@@ -365,62 +349,18 @@ const DEFAULT_CLIENT_PROJECTS = [
 const DEFAULT_SIGNING_IMAGE = "https://images.unsplash.com/photo-1758599543152-a73184816eba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoYW5kc2hha2UlMjBidXNpbmVzcyUyMGRlYWwlMjBwYXJ0bmVyc2hpcHxlbnwxfHx8fDE3Njc2OTM3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
 
 const DEFAULT_PARTNERS = [
-  {
-    id: "1",
-    name: "EcoPulp Industries",
-    category: "Raw Material Supplier",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300&h=300&fit=crop",
-    description: "Premium sustainable paper pulp provider."
-  },
-  {
-    id: "2",
-    name: "ChemSafe Solutions",
-    category: "Chemical Partner",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=300&h=300&fit=crop",
-    description: "Certified food-grade coatings."
-  },
-  {
-    id: "3",
-    name: "FastTrack Logistics",
-    category: "Delivery Partner",
-    logo: "https://images.unsplash.com/photo-1626863905121-3b0c0ed5b92c?w=300&h=300&fit=crop",
-    description: "Nationwide secure distribution network."
-  },
-  {
-    id: "4",
-    name: "ConnectTel",
-    category: "Telco Partner",
-    logo: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=300&h=300&fit=crop",
-    description: "Enterprise communication infrastructure."
-  },
-  {
-    id: "5",
-    name: "NetStream",
-    category: "Internet Partner",
-    logo: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=300&fit=crop",
-    description: "High-speed fiber connectivity."
-  },
-  {
-    id: "6",
-    name: "DigitalCore",
-    category: "Digital Partner",
-    logo: "https://images.unsplash.com/photo-1572044162444-ad6021194360?w=300&h=300&fit=crop",
-    description: "Digital transformation solutions."
-  },
-  {
-    id: "7",
-    name: "SysMaster ERP",
-    category: "ERP Partner",
-    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=300&fit=crop",
-    description: "Integrated resource planning systems."
-  },
-  {
-    id: "8",
-    name: "WebCrafters",
-    category: "Website Partner",
-    logo: "https://images.unsplash.com/photo-1496200186974-4293800e2c20?w=300&h=300&fit=crop",
-    description: "Web presence and e-commerce."
-  }
+  { id: "1", name: "Al Arabian", category: "Client", logo: imgAlArabian, description: "Strategic Partner" },
+  { id: "2", name: "Fresh", category: "FMCG", logo: imgFresh, description: "Major Supplier" },
+  { id: "3", name: "Bengal Classic Tea", category: "Beverage", logo: imgBengalClassicTea, description: "Packaging Partner" },
+  { id: "4", name: "Cafe Z", category: "Restaurant", logo: imgCafeZ, description: "Food Service" },
+  { id: "5", name: "Coffee Avenue", category: "Cafe", logo: imgCoffeeAvenue, description: "Premium Cups" },
+  { id: "6", name: "Crimson Cup", category: "Global Chain", logo: imgCrimsoncup, description: "International Partner" },
+  { id: "7", name: "Dhakai Khana", category: "Catering", logo: imgDhakaiKhana, description: "Food Packaging" },
+  { id: "8", name: "Abdul Monem Ltd", category: "Conglomerate", logo: imgAbdulMonemLtd, description: "Industrial Partner" },
+  { id: "9", name: "Walton", category: "Electronics", logo: imgWalton, description: "Packaging Solutions" },
+  { id: "10", name: "Novatek", category: "Pharmaceuticals", logo: imgNovatek, description: "Medical Grade" },
+  { id: "11", name: "MGI", category: "Industrial", logo: imgMgi, description: "Large Scale Partner" },
+  { id: "12", name: "ICDDR,B", category: "Research", logo: imgIcddrb, description: "Sterile Supplies" }
 ];
 
 export function MainContent() {
@@ -443,6 +383,7 @@ export function MainContent() {
   }, [currentPage]);
 
   const [heroVideoUrl, setHeroVideoUrl] = React.useState(DEFAULT_HERO_VIDEO);
+  const [brochureUrl, setBrochureUrl] = React.useState("");
   const [heroVideoMobileUrl, setHeroVideoMobileUrl] = React.useState("");
   const [clientsVideoUrl, setClientsVideoUrl] = React.useState(DEFAULT_CLIENTS_VIDEO);
   const [heroContent, setHeroContent] = React.useState(DEFAULT_HERO_CONTENT);
@@ -464,6 +405,7 @@ export function MainContent() {
   ]);
   const [partnersData, setPartnersData] = React.useState<any[]>(DEFAULT_PARTNERS);
   const [signingImage, setSigningImage] = React.useState(DEFAULT_SIGNING_IMAGE);
+  const [aboutUsVideos, setAboutUsVideos] = React.useState<any>({});
 
   // Unified useScroll at root level to ensure non-static container context
   // Remove container reference to let useScroll use window by default
@@ -476,6 +418,8 @@ export function MainContent() {
     try {
       const heroVideo = localStorage.getItem('paperware_hero_video');
       if (heroVideo) setHeroVideoUrl(heroVideo);
+      const brochure = localStorage.getItem('paperware_brochure');
+      if (brochure) setBrochureUrl(brochure);
       const heroVideoMobile = localStorage.getItem('paperware_hero_video_mobile');
       if (heroVideoMobile) setHeroVideoMobileUrl(heroVideoMobile);
       const clientsVideo = localStorage.getItem('paperware_clients_video');
@@ -490,6 +434,8 @@ export function MainContent() {
       if (partnersStr) setPartnersData(JSON.parse(partnersStr));
       const signingImageStr = localStorage.getItem('paperware_signing_image');
       if (signingImageStr) setSigningImage(signingImageStr);
+      const aboutUsVideosStr = localStorage.getItem('paperware_about_us_videos');
+      if (aboutUsVideosStr) setAboutUsVideos(JSON.parse(aboutUsVideosStr));
     } catch (e) {
       console.warn('Failed to load storage:', e);
     }
@@ -503,6 +449,47 @@ export function MainContent() {
   React.useEffect(() => {
     localStorage.setItem('paperware_signing_image', signingImage);
   }, [signingImage]);
+
+  const handleBrochureDownload = React.useCallback(async () => {
+    // Simulate getting location
+    let location = "Unknown Location";
+    let ip = "Anonymous";
+    
+    try {
+      // Simple fetch to get public IP info (using free ipapi.co)
+      // Note: In production, do this server-side to avoid CORS/limits
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      if (data.city && data.country_name) {
+        location = `${data.city}, ${data.country_name}`;
+        ip = data.ip;
+      }
+    } catch (e) {
+      console.warn("Failed to fetch location", e);
+    }
+
+    try {
+      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-bf34c9a5/brochure/log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${publicAnonKey}`
+        },
+        body: JSON.stringify({
+          location,
+          ip,
+          device: navigator.userAgent,
+          source: "Website Button"
+        })
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to log download:', await response.text());
+      }
+    } catch (e) {
+      console.error("Failed to send log to server", e);
+    }
+  }, []);
 
   const handlePageChange = React.useCallback((page: string) => {
     React.startTransition(() => {
@@ -554,32 +541,32 @@ export function MainContent() {
       case "home":
         return (
           <div className="bg-white relative overflow-hidden font-['Poppins',sans-serif]">
-            {/* Global 3D Particle Field - Lazy Loaded */}
-            <React.Suspense fallback={null}>
-              <Particle3DField />
-            </React.Suspense>
             
-            {/* 1. IMMERSIVE VIDEO STARTING SECTION */}
+            {/* 1. IMMERSIVE HERO WITH VIDEO */}
             <div className="relative">
-              <React.Suspense fallback={<div className="absolute inset-0 bg-zinc-50/50" />}>
-                <Grid3DBackground />
-              </React.Suspense>
               <ImmersiveHero 
                 videoUrl={heroVideoUrl} 
+                brochureUrl={brochureUrl}
                 onExplore={handlePageChange} 
+                onDownload={handleBrochureDownload}
               />
             </div>
 
-            {/* 2. LIVE MANUFACTURING DATA SCROLL (Ticker) */}
-            <div className="bg-zinc-50 border-y border-zinc-200 py-3 overflow-hidden relative z-20">
-              <MemoTicker />
+            {/* 2. LIVE TRACKER (Ticker) */}
+            <div className="bg-white border-b border-zinc-100 py-3 overflow-hidden relative z-20">
+              <Ticker />
             </div>
 
-            {/* 3. FEATURED SOLUTIONS SLIDER */}
-            <section className="bg-zinc-50 py-32 border-y border-zinc-200 overflow-hidden relative">
-              <React.Suspense fallback={null}>
-                <Particle3DField />
-              </React.Suspense>
+            {/* 3. ABOUT US */}
+            <React.Suspense fallback={<div className="h-96 bg-white" />}>
+               <WhoWeAreSection onReadMore={() => handlePageChange("about")} />
+            </React.Suspense>
+
+            {/* 4. INDUSTRIES WE SERVE */}
+            <Industries onExplore={() => handlePageChange("products")} />
+
+            {/* 5. FEATURED PRODUCTS (Signature Solutions) */}
+            <section className="bg-white pt-32 pb-8 overflow-hidden relative">
                <motion.div 
                  initial={{ opacity: 0, y: 40 }}
                  whileInView={{ opacity: 1, y: 0 }}
@@ -593,7 +580,7 @@ export function MainContent() {
                     whileInView={{ scale: 1, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fabf37]/10 border border-[#fabf37]/20"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200"
                   >
                     <Zap className="size-3 text-[#fabf37]" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Continuous Production</span>
@@ -603,9 +590,9 @@ export function MainContent() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 }}
-                    className="text-5xl font-black tracking-tighter uppercase"
+                    className="text-5xl font-black tracking-tighter uppercase text-black"
                   >
-                    Signature Solutions
+                    Featured Products
                   </motion.h2>
                 </div>
                 <motion.button 
@@ -620,346 +607,60 @@ export function MainContent() {
                 </motion.button>
               </motion.div>
 
-              <div className="flex gap-8 px-4 md:px-12 overflow-hidden relative">
+              <div className="flex gap-8 px-4 md:px-12 overflow-hidden relative pb-10">
                 <div className="flex gap-8 animate-ticker">
                   {[...productsData, ...productsData].map((product, idx) => (
-                    <Card3D 
+                    <motion.div 
                       key={`${product.id}-${idx}`}
-                      className="min-w-[320px]"
-                      intensity={10}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ delay: (idx % 6) * 0.1 }}
+                      whileHover={{ y: -10 }}
+                      className="min-w-[320px] bg-white rounded-[40px] border border-zinc-100 p-8 space-y-6 group cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
+                      onClick={() => handleProductClick(product)}
                     >
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
-                        whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ delay: (idx % 6) * 0.1, type: "spring", stiffness: 100 }}
-                        whileHover={{ 
-                          scale: 1.05, 
-                          y: -15,
-                          z: 50,
-                          transition: { type: "spring", stiffness: 300 }
-                        }}
-                        className="bg-white rounded-[40px] border border-zinc-100 p-8 space-y-6 group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500"
-                        onClick={() => handleProductClick(product)}
-                      >
-                        <div className="aspect-square rounded-3xl overflow-hidden relative flex items-center justify-center bg-zinc-50">
-                          <motion.div
-                            whileHover={{ scale: 1.15, rotate: 5 }}
-                            transition={{ duration: 0.4, type: "spring" }}
-                          >
-                            <ImageWithFallback 
-                              src={product.image} 
-                              className="w-full h-full object-contain mix-blend-multiply"
-                              alt={product.name}
-                            />
-                          </motion.div>
-                          <motion.div 
-                            initial={{ opacity: 0, y: -10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-zinc-900 border border-zinc-200"
-                            style={{ transform: 'translateZ(40px)' }}
-                          >
-                            {product.category}
-                          </motion.div>
+                      <div className="aspect-square rounded-3xl overflow-hidden relative flex items-center justify-center bg-zinc-50">
+                        <motion.div
+                          whileHover={{ scale: 1.15, rotate: 5 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <ImageWithFallback 
+                            src={product.image} 
+                            className="w-full h-full object-contain mix-blend-multiply"
+                            alt={product.name}
+                          />
+                        </motion.div>
+                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-zinc-900 border border-zinc-200 shadow-sm">
+                          {product.category}
                         </div>
-                        <div className="space-y-4" style={{ transform: 'translateZ(20px)' }}>
-                          <h3 className="text-xl font-black tracking-tight group-hover:text-[#fabf37] transition-colors">{product.name}</h3>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                              <motion.div 
-                                animate={{ scale: [1, 1.2, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="size-1.5 bg-green-500 rounded-full"
-                              /> Ready
-                            </div>
-                            <motion.button 
-                              whileHover={{ scale: 1.15, rotate: 20 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="size-10 rounded-full bg-zinc-900 text-white flex items-center justify-center group-hover:bg-[#fabf37] group-hover:text-black transition-all"
-                              style={{ transform: 'translateZ(30px)' }}
-                            >
-                              <BasketIcon className="size-4" />
-                            </motion.button>
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-black tracking-tight group-hover:text-[#fabf37] transition-colors">{product.name}</h3>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                            <div className="size-1.5 bg-green-500 rounded-full" /> Ready
+                          </div>
+                          <div className="size-10 rounded-full bg-zinc-100 text-black flex items-center justify-center group-hover:bg-[#fabf37] transition-colors">
+                            <BasketIcon className="size-4" />
                           </div>
                         </div>
-                      </motion.div>
-                    </Card3D>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
             </section>
 
-            {/* 4. INDUSTRIES SECTION */}
-            <MemoIndustries />
+            {/* IMPACT METRICS - SUSTAINABILITY STATS */}
+            <React.Suspense fallback={null}>
+               <ImpactMetrics />
+            </React.Suspense>
 
-            {/* 5. FEATURED PRODUCTS - Yellow Wavy Section */}
-            <section className="relative py-32 overflow-hidden">
-              <Particle3DField />
-              <DepthLayers layers={3} spacing={30}>
-                <motion.div 
-                  initial={{ scaleY: 0 }}
-                  whileInView={{ scaleY: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="absolute inset-0 bg-[#fabf37] -skew-y-3 origin-left translate-y-20"
-                />
-              </DepthLayers>
-              <Parallax3DContainer intensity={5}>
-                <motion.div 
-                  initial={{ opacity: 0, y: 60 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="relative z-10 px-4 md:px-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16"
-                >
-                <motion.div 
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                  className="flex-1 text-center md:text-left text-black/80 space-y-6"
-                >
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="text-4xl font-black tracking-tighter text-black"
-                  >
-                    Featured Products
-                  </motion.h2>
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6 }}
-                    className="font-medium leading-relaxed max-w-md"
-                  >
-                    Explore our handcrafted selection of standout products, each thoughtfully chosen to bring you the perfect balance of quality, functionality, and design.
-                  </motion.p>
-                  <motion.button 
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.7 }}
-                    whileHover={{ x: 5 }}
-                    onClick={() => handlePageChange("products")}
-                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest border-b-2 border-black pb-1 hover:text-white hover:border-white transition-all"
-                  >
-                    Shop New Arrivals <ArrowRight className="size-4" />
-                  </motion.button>
-                </motion.div>
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  className="flex-1 flex flex-col items-center"
-                >
-                  <FloatingCard3D delay={0.5}>
-                    <div className="relative group">
-                      <motion.div 
-                        animate={{ 
-                          scale: [1, 1.3, 1],
-                          opacity: [0.3, 0.6, 0.3],
-                          rotate: [0, 180, 360]
-                        }}
-                        transition={{ duration: 8, repeat: Infinity }}
-                        className="absolute inset-0 bg-white/30 rounded-full blur-3xl"
-                        style={{ transform: 'translateZ(-50px)' }}
-                      />
-                      <motion.div
-                        whileHover={{ 
-                          y: -30, 
-                          rotateY: 15, 
-                          rotateX: -10,
-                          scale: 1.1,
-                          transition: { type: "spring", stiffness: 300, damping: 20 }
-                        }}
-                      >
-                        <ImageWithFallback 
-                          src={imgShoppingBag} 
-                          className="relative z-10 w-[400px] h-auto drop-shadow-[0_50px_50px_rgba(0,0,0,0.3)]" 
-                          alt="Featured Product"
-                          style={{ transform: 'translateZ(60px)' }}
-                        />
-                      </motion.div>
-                    </div>
-                  </FloatingCard3D>
-                  <motion.h3 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.8 }}
-                    className="text-3xl font-black mt-8 text-black"
-                    style={{ transform: 'translateZ(40px)' }}
-                  >
-                    Paper Bag
-                  </motion.h3>
-                </motion.div>
-                <motion.div 
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.6 }}
-                  className="flex-1 text-center md:text-right text-black/80 font-medium"
-                >
-                  <p className="max-w-xs ml-auto">
-                    Our most loved industrial grade products are ready to improve and delivered straight to your door.
-                  </p>
-                </motion.div>
-              </motion.div>
-              </Parallax3DContainer>
-            </section>
-
-            {/* 6. MATERIAL LAB */}
-            <DeferredSection>
-              <MaterialLab />
-            </DeferredSection>
-
-            {/* 7. IMPACT METRICS */}
-            <DeferredSection>
-              <ImpactMetrics />
-            </DeferredSection>
-
-            {/* 8. WHO WE ARE */}
-            <section className="px-4 md:px-12 py-24 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
-              <motion.div 
-                initial={{ opacity: 0, x: -60, rotateY: -10 }}
-                whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="flex-1 space-y-8"
-              >
-                <motion.h2 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="text-4xl font-black tracking-tighter"
-                  style={{ transform: 'translateZ(30px)' }}
-                >
-                  Who We Are?
-                </motion.h2>
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                  className="text-zinc-500 font-medium leading-relaxed"
-                  style={{ transform: 'translateZ(20px)' }}
-                >
-                  Paperware Factory is leading Bangladesh's manufacturer of eco-friendly, paper-based products committed to sustainability and reducing plastic pollution. We offer a diverse range of high-quality items, including double-wall cups, food packaging box, french fry boxes, paper bowl, and etc of boxes, stylish shopping bags, calendars, notebooks, greeting cards, and pharmaceutical and packaging such as medicine and tablet boxes. By choosing Paperware Factory, you're supporting a cleaner, greener future—one product at a time.
-                </motion.p>
-                <motion.button 
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                  whileHover={{ x: 10, scale: 1.05 }}
-                  onClick={() => handlePageChange("about")}
-                  className="flex items-center gap-2 text-xs font-black uppercase tracking-widest border-b-2 border-zinc-900 pb-1 hover:text-[#fabf37] hover:border-[#fabf37] transition-all"
-                  style={{ transform: 'translateZ(25px)' }}
-                >
-                  Learn More <ArrowRight className="size-4" />
-                </motion.button>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, x: 60, scale: 0.9, rotateY: 10 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1, rotateY: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex-1"
-              >
-                <Card3D intensity={8}>
-                  <motion.div 
-                    whileHover={{ 
-                      scale: 1.05, 
-                      z: 50,
-                      transition: { type: "spring", stiffness: 300 }
-                    }}
-                    className="relative rounded-[40px] overflow-hidden shadow-2xl"
-                  >
-                    <ImageWithFallback src={imgWhoarewe} className="w-full h-full object-cover" alt="Who we are" />
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      className="absolute inset-0 bg-gradient-to-t from-[#fabf37]/30 to-transparent"
-                      style={{ transform: 'translateZ(10px)' }}
-                    />
-                    <motion.div 
-                      className="absolute inset-0 border-2 border-white/20 rounded-[40px]"
-                      style={{ transform: 'translateZ(20px)' }}
-                    />
-                  </motion.div>
-                </Card3D>
-              </motion.div>
-            </section>
-
-            {/* 9. OUR COVERAGE AREA - Map */}
-            <section className="bg-black py-32 relative overflow-hidden">
-              <Grid3DBackground />
-              <Particle3DField />
-              <motion.div 
-                animate={{
-                  opacity: [0.2, 0.4, 0.2],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="absolute top-0 left-0 w-full h-full opacity-30"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-              </motion.div>
-              <Parallax3DContainer intensity={3}>
-                <div className="relative z-10 px-4 md:px-12 max-w-7xl mx-auto text-center space-y-12">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-4xl font-black tracking-tighter text-white uppercase tracking-[0.2em]"
-                    style={{ transform: 'translateZ(50px)' }}
-                  >
-                    Our Coverage Area
-                  </motion.h2>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8, rotateX: 20 }}
-                    whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, type: "spring" }}
-                  >
-                    <FloatingCard3D delay={1}>
-                    <Card3D intensity={15}>
-                      <motion.div 
-                        whileHover={{ 
-                          scale: 1.05, 
-                          z: 80,
-                          boxShadow: "0 0 150px rgba(250,191,55,0.4)"
-                        }}
-                        className="max-w-3xl mx-auto rounded-[60px] overflow-hidden border border-white/10 shadow-[0_0_100px_rgba(250,191,55,0.15)] bg-zinc-900/50 backdrop-blur-xl"
-                      >
-                        <ImageWithFallback 
-                          src={imgMap} 
-                          className="w-full h-auto opacity-90 transition-all duration-1000" 
-                          alt="Bangladesh Map"
-                          style={{ transform: 'translateZ(40px)' }}
-                        />
-                        <motion.div 
-                          className="absolute inset-0 border-2 border-[#fabf37]/20 rounded-[60px]"
-                          style={{ transform: 'translateZ(50px)' }}
-                        />
-                      </motion.div>
-                    </Card3D>
-                  </FloatingCard3D>
-                </motion.div>
-              </div>
-              </Parallax3DContainer>
-            </section>
-
-            {/* 10. OUR GLOBAL PARTNERS */}
-            {/* 10. OUR GLOBAL PARTNERS (Enhanced Double Scroll) */}
-            <section className="bg-zinc-50 py-32 overflow-hidden relative border-t border-zinc-200">
-               {/* Decorative Background */}
+            {/* 6. GLOBAL PARTNERS */}
+            <section className="bg-zinc-50 pt-32 pb-8 overflow-hidden relative border-t border-zinc-200">
+               {/* Simple Background */}
                <div className="absolute inset-0 pointer-events-none opacity-30">
-                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[length:24px_24px]" />
                </div>
 
@@ -968,44 +669,50 @@ export function MainContent() {
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 bg-white mb-6"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 bg-white mb-6 shadow-sm"
                 >
-                   <div className="size-1.5 bg-green-500 rounded-full animate-pulse" />
-                   <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Trusted Network</span>
+                   <div className="size-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
+                   <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Trusted Network</span>
                 </motion.div>
-                <motion.h2 
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="text-4xl md:text-5xl font-black tracking-tighter"
-                >
-                  Global <span className="text-zinc-400">Partners</span>
-                </motion.h2>
+                
+                {/* Section Title */}
+                <div className="relative overflow-hidden pb-2">
+                    <motion.h2 
+                      initial={{ y: "100%" }}
+                      whileInView={{ y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, ease: "circOut" }}
+                      className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500"
+                    >
+                      Global <span className="font-serif italic text-zinc-400">Partners</span>
+                    </motion.h2>
+                </div>
+                <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest mt-2 opacity-60">
+                   Proudly serving <span className="text-[#fabf37]">200+</span> Enterprise Clients
+                </p>
               </div>
 
               {/* Row 1 - Moving Left */}
-              <div className="relative flex mb-12">
+              <div className="relative flex mb-8">
                 <div className="absolute inset-y-0 left-0 w-24 md:w-64 bg-gradient-to-r from-zinc-50 to-transparent z-20 pointer-events-none" />
                 <div className="absolute inset-y-0 right-0 w-24 md:w-64 bg-gradient-to-l from-zinc-50 to-transparent z-20 pointer-events-none" />
                 
                 <motion.div 
                   animate={{ x: ["0%", "-50%"] }}
                   transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                  className="flex items-center gap-16 md:gap-32 px-8 min-w-max"
+                  className="flex items-center gap-12 md:gap-24 px-8 min-w-max"
                 >
                   {[...Array(4)].flatMap((_, i) => 
-                    [
-                      imgAlArabian, imgFresh, imgBengalClassicTea, imgCafeZ, imgCoffeeAvenue, imgCrimsoncup
-                    ].map((logo, idx) => (
+                    partnersData.slice(0, Math.max(1, Math.ceil(partnersData.length / 2))).map((partner: any, idx: number) => (
                       <motion.div 
                         key={`r1-${i}-${idx}`} 
                         whileHover={{ scale: 1.1, opacity: 1, filter: "grayscale(0%)" }}
                         className="h-16 md:h-20 w-auto opacity-40 grayscale transition-all duration-300 cursor-pointer"
                       >
                         <ImageWithFallback 
-                          src={logo} 
+                          src={partner.logo} 
                           className="h-full w-auto object-contain" 
-                          alt="Partner Logo"
+                          alt={partner.name}
                         />
                       </motion.div>
                     ))
@@ -1021,21 +728,19 @@ export function MainContent() {
                 <motion.div 
                   animate={{ x: ["-50%", "0%"] }}
                   transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
-                  className="flex items-center gap-16 md:gap-32 px-8 min-w-max"
+                  className="flex items-center gap-12 md:gap-24 px-8 min-w-max"
                 >
                   {[...Array(4)].flatMap((_, i) => 
-                    [
-                      imgDhakaiKhana, imgAbdulMonemLtd, imgWalton, imgNovatek, imgMgi, imgIcddrb
-                    ].map((logo, idx) => (
+                    partnersData.slice(Math.max(1, Math.ceil(partnersData.length / 2))).map((partner: any, idx: number) => (
                        <motion.div 
                         key={`r2-${i}-${idx}`} 
                         whileHover={{ scale: 1.1, opacity: 1, filter: "grayscale(0%)" }}
                         className="h-16 md:h-20 w-auto opacity-40 grayscale transition-all duration-300 cursor-pointer"
                       >
                         <ImageWithFallback 
-                          src={logo} 
+                          src={partner.logo} 
                           className="h-full w-auto object-contain" 
-                          alt="Partner Logo"
+                          alt={partner.name}
                         />
                       </motion.div>
                     ))
@@ -1043,148 +748,31 @@ export function MainContent() {
                 </motion.div>
               </div>
 
-              <div className="flex justify-center mt-20 relative z-10">
+              <div className="flex justify-center mt-12 relative z-10">
                 <motion.button 
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.95 }}
+                  onMouseEnter={() => import("./pages/clients")}
                   onClick={() => handlePageChange("clients")}
-                  className="group relative overflow-hidden bg-white border border-zinc-200 pl-8 pr-6 py-4 rounded-full flex items-center gap-4 shadow-xl hover:shadow-2xl hover:border-[#fabf37] transition-all"
+                  className="group relative overflow-hidden bg-white border border-zinc-200 pl-6 pr-4 py-2.5 rounded-full flex items-center gap-3 shadow-lg hover:shadow-xl hover:border-[#fabf37] transition-all"
                 >
-                   <span className="text-xs font-black uppercase tracking-widest text-zinc-900 group-hover:text-[#fabf37] transition-colors">View Client Stories</span>
-                   <div className="size-8 rounded-full bg-zinc-100 group-hover:bg-[#fabf37] flex items-center justify-center transition-colors">
-                      <ArrowRight className="size-4 text-zinc-900" />
+                   <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 group-hover:text-[#fabf37] transition-colors">View Client Stories</span>
+                   <div className="size-6 rounded-full bg-zinc-100 group-hover:bg-[#fabf37] flex items-center justify-center transition-colors">
+                      <ArrowRight className="size-3 text-zinc-900" />
                    </div>
                 </motion.button>
               </div>
             </section>
 
-            {/* 11. WHY CHOOSE PAPERWARE? */}
-            <section className="bg-zinc-50 py-32 px-4 md:px-12 relative overflow-hidden">
-              <Particle3DField />
-              <Parallax3DContainer intensity={2}>
-                <div className="max-w-7xl mx-auto">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center text-4xl font-black tracking-tighter mb-20"
-                    style={{ transform: 'translateZ(60px)' }}
-                  >
-                    Why Choose Paperware?
-                  </motion.h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {[
-                    { title: "Eco-Friendly Products", img: imgCardBg1 },
-                    { title: "Custom Branding Solutions", img: imgCardBg2 },
-                    { title: "Bangladeshi Made, Global Standard", img: imgCardBg3 }
-                  ].map((card, idx) => (
-                    <Card3D key={idx} className="h-full" intensity={12}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 50, rotateX: 30 }}
-                        whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: idx * 0.2, duration: 0.8 }}
-                        whileHover={{ 
-                          y: -20, 
-                          z: 60,
-                          transition: { type: "spring", stiffness: 300 }
-                        }}
-                        className="relative aspect-[3/4] rounded-[80px] overflow-hidden group shadow-2xl"
-                      >
-                        <ImageWithFallback 
-                          src={card.img} 
-                          className="size-full object-cover transition-transform duration-700 group-hover:scale-120" 
-                          alt={card.title}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                        <motion.div 
-                          className="absolute inset-0 border-2 border-white/10 rounded-[80px]"
-                          style={{ transform: 'translateZ(30px)' }}
-                        />
-                        <motion.div 
-                          className="absolute inset-x-0 bottom-0 p-12 text-center"
-                          style={{ transform: 'translateZ(50px)' }}
-                        >
-                          <h3 className="text-2xl font-black text-white leading-tight mb-4">{card.title}</h3>
-                          <p className="text-white/60 text-xs font-medium">Delivering excellence through sustainable innovation and industrial precision.</p>
-                        </motion.div>
-                      </motion.div>
-                    </Card3D>
-                  ))}
-                </div>
-              </div>
-              </Parallax3DContainer>
-            </section>
+            {/* PAGE DISCOVERY - AUTO SCROLL */}
+            <React.Suspense fallback={null}>
+               <PageDiscovery onNavigate={handlePageChange} />
+            </React.Suspense>
 
-            {/* 12. ABOUT US - Extended */}
-            <DeferredSection>
-              <MemoAboutUs />
-            </DeferredSection>
-
-            {/* 13. MICRO UTILITY BAR */}
-
-
-            {/* 14. NEWSLETTER - Removed as per user request */}
-            {/* <section className="bg-[#fabf37] py-24 px-4 md:px-12">
-              <div className="max-w-7xl mx-auto">
-                <Card3D intensity={10}>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
-                    whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
-                    viewport={{ once: true }}
-                    whileHover={{ 
-                      y: -15, 
-                      z: 60,
-                      transition: { type: "spring", stiffness: 300 }
-                    }}
-                    className="bg-black rounded-full md:rounded-[100px] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10 shadow-[0_40px_80px_rgba(0,0,0,0.4)] border border-white/5"
-                  >
-                    <motion.div 
-                      className="px-10 text-center md:text-left"
-                      style={{ transform: 'translateZ(40px)' }}
-                    >
-                      <motion.h2 
-                        animate={{ 
-                          textShadow: [
-                            "0 0 20px rgba(250,191,55,0.3)",
-                            "0 0 40px rgba(250,191,55,0.5)",
-                            "0 0 20px rgba(250,191,55,0.3)"
-                          ]
-                        }}
-                        transition={{ duration: 3, repeat: Infinity }}
-                        className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none"
-                      >
-                        Newsletter
-                      </motion.h2>
-                      <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em] mt-4">Get the latest news and updates from your factory.</p>
-                    </motion.div>
-                    
-                    <div className="flex-1 max-w-2xl w-full" style={{ transform: 'translateZ(30px)' }}>
-                      <div className="relative group">
-                        <motion.input 
-                          whileFocus={{ scale: 1.02, z: 20 }}
-                          type="email" 
-                          placeholder="Email" 
-                          className="w-full bg-[#fabf37] text-black rounded-full py-7 px-12 text-sm font-black focus:outline-none placeholder:text-black/30 shadow-2xl"
-                        />
-                        <motion.button 
-                          whileHover={{ rotate: 180, scale: 1.2 }}
-                          whileTap={{ scale: 0.9 }}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 size-14 rounded-full bg-black text-[#fabf37] flex items-center justify-center shadow-xl"
-                          style={{ transform: 'translateZ(50px)' }}
-                        >
-                          <ExternalLink className="size-6" />
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Card3D>
-              </div>
-            </section> */}
           </div>
         );
-      case "about": return <AboutPage />;
-      case "clients": return <ClientsPage videoUrl={clientsVideoUrl} productionStats={productionStats} onPageChange={handlePageChange} />;
+      case "about": return <AboutPage aboutUsVideos={aboutUsVideos} />;
+      case "clients": return <ClientsPage videoUrl={clientsVideoUrl} productionStats={productionStats} onPageChange={handlePageChange} partnersData={partnersData} />;
       case "papercups": return <PaperCupsPage videoUrls={factoryVideos} onProductClick={handleProductClick} onPageChange={handlePageChange} />;
       case "products": return <AllProductsPage onProductClick={handleProductClick} onAddToQuote={addToQuoteBasket} onPageChange={handlePageChange} products={productsData} clientProjects={clientProjects} />;
       case "product-details": return <ProductDetailsPage product={quoteBasket[quoteBasket.length - 1]} onBack={() => setCurrentPage("products")} onAddToQuote={addToQuoteBasket} onContactClick={() => handlePageChange("contact")} />;
@@ -1230,21 +818,52 @@ export function MainContent() {
       case "business": return <BusinessPage />;
       case "company": return <CompanyPage onPageChange={handlePageChange} />;
       case "csr": return <CSRPage />;
+      case "privacy-policy": return <PrivacyPolicyPage />;
       case "admin": return (
         <AdminDashboardPage 
           onLogout={() => handlePageChange("home")} 
           heroVideoUrl={heroVideoUrl}
-          onUpdateHeroVideo={setHeroVideoUrl}
+          onUpdateHeroVideo={(url) => {
+            setHeroVideoUrl(url);
+            localStorage.setItem('paperware_hero_video', url);
+          }}
+          brochureUrl={brochureUrl}
+          onUpdateBrochure={(url) => {
+            setBrochureUrl(url);
+            localStorage.setItem('paperware_brochure', url);
+          }}
           heroVideoMobileUrl={heroVideoMobileUrl}
-          onUpdateHeroVideoMobile={setHeroVideoMobileUrl}
+          onUpdateHeroVideoMobile={(url) => {
+            setHeroVideoMobileUrl(url);
+            localStorage.setItem('paperware_hero_video_mobile', url);
+          }}
           clientsVideoUrl={clientsVideoUrl}
-          onUpdateClientsVideo={setClientsVideoUrl}
+          onUpdateClientsVideo={(url) => {
+            setClientsVideoUrl(url);
+            localStorage.setItem('paperware_clients_video', url);
+          }}
           heroContent={heroContent}
-          onUpdateHeroContent={setHeroContent}
+          onUpdateHeroContent={(content) => {
+            setHeroContent(content);
+            localStorage.setItem('paperware_hero_content', JSON.stringify(content));
+          }}
           products={productsData}
-          onUpdateProducts={setProductsData}
+          onUpdateProducts={(products) => {
+            setProductsData(products);
+            localStorage.setItem('paperware_products', JSON.stringify(products));
+          }}
           clientProjects={clientProjects}
-          onUpdateClientProjects={setClientProjects}
+          onUpdateClientProjects={(projects) => {
+            setClientProjects(projects);
+            localStorage.setItem('paperware_client_projects', JSON.stringify(projects));
+          }}
+          partners={partnersData}
+          onUpdatePartners={setPartnersData}
+          aboutUsVideos={aboutUsVideos}
+          onUpdateAboutUsVideos={(videos) => {
+            setAboutUsVideos(videos);
+            localStorage.setItem('paperware_about_us_videos', JSON.stringify(videos));
+          }}
         />
       );
       default: return <Hero onExplore={() => handlePageChange("products")} videoUrl={heroVideoUrl} title={heroContent.title} subtitle1={heroContent.subtitle1} subtitle2={heroContent.subtitle2} />;
@@ -1308,6 +927,7 @@ export function MainContent() {
         onUpdateSigningImage={setSigningImage}
       />
       <HUDOverlay />
+      <BackToTop />
     </div>
   );
 }

@@ -14,12 +14,15 @@ import imgCalendar from "figma:asset/d56cc7180a46e9766ae8656e08f26915e65b1e08.pn
 import imgSticker from "figma:asset/083092191c09807406b3ab9369303938adea8ea5.png";
 import imgTissueBox from "figma:asset/942d624f3eeb9f40ef2152028a1d1e2e73a4d226.png";
 import imgMagazine from "figma:asset/6918c60927e9f8a4474f86ad7e0b378cadd0b766.png";
+import imgFlyer from "figma:asset/996fde50aac464284d2652c5f215d915bf7e1897.png";
+import imgBrochure from "figma:asset/aebcf13cb4e5ea06fcb9980128694f52cc69049a.png";
+import imgPaperBag from "figma:asset/510221172209f9745471ae8d0b0d125bd25a70f7.png";
 
 const products = [
-  { name: "Paper Bag", desc: "Luxury branded carry bags with premium handles.", category: "Packaging", image: "https://images.unsplash.com/photo-1668012509229-782623ba3306", price: "45.00", icon: ShoppingBag },
-  { name: "Brochure / Catalog", desc: "High-finish marketing literature for your brand.", category: "Print", image: "https://images.unsplash.com/photo-1544816155-12df9643f363", price: "25.00", icon: BookOpen },
+  { name: "Paper Bag", desc: "Luxury branded carry bags with premium handles.", category: "Packaging", image: imgPaperBag, price: "45.00", icon: ShoppingBag },
+  { name: "Brochure / Catalog", desc: "High-finish marketing literature for your brand.", category: "Print", image: imgBrochure, price: "25.00", icon: BookOpen },
   { name: "Premium Magazine", desc: "Executive quality print on demand magazines.", category: "Print", image: imgMagazine, price: "85.00", icon: BookOpen },
-  { name: "Flyer & Leaflet", desc: "Bulk promotional prints with sharp clarity.", category: "Print", image: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6", price: "3.50", icon: FileText },
+  { name: "Flyer & Leaflet", desc: "Bulk promotional prints with sharp clarity.", category: "Print", image: imgFlyer, price: "3.50", icon: FileText },
   { name: "Sticker", desc: "Custom-cut industrial adhesive branding assets.", category: "Branding", image: imgSticker, price: "1.20", icon: StickyNote },
   { name: "Calendar", desc: "Branded corporate desk and wall calendars.", category: "Office", image: imgCalendar, price: "120.00", icon: Calendar },
   { name: "Tissue Box", desc: "Customized promotional facial tissue packaging.", category: "Packaging", image: imgTissueBox, price: "35.00", icon: Box },

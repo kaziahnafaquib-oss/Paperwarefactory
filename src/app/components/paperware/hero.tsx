@@ -68,7 +68,11 @@ export const Hero = React.memo(function Hero({
               <iframe
                 key={youtubeId}
                 src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1`}
-                className="w-full h-full object-cover opacity-50 mix-blend-multiply grayscale pointer-events-none scale-110"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 mix-blend-multiply grayscale pointer-events-none"
+                style={{ 
+                  width: 'max(120vw, 220vh)',
+                  height: 'max(120vh, 70vw)' 
+                }}
                 allow="autoplay; encrypted-media"
                 loading="lazy"
               />

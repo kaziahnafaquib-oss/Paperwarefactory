@@ -2,21 +2,34 @@ import React from "react";
 import { motion } from "motion/react";
 import { Play, ShieldCheck, Zap, Leaf, Globe, Factory, Cpu, Target, Award, ArrowRight, ChevronRight, Activity, Box } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
-import { DepartmentShowcase } from "../components/paperware/department-showcase";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { MediaPlayer } from "../components/paperware/media-player";
 
-// Asset imports
-import imgA3A00228Enhanced from "figma:asset/d322aa8c56240306ca8d400af7b840b86528dcbb.png";
-import imgA3A00242EnhancedCopy from "figma:asset/5865d78e649b9b63e08f02c60e032ada14355d4a.png";
-import imgA3A00086Enhanced from "figma:asset/d1d09ee2807bc96c0db6200d9081bc2d7c8effa7.png";
-import imgA3A00048Enhanced from "figma:asset/c612c42145ec66297825ca8230af016fd4b338d5.png";
-import imgA3A00111Enhanced from "figma:asset/32d015dc91588b7eb35fd1ff2f9a5ad82935aaef.png";
-import imgAr305594 from "figma:asset/8bf041c8bbf0dd55add7bf1fc1e4375fe52810cb.png";
-import imgA3A00175Enhanced from "figma:asset/e1d8cef62c78387036bded121b27d9a449426d93.png";
-import imgCuttingUnit from "figma:asset/e4d419676dc773e53692192900cc87f073cae093.png";
-import imgProcess from "figma:asset/065035dc996c4de10bf1df3ba3adb27b15abbdc2.png";
-import imgHeidelberg from "figma:asset/d89ef6b50d489f3f93b6ebdf5428f21c5e207b0a.png";
+// Image Assets (Replaced broken figma:asset imports with reliable Unsplash URLs)
+const imgProcess = "https://images.unsplash.com/photo-1721745250213-c3e1a2f4eeeb?q=80&w=1080&auto=format";
+const imgHeidelberg = "https://images.unsplash.com/photo-1758183961426-88d64eb5f787?q=80&w=1080&auto=format";
+const imgQuality = "https://images.unsplash.com/photo-1766325693346-6279a63b1fba?q=80&w=1080&auto=format";
+const imgCutting = "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80&w=1080&auto=format";
+const imgFactory1 = "https://images.unsplash.com/photo-1565514020176-db931df334c4?q=80&w=1080&auto=format";
+const imgFactory2 = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1080&auto=format";
+const imgFactory3 = "https://images.unsplash.com/photo-1531297461136-82lw9z1l3b1a?q=80&w=1080&auto=format";
+const imgInnovation = "https://images.unsplash.com/photo-1581093458791-9f302e6d8359?q=80&w=1080&auto=format";
 
-export function AboutPage() {
+interface AboutPageProps {
+  aboutUsVideos?: {
+    heroBackground?: string;
+    heroBackgroundType?: 'image' | 'video' | 'youtube';
+    smartManufacturing?: string;
+    smartManufacturingType?: 'image' | 'video' | 'youtube';
+    galleryVideos?: Array<{
+      url: string;
+      type: 'image' | 'video' | 'youtube';
+      alt: string;
+    }>;
+  };
+}
+
+export function AboutPage({ aboutUsVideos = {} }: AboutPageProps) {
   const { t } = useLanguage();
 
   const containerVariants = {
@@ -51,7 +64,15 @@ export function AboutPage() {
             transition={{ duration: 1 }}
             className="w-full h-full"
           >
-            <img src={imgProcess} alt="Factory" className="w-full h-full object-cover grayscale" loading="lazy" />
+            <MediaPlayer
+              type={aboutUsVideos?.heroBackgroundType || "image"}
+              src={aboutUsVideos?.heroBackground || imgProcess}
+              alt="Factory Background"
+              className="w-full h-full grayscale"
+              autoPlay={true}
+              muted={true}
+              loop={true}
+            />
           </motion.div>
         </div>
 
@@ -153,98 +174,117 @@ export function AboutPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { 
                 val: "140K", 
-                unit: "Pcs/Day", 
-                label: "Printing Unit", 
+                unit: "PCS/DAY", 
+                label: "PRINTING UNIT", 
                 icon: Factory, 
                 img: imgHeidelberg,
-                machineName: "Heidelberg MO-V-P",
-                detail: "High-precision 4-color offset printing for premium branding.",
+                machineName: "HEIDELBERG MO-V-P",
+                detail: "HIGH-PRECISION 4-COLOR OFFSET PRINTING FOR PREMIUM BRANDING.",
                 specs: [
-                  "Heidelberg MO-V-P (19x25.5\")",
-                  "Original Heidelberg (25.25x36\")",
-                  "Double Demy Plate Technology"
+                  "HEIDELBERG MO-V-P (19x25.5\")",
+                  "ORIGINAL HEIDELBERG (25.25x36\")",
+                  "DOUBLE DEMY PLATE TECHNOLOGY"
                 ]
               },
               { 
                 val: "350K", 
-                unit: "Pcs/Day", 
-                label: "Forming Unit", 
+                unit: "PCS/DAY", 
+                label: "FORMING UNIT", 
                 icon: Box, 
-                img: imgA3A00086Enhanced,
-                machineName: "Ultrasonic Former",
-                detail: "Automated ultrasonic forming ensuring leak-proof precision.",
-                specs: ["Medical Grade Hygiene", "Automated Quality Control", "High-speed Production"]
+                img: imgFactory1,
+                machineName: "ULTRASONIC FORMER",
+                detail: "AUTOMATED ULTRASONIC FORMING ENSURING LEAK-PROOF PRECISION.",
+                specs: ["MEDICAL GRADE HYGIENE", "AUTOMATED QUALITY CONTROL", "HIGH-SPEED PRODUCTION"]
               },
               { 
                 val: "12K", 
-                unit: "Pcs/Day", 
-                label: "Cutting Unit", 
+                unit: "PCS/DAY", 
+                label: "CUTTING UNIT", 
                 icon: Cpu, 
-                img: imgCuttingUnit,
-                machineName: "Die-Cut Precision",
-                detail: "Precision die-cutting with minimal waste & laser accuracy.",
-                specs: ["Laser Guided Calibration", "Zero-waste Trimming", "Custom Shape Support"]
+                img: imgCutting,
+                machineName: "DIE-CUT PRECISION",
+                detail: "PRECISION DIE-CUTTING WITH MINIMAL WASTE & LASER ACCURACY.",
+                specs: ["LASER GUIDED CALIBRATION", "ZERO-WASTE TRIMMING", "CUSTOM SHAPE SUPPORT"]
               },
               { 
                 val: "25K", 
-                unit: "Pcs/Day", 
-                label: "Lamination Unit", 
+                unit: "PCS/DAY", 
+                label: "LAMINATION UNIT", 
                 icon: Zap, 
                 img: imgProcess,
-                machineName: "Thermal Laminator",
-                detail: "PE/PLA lamination for superior liquid & heat resistance.",
-                specs: ["Eco-friendly PLA Support", "Heat-seal Optimization", "Gloss & Matte Finish"]
+                machineName: "THERMAL LAMINATOR",
+                detail: "PE/PLA LAMINATION FOR SUPERIOR LIQUID & HEAT RESISTANCE.",
+                specs: ["ECO-FRIENDLY PLA SUPPORT", "HEAT-SEAL OPTIMIZATION", "GLOSS & MATTE FINISH"]
               }
             ].map((stat, i) => (
-              <div key={i} className="relative overflow-hidden flex flex-col min-h-[400px] p-6 md:p-10 border border-zinc-100 group hover:border-[#fabf37] hover:bg-zinc-50 transition-all duration-500 rounded-[32px]">
-                {/* Background Machine Image */}
-                <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 -rotate-6 translate-x-12 translate-y-12 pointer-events-none overflow-hidden">
-                  <img src={stat.img} alt="" className="w-full h-full object-cover grayscale" />
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`bg-white rounded-[32px] p-6 md:p-8 flex flex-col border-2 transition-all duration-300 ${
+                  i === 0 ? 'border-[#fabf37]' : 'border-zinc-200 hover:border-[#fabf37]'
+                }`}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className={`${i === 0 ? 'text-[#fabf37]' : 'text-zinc-400'}`}>
+                    <stat.icon className="size-6" />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">
+                    UNIT {i + 1}
+                  </span>
                 </div>
-                
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-8">
-                    <stat.icon className="size-6 text-[#fabf37]" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Unit {i + 1}</span>
-                  </div>
 
-                  <div className="mb-auto">
-                    <p className="text-4xl md:text-6xl font-black italic tracking-tighter leading-none mb-1">{stat.val}</p>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-6">{stat.unit}</p>
-                    
-                    <h3 className="text-xl font-black uppercase tracking-tight mb-2 group-hover:text-[#fabf37] transition-colors">{stat.label}</h3>
-                    <p className="text-xs font-bold text-zinc-400 uppercase leading-relaxed mb-6">{stat.machineName}</p>
+                {/* Value */}
+                <div className="mb-6">
+                  <div className="text-6xl md:text-7xl font-black italic tracking-tighter leading-none text-black">
+                    {stat.val}
                   </div>
+                  <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mt-2">
+                    {stat.unit}
+                  </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-bold text-zinc-600 leading-tight uppercase">
-                      {stat.detail}
-                    </p>
-                    
-                    <div className="pt-4 border-t border-zinc-200/50 space-y-1.5">
-                      {stat.specs.map((spec, si) => (
-                        <div key={si} className="flex items-center gap-2">
-                          <div className="size-1 bg-[#fabf37] rounded-full" />
-                          <p className="text-[8px] md:text-[9px] font-bold text-zinc-500 uppercase tracking-tight">
-                            {spec}
-                          </p>
-                        </div>
-                      ))}
+                {/* Main Title */}
+                <div className="mb-6">
+                  <h3 className={`text-xl md:text-2xl font-black uppercase tracking-tight mb-2 leading-tight ${
+                    i === 0 ? 'text-[#fabf37]' : 'text-black'
+                  }`}>
+                    {stat.label}
+                  </h3>
+                  <p className="text-xs font-bold uppercase tracking-wide text-zinc-400">
+                    {stat.machineName}
+                  </p>
+                </div>
+
+                {/* Description */}
+                <p className="text-[10px] font-bold text-black leading-relaxed uppercase tracking-wide mb-6">
+                  {stat.detail}
+                </p>
+
+                {/* Specs List */}
+                <div className="space-y-3 mt-auto">
+                  {stat.specs.map((spec, si) => (
+                    <div key={si} className="flex items-start gap-2">
+                      <div className={`size-1.5 rounded-full mt-1.5 shrink-0 ${
+                        i === 0 ? 'bg-[#fabf37]' : 'bg-zinc-400'
+                      }`} />
+                      <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wide leading-relaxed">
+                        {spec}
+                      </p>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* REPLACED: MACHINERY SHOWCASE WITH DEPARTMENT SHOWCASE */}
-      <DepartmentShowcase />
 
       {/* 4. VISUAL JOURNEY - THE GALLERY */}
       <section className="py-16 md:py-32 bg-zinc-50 overflow-hidden">
@@ -259,15 +299,27 @@ export function AboutPage() {
         </div>
 
         <div className="flex gap-4 md:gap-8 px-4 md:px-6 overflow-x-auto pb-8 md:pb-12 scrollbar-hide snap-x">
-          {[imgA3A00228Enhanced, imgA3A00242EnhancedCopy, imgA3A00086Enhanced, imgA3A00048Enhanced, imgA3A00111Enhanced, imgAr305594].map((img, i) => (
+          {[
+            { type: 'image' as const, src: imgFactory1, alt: 'Production Line' },
+            { type: 'image' as const, src: imgFactory2, alt: 'Quality Control' },
+            { type: 'image' as const, src: imgFactory3, alt: 'Assembly Section' },
+            { type: 'image' as const, src: imgQuality, alt: 'Testing Facility' },
+            { type: 'image' as const, src: imgCutting, alt: 'Cutting Process' },
+            { type: 'image' as const, src: imgHeidelberg, alt: 'Heidelberg Machine' }
+          ].map((media, i) => (
             <div 
               key={i}
               className="min-w-[240px] md:min-w-[400px] h-[300px] md:h-[500px] rounded-[24px] md:rounded-[60px] overflow-hidden snap-center relative group"
             >
-              <img src={img} alt={`Process ${i}`} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" loading="lazy" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-12 flex flex-col justify-end">
+              <MediaPlayer
+                type={media.type}
+                src={media.src}
+                alt={media.alt}
+                className="w-full h-full"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-8 md:p-12 flex flex-col justify-end pointer-events-none">
                 <p className="text-[#fabf37] text-xs font-black uppercase tracking-widest mb-2">Facility View</p>
-                <p className="text-white text-2xl font-black uppercase tracking-tight">Stage {i + 1}: Automated Precision</p>
+                <p className="text-white text-xl md:text-2xl font-black uppercase tracking-tight">{media.alt}</p>
               </div>
             </div>
           ))}
@@ -306,7 +358,12 @@ export function AboutPage() {
             <div className="relative">
               <div className="absolute -inset-10 bg-[#fabf37]/5 blur-3xl rounded-full animate-pulse" />
               <div className="relative rounded-[32px] md:rounded-[60px] overflow-hidden border border-white/10 shadow-2xl aspect-[4/5]">
-                <img src={imgA3A00175Enhanced} alt="Innovation" className="w-full h-full object-cover" loading="lazy" />
+                <MediaPlayer 
+                  type={aboutUsVideos?.smartManufacturingType || "image"} 
+                  src={aboutUsVideos?.smartManufacturing || imgInnovation} 
+                  alt="Innovation" 
+                  className="w-full h-full object-cover" 
+                />
                 <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 p-6 md:p-8 bg-black/80 backdrop-blur-xl rounded-[24px] md:rounded-[32px] border border-white/5 max-w-[200px] md:max-w-xs">
                   <Cpu className="size-6 md:size-8 text-[#fabf37] mb-2 md:mb-4" />
                   <p className="text-[9px] md:text-xs font-black uppercase tracking-widest leading-relaxed">
@@ -321,3 +378,5 @@ export function AboutPage() {
     </div>
   );
 }
+
+export default React.memo(AboutPage);

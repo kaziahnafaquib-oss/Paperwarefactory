@@ -1,3 +1,6 @@
+import imgBoxGroup from 'figma:asset/370cc946765f24fecd2241c5798febf3f636cf5e.png';
+import imgBoxBeige from 'figma:asset/44417efdbf939eba86a583d08d358bb76989e3cd.png';
+import imgBoxRed from 'figma:asset/ee1e96d0bd347161979763a2b2031584e134c4d4.png';
 import React from "react";
 import { motion, AnimatePresence } from "motion/react"; 
 import { 
@@ -13,7 +16,7 @@ import {
   Facebook, Instagram, Linkedin, MessageCircle, PlayCircle
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { useLanguage } from "../context/LanguageContext"; // Changed from ../hooks/useLanguage
+import { useLanguage } from "../context/LanguageContext";
 
 const FloatingDataBits = () => {
   const [bits, setBits] = React.useState<any[]>([]);
@@ -102,11 +105,11 @@ export function ProductDetailsPage({ product, onBack, onAddToQuote, onContactCli
   };
 
   const productImages = [
-    product.image,
-    "https://images.unsplash.com/photo-1718512932005-197f55f2e186?q=80&w=800",
-    "https://images.unsplash.com/photo-1548471413-17f522202ddc?q=80&w=800",
-    "https://images.unsplash.com/photo-1741707039677-f873b0dab3f1?q=80&w=800",
-    "https://images.unsplash.com/photo-1611423475613-e6bca6bde7bb?q=80&w=800"
+    imgBoxGroup,
+    imgBoxBeige,
+    imgBoxRed,
+    "",
+    ""
   ];
 
   const clientVideos = [
@@ -290,10 +293,10 @@ export function ProductDetailsPage({ product, onBack, onAddToQuote, onContactCli
                   {productImages.map((img, i) => (
                     <button 
                       key={i}
-                      onClick={() => setActiveImageIdx(i)}
-                      className={`size-16 md:size-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${activeImageIdx === i ? 'border-[#fabf37] scale-105 shadow-lg' : 'border-black/5 opacity-50 hover:opacity-100'}`}
+                      onClick={() => img && setActiveImageIdx(i)}
+                      className={`size-16 md:size-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${activeImageIdx === i ? 'border-[#fabf37] scale-105 shadow-lg' : 'border-black/5 opacity-50 hover:opacity-100'} ${!img ? 'bg-zinc-100 cursor-default' : ''}`}
                     >
-                      <img src={img} className="w-full h-full object-cover" alt={`Gallery ${i}`} />
+                      {img && <img src={img} className="w-full h-full object-cover" alt={`Gallery ${i}`} />}
                     </button>
                   ))}
                </div>
@@ -503,7 +506,7 @@ export function ProductDetailsPage({ product, onBack, onAddToQuote, onContactCli
                <div className="flex items-center justify-between">
                   <div className="space-y-1">
                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 italic">Phase 1</p>
-                     <p className="text-sm font-black uppercase">Physical Prototypes</p>
+                     <p className="text-sm font-black uppercase text-[rgb(34,34,34)]">Physical Prototypes</p>
                   </div>
                   <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#fabf37] hover:underline">
                      Sample Policy <ArrowRight className="size-3" />
@@ -514,13 +517,13 @@ export function ProductDetailsPage({ product, onBack, onAddToQuote, onContactCli
                      <div className="size-10 rounded-xl bg-[#fabf37]/10 flex items-center justify-center text-[#fabf37]">
                         <Package className="size-5" />
                      </div>
-                     <p className="text-[10px] font-black uppercase leading-tight">Request <br /> Dummy Unit</p>
+                     <p className="text-[10px] font-black uppercase leading-tight text-[rgb(75,75,75)]">Request <br /> Dummy Unit</p>
                   </div>
                   <div className="flex-1 bg-white rounded-2xl p-4 border border-black/5 flex items-center gap-4">
                      <div className="size-10 rounded-xl bg-black/5 flex items-center justify-center text-black">
                         <FileText className="size-5" />
                      </div>
-                     <p className="text-[10px] font-black uppercase leading-tight">Download <br /> Die-cut PDF</p>
+                     <p className="text-[10px] font-black uppercase leading-tight text-[rgb(49,49,49)]">Download <br /> Die-cut PDF</p>
                   </div>
                </div>
             </motion.div>

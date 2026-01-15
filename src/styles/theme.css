@@ -261,6 +261,18 @@
     transition-duration: 0.2s !important;
   }
 
+  /* Fix for Recharts ResponsiveContainer dimension errors */
+  .recharts-responsive-container {
+    min-width: 100px !important;
+    min-height: 100px !important;
+  }
+  
+  /* Ensure all chart parent containers have proper dimensions */
+  .recharts-wrapper {
+    min-width: 100px !important;
+    min-height: 100px !important;
+  }
+
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
   * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.

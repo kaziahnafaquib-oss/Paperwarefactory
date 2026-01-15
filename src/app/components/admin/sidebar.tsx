@@ -11,7 +11,8 @@ import {
   ExternalLink,
   ChevronDown,
   Share2,
-  MessageSquare
+  MessageSquare,
+  FileText
 } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion, AnimatePresence } from "motion/react";
@@ -41,7 +42,11 @@ export function AdminSidebar({ activeTab, setActiveTab, onLogout }: SidebarProps
       title: "Content & Media",
       items: [
          { id: "cms", label: t('website_cms'), icon: <Settings className="size-5" /> },
+         { id: "partners-cms", label: "Global Partners", icon: <Users className="size-5" /> },
          { id: "media", label: "Media Manager", icon: <Box className="size-5" /> },
+         { id: "about-media", label: "About Us Media", icon: <Box className="size-5" /> },
+         { id: "brochure-upload", label: "Upload Brochure", icon: <FileText className="size-5" /> },
+         { id: "brochure-stats", label: "E-Catalog Logs", icon: <ChartBar className="size-5" /> },
       ]
     },
     {
@@ -74,7 +79,7 @@ export function AdminSidebar({ activeTab, setActiveTab, onLogout }: SidebarProps
     {
       title: t('corporate'),
       items: [
-        { id: "sustainability", label: t('esg_metrics'), icon: <Box className="size-5" /> },
+        { id: "sustainability", label: "Sustainability", icon: <Box className="size-5" /> },
         { id: "careers", label: t('job_postings'), icon: <Box className="size-5" /> },
         { id: "compliance", label: t('security_legal'), icon: <Box className="size-5" /> },
       ]

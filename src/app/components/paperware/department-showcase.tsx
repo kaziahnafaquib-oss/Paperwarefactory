@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "motion/react";
 import { Printer, Scissors, Layers, Settings, ShieldCheck, ArrowRight, Activity, Gauge, Cpu } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 
-import imgHeidelberg from "figma:asset/e72bb120492f063c2a2bd8669456a539365af830.png";
-import imgOriginalHeidelberg from "figma:asset/6acd2f3438274d3aa253228bd057142cd1415192.png";
-import imgPYQ203C from "figma:asset/118a1b347512f0ed2b31fbe81c8e1fce6d45b9d6.png";
-import imgPYQ401C from "figma:asset/306788878531737fbe418a03ca2d3121544a055d.png";
+// Replaced figma assets with reliable Unsplash URLs
+const imgHeidelberg = "https://images.unsplash.com/photo-1758183961426-88d64eb5f787?q=80&w=1080&auto=format";
+const imgOriginalHeidelberg = "https://images.unsplash.com/photo-1565514020176-db931df334c4?q=80&w=1080&auto=format";
+const imgPYQ203C = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1080&auto=format";
+const imgPYQ401C = "https://images.unsplash.com/photo-1531297461136-82lw9z1l3b1a?q=80&w=1080&auto=format";
 
 const departments = [
   {

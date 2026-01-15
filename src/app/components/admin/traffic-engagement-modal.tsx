@@ -183,7 +183,7 @@ export function TrafficEngagementModal({ isOpen, onClose }: TrafficEngagementMod
 
                   <div className="bg-zinc-900/30 border border-white/5 rounded-3xl p-8 flex flex-col">
                      <h4 className="text-lg font-black text-white uppercase tracking-tight mb-8">User Intent</h4>
-                     <div className="flex-1 w-full min-h-0 flex items-center justify-center relative">
+                     <div className="flex-1 w-full min-h-[280px] flex items-center justify-center relative">
                         <ResponsiveContainer width="100%" height={250}>
                            <PieChart>
                               <Pie

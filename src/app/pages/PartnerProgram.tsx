@@ -275,20 +275,30 @@ export function PartnerProgramPage() {
                     {[...Array(2)].map((_, i) => (
                         <div key={i} className="flex gap-16 items-center shrink-0">
                             {[
-                                { name: 'Google', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png' },
-                                { name: 'Amazon', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png' },
-                                { name: 'Netflix', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png' },
-                                { name: 'Samsung', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png' },
-                                { name: 'Apple', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png' },
-                                { name: 'Bootstrap', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Bootstrap_logo.svg/1280px-Bootstrap_logo.svg.png' }
+                                { name: 'Al Arabian', src: 'figma:asset/8c3ef6e2c2c81601beda5fdafc9fab7e12e9f1b9.png' },
+                                { name: 'Fresh', src: 'figma:asset/5b67be8022542584cc3586961212c32c1ef3b5f5.png' },
+                                { name: 'Bengal Classic Tea', src: 'figma:asset/34b648bdf72eb53992426ff8084a4c54fc8165e8.png' },
+                                { name: 'Cafe Z', src: 'figma:asset/53ca518289a67f7082d40754eedede50e7f28cde.png' },
+                                { name: 'Coffee Avenue', src: 'figma:asset/e1b52edc4bd49baf663705f27f615b1ffa798c3a.png' },
+                                { name: 'Crimson Cup', src: 'figma:asset/21e853179b862e2a71c5e1a1ba5efe58235d205f.png' },
+                                { name: 'Dhakai Khana', src: 'figma:asset/100dea1b4141ebb61c4f2107662ae90e9c55c9f7.png' },
+                                { name: 'Abdul Monem Ltd', src: 'figma:asset/d4efddfc25e06a64c90d4b323e072c2ec51b5137.png' },
+                                { name: 'Walton', src: 'figma:asset/b2396fe9ba2824e1ed2b4c04910aa4abbd4b857e.png' },
+                                { name: 'Novatek', src: 'figma:asset/f3e7a2981f7316365dad8fd018a8e205ca11f7df.png' },
+                                { name: 'MGI', src: 'figma:asset/c6f18cf9ae32f1211778c4cec70a04bd0581d943.png' },
+                                { name: 'ICDDR,B', src: 'figma:asset/5fe4879b8ec37b86777b57fed80f5c8976e5963c.png' }
                             ].map((partner, idx) => (
-                                <img 
+                                <div 
                                     key={idx}
-                                    src={partner.src}
-                                    alt={`${partner.name} Logo`}
+                                    className="h-8 md:h-10 w-auto opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
                                     title={partner.name}
-                                    className="h-8 md:h-10 w-auto object-contain grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
-                                />
+                                >
+                                    <ImageWithFallback 
+                                        src={partner.src}
+                                        alt={`${partner.name} Logo`}
+                                        className="h-full w-auto object-contain"
+                                    />
+                                </div>
                             ))}
                         </div>
                     ))}
@@ -364,7 +374,7 @@ export function PartnerProgramPage() {
       </section>
 
       {/* Client Portal Preview Section - Scroll Linked */}
-      <div ref={portalSectionRef} className="relative h-[110vh] lg:h-[150vh] bg-white text-zinc-900">
+      <div ref={portalSectionRef} className="relative h-[110vh] lg:h-[120vh] bg-white text-zinc-900">
           <div className="sticky top-0 h-screen flex items-start lg:items-center overflow-hidden pt-24 lg:pt-0">
               <div className="container mx-auto px-4 relative z-10">
                   <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20">
@@ -646,7 +656,7 @@ export function PartnerProgramPage() {
   </div>
 
       {/* Application Section */}
-      <section id="application-form" className="-mt-32 pt-0 pb-24 bg-white text-zinc-900 relative overflow-hidden z-20">
+      <section id="application-form" className="-mt-48 pt-0 pb-24 bg-white text-zinc-900 relative overflow-hidden z-20">
         {/* Decorative elements */}
         <motion.div 
             style={{ y: blobY }}

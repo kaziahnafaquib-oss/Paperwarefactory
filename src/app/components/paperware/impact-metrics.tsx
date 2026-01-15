@@ -1,164 +1,235 @@
 import React from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { 
   Zap, Droplets, Leaf, 
   ChartBar, Cpu, Recycle,
-  ArrowUpRight, TrendingUp
+  ArrowUpRight, TrendingUp,
+  ArrowRight, Sparkles
 } from "lucide-react";
+import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { useLanguage } from "../../context/LanguageContext";
 
 export function ImpactMetrics() {
   const { t } = useLanguage();
-  const [livePlastic, setLivePlastic] = React.useState(142500.42);
+  const [liveProductionCount, setLiveProductionCount] = React.useState(69550257);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [mode, setMode] = React.useState<'live' | 'calculator'>('calculator');
 
+  // Simulation of ERP Data Stream
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setLivePlastic(prev => prev + (Math.random() * 0.05));
-    }, 2000);
+      setLiveProductionCount(prev => prev + Math.floor(Math.random() * 5));
+    }, 800);
     return () => clearInterval(interval);
   }, []);
 
-  const metrics = [
-    { 
-      label: t('plastic_prevented'), 
-      value: livePlastic.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }), 
-      unit: "KG", 
-      icon: Recycle, 
-      color: "#fabf37",
-      desc: t('plastic_desc')
-    },
-    { 
-      label: t('renewable_energy'), 
-      value: "88.4", 
-      unit: "%", 
-      icon: Zap, 
-      color: "#e3d1ae",
-      desc: t('energy_desc')
-    },
-    { 
-      label: t('water_recycled'), 
-      value: "1.2M", 
-      unit: "Liters", 
-      icon: Droplets, 
-      color: "#fabf37",
-      desc: t('water_desc')
-    },
-    { 
-      label: t('fsc_certified'), 
-      value: "100", 
-      unit: "%", 
-      icon: Leaf, 
-      color: "#e3d1ae",
-      desc: t('fsc_desc')
-    }
+  const QUANTITY_OPTIONS = [
+    { label: "1 Million", value: 1_000_000 },
+    { label: "10 Million", value: 10_000_000 },
+    { label: "50 Million", value: 50_000_000 },
+    { label: "100 Million", value: 100_000_000 },
+    { label: "1 Billion", value: 1_000_000_000 },
+    { label: "10 Billion", value: 10_000_000_000 },
   ];
 
-  const stats = [
-    { label: "Energy Offset", value: "450kW", icon: <Zap />, color: "text-[#fabf37]" },
-    { label: "Water Reclaimed", value: "12M Liters", icon: <Droplets />, color: "text-blue-400" },
-    { label: "Waste Reduction", value: "98.2%", icon: <Recycle />, color: "text-emerald-400" },
-    { label: "ESG Score", value: "Tier A+", icon: <ChartBar />, color: "text-[#fabf37]" }
-  ];
+  // Calculation Logic (Per 1 Million Cups -> 3500kg Lid + 825kg Coating)
+  const calculatePlasticSaved = (quantity: number) => {
+    const factor = quantity / 1_000_000;
+    const lidKg = 3500 * factor;
+    const coatingKg = 825 * factor;
+    return { lidKg, coatingKg, total: lidKg + coatingKg };
+  };
+
+  const currentStats = React.useMemo(() => {
+    return calculatePlasticSaved(QUANTITY_OPTIONS[selectedIndex].value);
+  }, [selectedIndex]);
+
+  const formatNumber = (num: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(num);
 
   return (
-    <section className="py-20 md:py-32 bg-black relative overflow-hidden">
-      {/* Background Blueprint Grid */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#fabf37_1px,transparent_1px),linear-gradient(to_bottom,#fabf37_1px,transparent_1px)] bg-[size:50px_50px]" />
+    <section className="py-20 md:py-32 bg-white relative overflow-hidden font-['Poppins',sans-serif]">
+      {/* Animated Background Blueprint Grid */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none overflow-hidden">
+        <motion.div 
+           animate={{ x: [-25, 0], y: [-25, 0] }}
+           transition={{ duration: 10, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
+           className="absolute inset-[-50px] bg-[linear-gradient(to_right,#000000_1px,transparent_1px),linear-gradient(to_bottom,#000000_1px,transparent_1px)] bg-[size:40px_40px]" 
+        />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+        
+        {/* Header Section */}
+        <div className="text-center max-w-4xl mx-auto mb-20">
+          <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             className="inline-flex items-center gap-3 px-4 py-2 bg-zinc-100 rounded-full mb-8"
+          >
+             <div className="size-2 bg-[#FFC924] rounded-full animate-pulse" />
+             <span className="text-zinc-600 font-mono uppercase tracking-widest text-[10px]">
+                Impact Calculator Engine
+             </span>
+          </motion.div>
           
-          {/* Left: Interactive Dashboard Header */}
-          <div className="w-full lg:w-1/3 space-y-8 md:space-y-12">
-            <div className="space-y-4 md:space-y-6 text-center lg:text-left">
-              <span className="text-[#fabf37] font-black uppercase tracking-[0.4em] text-[10px] md:text-xs px-4 py-1.5 border border-[#fabf37]/30 rounded-full inline-block">
-                {t('live_impact')}
-              </span>
-              <h2 className="text-3xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter text-white leading-none">
-                {t('data_driven')}
-              </h2>
-              <p className="text-zinc-500 font-bold text-sm md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-                {t('track_contribution')}
-              </p>
-            </div>
+          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-zinc-900 leading-[0.85] mb-8">
+            PLASTIC VS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFC924] to-[#ffb300]">PAPERWARE</span>
+          </h2>
+          
+          <p className="text-zinc-500 font-medium text-lg leading-relaxed max-w-2xl mx-auto">
+             See the difference. Calculate your potential impact by switching to Paperware's sustainable solutions.
+          </p>
+        </div>
 
-            <div className="bg-zinc-900/50 border border-zinc-800 p-6 md:p-8 rounded-[32px] md:rounded-[40px] space-y-6 group cursor-pointer hover:border-[#fabf37]/50 transition-all">
-               <div className="flex items-center justify-between">
-                  <Cpu className="size-8 text-[#fabf37]" />
-                  <div className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[8px] font-black uppercase tracking-widest rounded flex items-center gap-2">
-                     <div className="size-1 rounded-full bg-emerald-500 animate-pulse" /> {t('live_feed')}
-                  </div>
-               </div>
-               <div>
-                  <h4 className="text-white font-black text-xl uppercase tracking-tight">{t('active_prod_lines')}</h4>
-                  <div className="mt-4 flex gap-2">
-                     {[1,2,3,4,5,6].map(i => (
-                        <div key={i} className="h-1 flex-1 bg-zinc-800 rounded-full overflow-hidden">
-                           <motion.div 
-                              initial={{ width: 0 }}
-                              whileInView={{ width: "100%" }}
-                              transition={{ duration: 1, delay: i * 0.1 }}
-                              className="h-full bg-[#fabf37]"
-                           />
-                        </div>
-                     ))}
-                  </div>
-               </div>
-               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center justify-between">
-                  {t('capacity_utilization')} <span>94.2%</span>
-               </p>
-            </div>
-          </div>
+        {/* Calculator Control Bar */}
+        <div className="max-w-4xl mx-auto mb-20">
+           <div className="bg-white rounded-full p-2 shadow-[0_10px_40px_rgba(0,0,0,0.05)] border border-zinc-100 relative">
+              <div className="relative h-16 bg-zinc-50 rounded-full flex items-center px-8 overflow-hidden">
+                 {/* Progress Bar */}
+                 <motion.div 
+                    className="absolute top-0 left-0 h-full bg-[#FFC924]/10"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${(selectedIndex / (QUANTITY_OPTIONS.length - 1)) * 100}%` }}
+                 />
+                 
+                 {/* Steps */}
+                 <div className="w-full flex justify-between items-center relative z-10">
+                    {QUANTITY_OPTIONS.map((opt, i) => (
+                       <button 
+                          key={i} 
+                          onClick={() => {
+                             setSelectedIndex(i);
+                             setMode('calculator');
+                          }}
+                          className={`group relative flex flex-col items-center justify-center outline-none transition-all duration-300 ${i === selectedIndex ? 'scale-110' : 'opacity-40 hover:opacity-70'}`}
+                       >
+                          <div className={`size-3 rounded-full mb-3 transition-colors ${i <= selectedIndex ? 'bg-[#FFC924]' : 'bg-zinc-300'}`} />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 hidden md:block">
+                             {opt.label}
+                          </span>
+                       </button>
+                    ))}
+                 </div>
+              </div>
 
-          {/* Right: Metrics Grid */}
-          <div className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
-            {metrics.map((metric, i) => (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/50 p-6 md:p-10 rounded-[32px] md:rounded-[50px] hover:bg-zinc-900/60 transition-all group relative overflow-hidden"
-              >
-                {/* Background Glow */}
-                <div className="absolute -top-20 -right-20 size-40 bg-[#fabf37]/5 blur-[80px] group-hover:bg-[#fabf37]/10 transition-all" />
+              {/* Floating Value Badge */}
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-zinc-900 text-white px-6 py-2 rounded-full shadow-xl">
+                 <span className="font-black text-xl tracking-tight">
+                    {formatNumber(QUANTITY_OPTIONS[selectedIndex].value)} Cups
+                 </span>
+                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 size-3 bg-zinc-900 rotate-45" />
+              </div>
+           </div>
+        </div>
 
-                <div className="flex justify-between items-start mb-8 md:mb-12">
-                  <div className={`p-4 md:p-5 rounded-xl md:rounded-2xl bg-black border border-zinc-800 group-hover:border-[${metric.color}]/50 transition-all`}>
-                    <metric.icon className="size-6 md:size-8" style={{ color: metric.color }} />
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 mb-1">{t('status')}</p>
-                    <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest flex items-center justify-end gap-1">
-                      <TrendingUp className="size-3" /> {t('optimizing')}
-                    </p>
-                  </div>
-                </div>
+        {/* Visual Comparison Area */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-24 items-center max-w-6xl mx-auto">
+           
+           {/* Left: The Problem (Plastic) */}
+           <div className="relative group">
+              <div className="aspect-[4/5] relative flex items-center justify-center bg-zinc-50 rounded-[3rem] overflow-hidden">
+                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.1)_0%,transparent_70%)]" />
+                 
+                 <div className="relative z-10 text-center">
+                    <motion.div 
+                       animate={{ 
+                          y: [0, -10, 0],
+                          rotate: [0, -2, 0]
+                       }}
+                       transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                       className="w-48 md:w-64 relative mb-8 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                    >
+                       <ImageWithFallback
+                          src="https://images.unsplash.com/photo-1608764796781-35e7ce805822?auto=format&fit=crop&w=600&q=80"
+                          alt="Plastic Waste"
+                          className="w-full object-cover drop-shadow-2xl rotate-[-5deg]"
+                       />
+                       <div className="absolute -top-6 -right-6 bg-red-500 text-white size-16 rounded-full flex items-center justify-center font-black text-2xl shadow-xl animate-bounce">
+                          ×
+                       </div>
+                    </motion.div>
+                    
+                    <h3 className="text-3xl font-black text-zinc-300 uppercase tracking-tighter mb-2 group-hover:text-red-500 transition-colors">The Waste</h3>
+                    <div className="inline-block bg-zinc-200 rounded-full px-4 py-1">
+                       <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Non-Recyclable</span>
+                    </div>
+                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
-                    <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-none">{metric.value}</h3>
-                    <span className="text-sm md:text-xl font-black uppercase text-zinc-700 italic tracking-tighter">{metric.unit}</span>
-                  </div>
-                  <h4 className="text-base md:text-xl font-black uppercase tracking-tight text-white/90">{metric.label}</h4>
-                </div>
+                 {/* Waste Stats */}
+                 <div className="absolute bottom-12 left-0 w-full px-8">
+                    <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-red-100 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                       <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs font-black uppercase text-zinc-400">Plastic Created</span>
+                          <TrendingUp className="size-4 text-red-500" />
+                       </div>
+                       <div className="text-4xl font-black text-zinc-900 tracking-tighter">
+                          {formatNumber(currentStats.total)} <span className="text-lg text-zinc-400">KG</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
 
-                <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-zinc-800/50 flex items-center justify-between">
-                   <p className="text-zinc-500 font-bold text-[10px] md:text-xs">{metric.desc}</p>
-                   <ArrowUpRight className="size-4 md:size-5 text-zinc-700 group-hover:text-[#fabf37] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+           {/* Right: The Solution (Paperware) */}
+           <div className="relative group">
+              <div className="aspect-[4/5] relative flex items-center justify-center bg-white rounded-[3rem] overflow-hidden shadow-2xl border-4 border-zinc-50">
+                 <div className="absolute inset-0 bg-[#FFC924]/5" />
+                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(255,201,36,0.2)_0%,transparent_70%)]" />
+                 
+                 <div className="relative z-10 text-center">
+                    <motion.div 
+                       animate={{ 
+                          y: [0, -15, 0],
+                          scale: [1, 1.02, 1]
+                       }}
+                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                       className="w-56 md:w-72 relative mb-8"
+                    >
+                       <ImageWithFallback
+                          src="https://images.unsplash.com/photo-1588015314375-150c5c0e8681?auto=format&fit=crop&w=600&q=80"
+                          alt="Paperware Solution"
+                          className="w-full object-cover drop-shadow-2xl"
+                       />
+                       {/* Floating Elements */}
+                       <div className="absolute -top-4 -right-8 bg-white text-zinc-900 px-4 py-2 rounded-full shadow-xl flex items-center gap-2">
+                          <Leaf className="size-4 text-[#FFC924] fill-current" />
+                          <span className="text-[10px] font-black uppercase tracking-widest">100% Eco</span>
+                       </div>
+                       
+                       {/* Branding */}
+                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-zinc-900/10 font-black text-6xl leading-none tracking-tighter pointer-events-none">
+                          PAPER<br/>WARE
+                       </div>
+                    </motion.div>
+                    
+                    <h3 className="text-3xl font-black text-zinc-900 uppercase tracking-tighter mb-2">The Solution</h3>
+                    <div className="inline-block bg-[#FFC924] rounded-full px-4 py-1 shadow-lg shadow-[#FFC924]/30">
+                       <span className="text-xs font-bold text-zinc-900 uppercase tracking-widest">Plastic Free</span>
+                    </div>
+                 </div>
+
+                 {/* Savings Stats */}
+                 <div className="absolute bottom-12 left-0 w-full px-8">
+                    <div className="bg-zinc-900 text-white p-6 rounded-2xl shadow-xl transform translate-y-0 transition-all duration-500">
+                       <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs font-black uppercase text-[#FFC924]">Total Impact Saved</span>
+                          <Sparkles className="size-4 text-[#FFC924]" />
+                       </div>
+                       <div className="text-4xl font-black tracking-tighter">
+                          {formatNumber(currentStats.total)} <span className="text-lg text-zinc-500">KG</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
 
         </div>
+
       </div>
 
       {/* Industrial Footer Line */}
-      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#fabf37]/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
     </section>
   );
 }

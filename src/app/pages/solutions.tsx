@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "motion/react";
 import { Building2, ShoppingBag, Factory, Truck, ShieldCheck, Zap, Globe as Globe2, ArrowRight, Package, Box, Lightbulb, Users } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import imgPaperCups from 'figma:asset/aeed94788eb16edccd466a19c50e38006db16bf5.png';
+import imgColorfulCups from 'figma:asset/6adcf127ea8fcf1105d20bd5049c27d9545b8c86.png';
 
 const solutions = [
   {
@@ -76,7 +78,7 @@ export function SolutionsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {solutions.map((sol, idx) => {
             const paperImages: Record<string, string> = {
-              "food-beverage": "https://images.unsplash.com/photo-1585140426908-fed7ea5f98ee?q=80&w=1000",
+              "food-beverage": imgColorfulCups,
               "pharmaceutical": "https://images.unsplash.com/photo-1616526628220-f7b03df408b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2luZSUyMGJveGVzJTIwcGFja2FnaW5nJTIwZGlmZmVyZW50JTIwc2l6ZXN8ZW58MXx8fHwxNzY3MzUwOTc4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
               "retail-fmcg": "https://images.unsplash.com/photo-1705592579405-0d59931c8e00?q=80&w=1000",
               "industrial-bulk": "https://images.unsplash.com/photo-1549030927-006822377380?q=80&w=1000"
@@ -177,8 +179,8 @@ export function SolutionsPage() {
       {/* CTA Section */}
       <section className="py-32 bg-white text-center">
         <div className="container mx-auto px-4">
-          <h2 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-none mb-12">
-            Ready to <span className="text-zinc-200 italic">Integrate?</span>
+          <h2 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-none mb-12 text-black">
+            Ready to <span className="text-black italic">Integrate?</span>
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
             <button className="px-12 py-6 bg-black text-[#fabf37] rounded-full text-sm font-black uppercase tracking-widest hover:scale-105 transition-transform">

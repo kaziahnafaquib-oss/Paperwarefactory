@@ -154,7 +154,7 @@ export function ProductEngagementModal({ isOpen, onClose }: ProductEngagementMod
 
                   <div className="bg-zinc-900/30 border border-white/5 rounded-3xl p-8 flex flex-col">
                      <h4 className="text-lg font-black text-white uppercase tracking-tight mb-8">Traffic Sources</h4>
-                     <div className="flex-1 flex items-center justify-center">
+                     <div className="flex-1 flex items-center justify-center min-h-[250px]">
                         <ResponsiveContainer width="100%" height={200}>
                            <BarChart data={sourceData} layout="vertical" barSize={24}>
                               <XAxis type="number" hide />

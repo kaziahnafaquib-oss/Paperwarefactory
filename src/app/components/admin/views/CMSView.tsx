@@ -17,7 +17,8 @@ import {
   Users,
   Play,
   Star,
-  Zap
+  Zap,
+  FileText
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -48,6 +49,11 @@ interface CMSViewProps {
   onUpdateCareers?: (careers: any[]) => void;
   clientProjects?: any[];
   onUpdateClientProjects?: (projects: any[]) => void;
+  partners?: any[];
+  onUpdatePartners?: (partners: any[]) => void;
+  brochureUrl?: string;
+  onUpdateBrochure?: (url: string) => void;
+  defaultCategory?: string | null;
 }
 
 export default function CMSView({ 
@@ -70,17 +76,25 @@ export default function CMSView({
   careers = [],
   onUpdateCareers,
   clientProjects = [],
-  onUpdateClientProjects
+  onUpdateClientProjects,
+  partners = [],
+  onUpdatePartners,
+  brochureUrl,
+  onUpdateBrochure,
+  defaultCategory = null
 }: CMSViewProps) {
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(defaultCategory);
   const [screenSize, setScreenSize] = React.useState({ w: 1920, h: 1080 });
   const [editingProduct, setEditingProduct] = React.useState<any>(null);
   const [isAddProductOpen, setIsAddProductOpen] = React.useState(false);
   const [editingProject, setEditingProject] = React.useState<any>(null);
   const [isAddProjectOpen, setIsAddProjectOpen] = React.useState(false);
+  const [editingPartner, setEditingPartner] = React.useState<any>(null);
+  const [isAddPartnerOpen, setIsAddPartnerOpen] = React.useState(false);
   const [isVideoLive, setIsVideoLive] = React.useState(true);
   const [videoInput, setVideoInput] = React.useState(heroVideoUrl || "");
   const [videoMobileInput, setVideoMobileInput] = React.useState(heroVideoMobileUrl || "");
+  const [brochureInput, setBrochureInput] = React.useState(brochureUrl || "");
   const [heroTitle, setHeroTitle] = React.useState(heroContent?.title || "");
   const [heroSub1, setHeroSub1] = React.useState(heroContent?.subtitle1 || "");
   const [heroSub2, setHeroSub2] = React.useState(heroContent?.subtitle2 || "");
@@ -89,6 +103,39 @@ export default function CMSView({
   const [pageVideoInput, setPageVideoInput] = React.useState(clientsVideoUrl || "");
   const prevVideoRef = React.useRef(clientsVideoUrl || "");
   const videoRef = React.useRef<HTMLVideoElement>(null);
+  const heroDesktopRef = React.useRef<HTMLVideoElement>(null);
+  const heroMobileRef = React.useRef<HTMLVideoElement>(null);
+
+  const PRESETS = [
+    { label: "Robotic Arm", url: "https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4" },
+    { label: "Data Network", url: "https://cdn.pixabay.com/video/2020/12/13/59385-492770289_large.mp4" },
+    { label: "Cyber City", url: "https://cdn.pixabay.com/video/2021/04/09/70624-535316315_large.mp4" }
+  ];
+
+  const handleApplyPreset = (url: string) => {
+    setVideoInput(url);
+    isInternalChange.current = true;
+    toast.success("Video Preset Applied");
+  };
+
+  const handleClear = () => {
+    setVideoInput("");
+    setVideoMobileInput("");
+    isInternalChange.current = true;
+    toast.info("Fields Cleared");
+  };
+
+  React.useEffect(() => {
+    if (heroDesktopRef.current) {
+      heroDesktopRef.current.load();
+    }
+  }, [videoInput]);
+
+  React.useEffect(() => {
+    if (heroMobileRef.current) {
+      heroMobileRef.current.load();
+    }
+  }, [videoMobileInput, videoInput]);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -141,10 +188,16 @@ export default function CMSView({
     }
   }, [pageVideoInput]);
 
+  React.useEffect(() => {
+    // Reset error state when video input changes to allow new attempt
+    setLoadError(false);
+  }, [videoInput, videoMobileInput]);
+
   // Sync with props when category changes or initial load
   React.useEffect(() => {
     if (heroVideoUrl) setVideoInput(heroVideoUrl);
     if (heroVideoMobileUrl) setVideoMobileInput(heroVideoMobileUrl);
+    if (brochureUrl) setBrochureInput(brochureUrl);
     if (clientsVideoUrl) setPageVideoInput(clientsVideoUrl);
     if (heroContent) {
       setHeroTitle(heroContent.title);
@@ -156,6 +209,7 @@ export default function CMSView({
   const handleSaveHero = () => {
     if (onUpdateHeroVideo) onUpdateHeroVideo(videoInput);
     if (onUpdateHeroVideoMobile) onUpdateHeroVideoMobile(videoMobileInput);
+    if (onUpdateBrochure) onUpdateBrochure(brochureInput);
     if (onUpdateHeroContent) {
       onUpdateHeroContent({
         title: heroTitle,
@@ -169,6 +223,7 @@ export default function CMSView({
   const handleReset = () => {
     setVideoInput("https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4");
     setVideoMobileInput("");
+    setBrochureInput("");
     setHeroTitle("PREMIUM PAPER SOLUTIONS");
     setHeroSub1("Global Standard. Sustainable Impact. Industrial Precision.");
     setHeroSub2("YOUR PARTNER IN SUSTAINABLE MANUFACTURING EXCELLENCE.");
@@ -231,37 +286,107 @@ export default function CMSView({
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Desktop Video URL (Direct MP4)</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Desktop Video URL (MP4 or YouTube)</label>
                   <div className="flex items-center gap-3 bg-black border border-white/10 rounded-2xl px-5 py-4 focus-within:border-[#fabf37] transition-all">
                     <Monitor className="size-4 text-zinc-500" />
                     <input 
                       type="text" 
                       value={videoInput}
                       onChange={(e) => {
-                        setVideoInput(e.target.value.trim());
+                        let value = e.target.value;
+                        
+                        // Handle iframe paste
+                        if (value.includes("<iframe") && value.includes("src=")) {
+                          const srcMatch = value.match(/src=["'](.*?)["']/);
+                          if (srcMatch && srcMatch[1]) {
+                            value = srcMatch[1];
+                            toast.success("Extracted URL from embed code");
+                          }
+                        }
+
+                        // Handle YouTube Shorts
+                        if (value.includes("youtube.com/shorts/")) {
+                          value = value.replace("youtube.com/shorts/", "youtube.com/watch?v=");
+                          toast.success("Converted Shorts link to standard format");
+                        }
+
+                        setVideoInput(value);
                         isInternalChange.current = true;
                       }}
-                      placeholder="Paste Desktop MP4 URL..." 
+                      placeholder="Paste Video URL (MP4 or YouTube)..." 
                       className="w-full bg-transparent text-white text-sm outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Mobile Video URL (Direct MP4)</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Mobile Video URL (MP4 or YouTube)</label>
                   <div className="flex items-center gap-3 bg-black border border-white/10 rounded-2xl px-5 py-4 focus-within:border-[#fabf37] transition-all">
                     <Camera className="size-4 text-zinc-500" />
                     <input 
                       type="text" 
                       value={videoMobileInput}
                       onChange={(e) => {
-                        setVideoMobileInput(e.target.value.trim());
+                        let value = e.target.value;
+                        
+                        // Handle iframe paste
+                        if (value.includes("<iframe") && value.includes("src=")) {
+                          const srcMatch = value.match(/src=["'](.*?)["']/);
+                          if (srcMatch && srcMatch[1]) {
+                            value = srcMatch[1];
+                            toast.success("Extracted URL from embed code");
+                          }
+                        }
+
+                        // Handle YouTube Shorts
+                        if (value.includes("youtube.com/shorts/")) {
+                          value = value.replace("youtube.com/shorts/", "youtube.com/watch?v=");
+                          toast.success("Converted Shorts link to standard format");
+                        }
+
+                        setVideoMobileInput(value);
                         isInternalChange.current = true;
                       }}
-                      placeholder="Paste Mobile MP4 URL..." 
+                      placeholder="Paste Mobile Video URL..." 
                       className="w-full bg-transparent text-white text-sm outline-none"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Brochure Download Link (PDF)</label>
+                  <div className="flex items-center gap-3 bg-black border border-white/10 rounded-2xl px-5 py-4 focus-within:border-[#fabf37] transition-all">
+                    <FileText className="size-4 text-zinc-500" />
+                    <input 
+                      type="text" 
+                      value={brochureInput}
+                      onChange={(e) => {
+                        setBrochureInput(e.target.value);
+                        isInternalChange.current = true;
+                      }}
+                      placeholder="Paste PDF Link..." 
+                      className="w-full bg-transparent text-white text-sm outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Actions & Presets */}
+                <div className="space-y-3 pt-2">
+                   <div className="flex items-center justify-between px-2">
+                      <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Quick Presets</span>
+                      <button onClick={handleClear} className="text-[9px] font-bold text-red-400 uppercase tracking-widest hover:text-red-300">Clear All</button>
+                   </div>
+                   <div className="grid grid-cols-3 gap-2">
+                      {PRESETS.map((preset, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleApplyPreset(preset.url)}
+                          className="px-3 py-2 rounded-lg bg-zinc-900 border border-white/5 hover:border-[#fabf37]/50 hover:bg-zinc-800 transition-all text-left group"
+                        >
+                          <span className="block text-[9px] font-black text-white/60 group-hover:text-white uppercase tracking-wider truncate">{preset.label}</span>
+                        </button>
+                      ))}
+                   </div>
                 </div>
 
                 <div className="space-y-2">
@@ -339,49 +464,68 @@ export default function CMSView({
                  <Monitor className="size-5" /> Desktop Preview
                </h3>
                <div className="bg-black border border-white/5 rounded-[48px] p-4 aspect-video relative overflow-hidden group">
-                  {loadError && videoInput && !videoInput.includes('youtube.com') && !videoInput.includes('youtu.be') && (
-                     <div className="absolute inset-0 z-20 bg-black/60 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl transition-all duration-500">
-                        <div className="size-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
-                          <AlertTriangle className="size-8 text-red-500 animate-pulse" />
-                        </div>
-                        <p className="text-[11px] font-black text-white uppercase tracking-[0.3em] mb-3">Synchronization Failed</p>
-                        <p className="text-[9px] font-bold text-zinc-400 uppercase leading-loose max-w-[240px] tracking-widest mb-6">
-                          Source node returned an error. <br/>
-                          <span className="text-[#fabf37] mt-2 block italic">Please provide a direct .mp4 link.</span>
-                        </p>
-                     </div>
-                  )}
                   {(() => {
-                    const getYoutubeId = (url: string) => {
-                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                      const match = url.match(regExp);
-                      return (match && match[2].length === 11) ? match[2] : null;
+                    const getYouTubeId = (url: string) => {
+                      if (!url) return null;
+                      const cleanUrl = url.replace(/['"]/g, '').trim();
+                      
+                      // 1. Try to find ID from URL
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|live\/)([^#&?]*).*/;
+                      const match = cleanUrl.match(regExp);
+                      if (match && match[2]) {
+                        const idMatch = match[2].match(/^[a-zA-Z0-9_-]{11}/);
+                        if (idMatch) return idMatch[0];
+                        if (match[2].length === 11) return match[2];
+                      }
+
+                      // 2. Fallback: Is the input ITSELF just the ID?
+                      const rawIdMatch = cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/);
+                      if (rawIdMatch) return rawIdMatch[0];
+
+                      return null;
                     };
-                    const youtubeId = getYoutubeId(videoInput || "");
-                    
-                    if (youtubeId) {
-                      return (
-                        <iframe
-                          key={youtubeId}
-                          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0`}
-                          className="w-full h-full object-cover rounded-[36px]"
-                          allow="autoplay; encrypted-media"
-                        />
-                      );
-                    }
-                    
+                    const inputValue = (videoInput || "").trim();
+                    const videoId = getYouTubeId(inputValue);
+                    const isInvalidFormat = inputValue.length > 5 && !videoId && (inputValue.includes("youtube") || inputValue.includes("youtu.be"));
+
                     return (
-                      <video 
-                        key={videoInput || "default-player"}
-                        src={videoInput || "https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4"}
-                        autoPlay 
-                        muted 
-                        loop 
-                        playsInline
-                        onLoadedData={() => setLoadError(false)}
-                        onError={() => videoInput && setLoadError(true)}
-                        className="w-full h-full object-cover rounded-[36px]"
-                      />
+                      <>
+                        {isInvalidFormat && (
+                           <div className="absolute inset-0 z-20 bg-black/80 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl transition-all duration-500">
+                              <div className="size-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
+                                <AlertTriangle className="size-8 text-red-500 animate-pulse" />
+                              </div>
+                              <p className="text-[11px] font-black text-white uppercase tracking-[0.3em] mb-3">Invalid Source</p>
+                              <p className="text-[9px] font-bold text-zinc-400 uppercase leading-loose max-w-[240px] tracking-widest mb-6">
+                                The provided URL is not supported. <br/>
+                                <span className="text-[#fabf37] mt-2 block italic">Please use a valid YouTube link.</span>
+                              </p>
+                           </div>
+                        )}
+                        
+                        {videoId ? (
+                          <div className="w-full h-full rounded-[36px] overflow-hidden scale-[1.35] pointer-events-none">
+                            <iframe
+                              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&iv_load_policy=3`}
+                              className="w-full h-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              title="YouTube video player"
+                              style={{ border: 0 }}
+                            />
+                          </div>
+                        ) : (
+                          <video 
+                            ref={heroDesktopRef}
+                            key="default-player"
+                            src="https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4"
+                            autoPlay 
+                            muted 
+                            loop 
+                            playsInline
+                            className="w-full h-full object-cover rounded-[36px]"
+                          />
+                        )}
+                      </>
                     );
                   })()}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -399,31 +543,54 @@ export default function CMSView({
                </h3>
                <div className="flex justify-center">
                  <div className="bg-black border-[12px] border-zinc-900 rounded-[60px] w-[280px] aspect-[9/19] relative overflow-hidden shadow-2xl">
-                    {(() => {
-                      const activeUrl = videoMobileInput || videoInput;
-                      const getYoutubeId = (url: string) => {
-                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                        const match = url.match(regExp);
-                        return (match && match[2].length === 11) ? match[2] : null;
+                     {(() => {
+                      const getYouTubeId = (url: string) => {
+                        if (!url) return null;
+                        const cleanUrl = url.replace(/['"]/g, '').trim();
+                        
+                        // 1. Try to find ID from URL
+                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|live\/)([^#&?]*).*/;
+                        const match = cleanUrl.match(regExp);
+                        if (match && match[2]) {
+                          const idMatch = match[2].match(/^[a-zA-Z0-9_-]{11}/);
+                          if (idMatch) return idMatch[0];
+                          if (match[2].length === 11) return match[2];
+                        }
+
+                        // 2. Fallback: Is the input ITSELF just the ID?
+                        const rawIdMatch = cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/);
+                        if (rawIdMatch) return rawIdMatch[0];
+                        
+                        return null;
                       };
-                      const youtubeId = getYoutubeId(activeUrl || "");
                       
-                      if (youtubeId) {
+                      const rawUrl = videoMobileInput || videoInput;
+                      const activeUrl = (rawUrl || "").trim();
+                      const videoId = getYouTubeId(activeUrl);
+
+                      if (videoId) {
                         return (
-                          <iframe
-                            key={youtubeId + "-mobile"}
-                            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0`}
-                            className="w-full h-full object-cover"
-                            allow="autoplay; encrypted-media"
-                          />
+                          <div className="w-[300%] h-full -ml-[100%] pointer-events-none">
+                             <iframe
+                               src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&iv_load_policy=3`}
+                               className="w-full h-full"
+                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                               title="YouTube video player"
+                               style={{ border: 0 }}
+                             />
+                          </div>
                         );
                       }
-                      
+
                       return (
                         <video 
-                          key={activeUrl || "mobile-default"}
-                          src={activeUrl || "https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4"}
-                          autoPlay muted loop playsInline
+                          ref={heroMobileRef}
+                          key="mobile-default"
+                          src="https://cdn.pixabay.com/video/2019/04/16/22896-331593818_large.mp4"
+                          autoPlay 
+                          muted 
+                          loop 
+                          playsInline
                           className="w-full h-full object-cover"
                         />
                       );
@@ -1366,6 +1533,158 @@ export default function CMSView({
     );
   }
 
+  if (selectedCategory === "Global Partners") {
+    const handleSavePartner = () => {
+      if (!onUpdatePartners) return;
+      
+      if (editingPartner?.id) {
+        // Update existing
+        const updated = partners.map((p: any) => p.id === editingPartner.id ? editingPartner : p);
+        onUpdatePartners(updated);
+        toast.success("Partner Updated");
+      } else {
+        // Add new
+        const newPartner = { ...editingPartner, id: Date.now().toString() };
+        onUpdatePartners([...partners, newPartner]);
+        toast.success("Partner Added");
+      }
+      setEditingPartner(null);
+      setIsAddPartnerOpen(false);
+    };
+
+    const handleDeletePartner = (id: string) => {
+      if (!onUpdatePartners) return;
+      if (confirm("Remove this partner?")) {
+        onUpdatePartners(partners.filter((p: any) => p.id !== id));
+        toast.success("Partner Removed");
+      }
+    };
+
+    return (
+      <ViewContainer 
+        title="Global Partner Network" 
+        subtitle="Manage Trusted Brands & Collaborators"
+        actions={
+          <div className="flex gap-4">
+             <button 
+              onClick={() => setSelectedCategory(null)}
+              className="bg-white/5 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border border-white/10 flex items-center gap-2"
+            >
+              <ChevronRight className="size-4 rotate-180" /> Back to CMS
+            </button>
+            <button 
+              onClick={() => {
+                setEditingPartner({});
+                setIsAddPartnerOpen(true);
+              }}
+              className="bg-[#fabf37] text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#fabf37]/20"
+            >
+              <Plus className="size-4" /> Add Partner
+            </button>
+          </div>
+        }
+      >
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {partners.map((partner: any) => (
+            <div key={partner.id} className="bg-zinc-900/50 border border-white/5 rounded-[24px] p-6 group hover:border-[#fabf37]/50 transition-all flex flex-col items-center text-center relative">
+               <div className="size-20 bg-white p-4 rounded-2xl mb-4 flex items-center justify-center">
+                 <img src={partner.logo} className="max-w-full max-h-full object-contain" alt={partner.name} />
+               </div>
+               <h4 className="text-xs font-black text-white uppercase tracking-tight mb-1 line-clamp-1">{partner.name}</h4>
+               <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest line-clamp-1">{partner.category}</p>
+               
+               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                  <button 
+                    onClick={() => {
+                      setEditingPartner(partner);
+                      setIsAddPartnerOpen(true);
+                    }}
+                    className="size-6 rounded-lg bg-black/80 text-white flex items-center justify-center hover:text-[#fabf37]"
+                  >
+                    <Edit className="size-3" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeletePartner(partner.id)}
+                    className="size-6 rounded-lg bg-black/80 text-white flex items-center justify-center hover:text-red-500"
+                  >
+                    <Trash2 className="size-3" />
+                  </button>
+               </div>
+            </div>
+          ))}
+        </div>
+
+        <AnimatePresence>
+          {isAddPartnerOpen && (
+            <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => { setIsAddPartnerOpen(false); setEditingPartner(null); }}
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-lg bg-zinc-900 rounded-[40px] p-10 border border-white/10 shadow-2xl"
+              >
+                <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-8">
+                  {editingPartner?.id ? "Update Partner" : "New Partner"}
+                </h3>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest ml-2">Partner Name</label>
+                    <input 
+                      value={editingPartner?.name || ""}
+                      onChange={(e) => setEditingPartner({...editingPartner, name: e.target.value})}
+                      placeholder="e.g. Acme Corp"
+                      className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-white text-sm outline-none focus:border-[#fabf37] transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest ml-2">Category</label>
+                    <input 
+                      value={editingPartner?.category || ""}
+                      onChange={(e) => setEditingPartner({...editingPartner, category: e.target.value})}
+                      placeholder="e.g. Raw Material Supplier"
+                      className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-white text-sm outline-none focus:border-[#fabf37] transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest ml-2">Logo URL</label>
+                    <input 
+                      value={editingPartner?.logo || ""}
+                      onChange={(e) => setEditingPartner({...editingPartner, logo: e.target.value})}
+                      placeholder="https://..."
+                      className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-white text-sm outline-none focus:border-[#fabf37] transition-all"
+                    />
+                  </div>
+                  
+                  <div className="flex gap-4 pt-4">
+                    <button 
+                      onClick={() => setIsAddPartnerOpen(false)}
+                      className="flex-1 py-4 bg-white/5 text-zinc-400 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:text-white hover:bg-white/10 transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={handleSavePartner}
+                      className="flex-1 py-4 bg-[#fabf37] text-black rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-[#fabf37]/20"
+                    >
+                      Save Partner
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </ViewContainer>
+    );
+  }
+
   if (selectedCategory) {
     return (
       <ViewContainer 
@@ -1418,6 +1737,7 @@ export default function CMSView({
           { label: "Impact Dashboard", items: 6, last: "5m ago" },
           { label: "Career Postings", items: 3, last: "1w ago" },
           { label: "Legal/Privacy", items: 2, last: "2m ago" },
+          { label: "Global Partners", items: partners.length, last: "Now" },
         ].map((item, i) => (
           <div 
             key={i} 

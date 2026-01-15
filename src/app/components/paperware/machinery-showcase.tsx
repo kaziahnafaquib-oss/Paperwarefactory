@@ -14,38 +14,32 @@ const getMachineries = (t: (key: string) => string) => [
     name: "HEIDELBERG MO-V-P",
     type: "4 Color Printing Unit",
     image: imgHeidelberg,
-    val: "70K",
-    unit: "Pcs/Day",
+    val: "140K",
+    unit: "PCS/DAY",
+    mainTitle: "PRINTING UNIT",
+    subtitle: "HEIDELBERG MO-V-P",
     specs: [
-      "4 Color System",
-      "48 x 65 cm",
-      "19 x 25.5 (Inch)"
+      "HEIDELBERG MO-V-P (19x25.9\")",
+      "ORIGINAL HEIDELBERG (25.25x36\")",
+      "DOUBLE DAISY PLATE TECHNOLOGY"
     ],
-    detail: "High-speed professional offset printing for premium branding.",
+    detail: "HIGH-PRECISION 4-COLOR OFFSET PRINTING FOR PREMIUM BRANDING.",
     icon: <Printer className="size-6" />
-  },
-  {
-    name: "ORIGINAL HEIDELBERG",
-    type: "Offset-Letterset Unit",
-    image: imgOriginalHeidelberg,
-    val: "70K",
-    unit: "Pcs/Day",
-    specs: [
-      "Offset-Letterset",
-      "64 x 91.5cm",
-      "25.25 x 36 (Inch)"
-    ],
-    detail: "The gold standard of printing, specialized in heavy-duty paper processing.",
-    icon: <Factory className="size-6" />
   },
   {
     name: "Ultrasonic Former",
     type: "Forming Unit",
     image: imgForming,
     val: "350K",
-    unit: "Pcs/Day",
-    specs: ["Medical Grade Hygiene", "Automated Control", "High-speed Production"],
-    detail: "Automated ultrasonic forming ensuring leak-proof precision.",
+    unit: "PCS/DAY",
+    mainTitle: "FORMING UNIT",
+    subtitle: "ULTRASONIC FORMER",
+    specs: [
+      "MEDICAL GRADE HYGIENE",
+      "AUTOMATIC QUALITY CONTROL",
+      "HIGH-SPEED PRODUCTION"
+    ],
+    detail: "AUTOMATED ULTRASONIC FORMING ENSURING LEAK-PROOF PRECISION.",
     icon: <Box className="size-6" />
   },
   {
@@ -53,10 +47,32 @@ const getMachineries = (t: (key: string) => string) => [
     type: "Cutting Unit",
     image: imgCutting,
     val: "12K",
-    unit: "Pcs/Day",
-    specs: ["Laser Calibration", "Zero-waste Trimming", "Custom Shape Support"],
-    detail: "Precision die-cutting with minimal waste & laser accuracy.",
+    unit: "PCS/DAY",
+    mainTitle: "CUTTING UNIT",
+    subtitle: "DIE-CUT PRECISION",
+    specs: [
+      "LASER GUIDED CALIBRATION",
+      "ZERO-WASTE TRIMMING",
+      "CUSTOM SHAPE SUPPORT"
+    ],
+    detail: "PRECISION DIE-CUTTING WITH MINIMAL WASTE & LASER ACCURACY.",
     icon: <Cpu className="size-6" />
+  },
+  {
+    name: "ORIGINAL HEIDELBERG",
+    type: "Offset-Letterset Unit",
+    image: imgOriginalHeidelberg,
+    val: "25K",
+    unit: "PCS/DAY",
+    mainTitle: "LAMINATION UNIT",
+    subtitle: "THERMAL LAMINATOR",
+    specs: [
+      "ECO-FRIENDLY PLA SUPPORT",
+      "HEAT-SEAL OPTIMIZATION",
+      "GLOSS & MATTE FINISH"
+    ],
+    detail: "PE/PLA LAMINATION FOR SUPERIOR LIQUID & HEAT RESISTANCE.",
+    icon: <Zap className="size-6" />
   }
 ];
 
@@ -75,14 +91,61 @@ export const MachineryShowcase = React.memo(function MachineryShowcase() {
             className="flex items-center gap-4 text-black font-black uppercase tracking-[0.4em] text-[10px]"
           >
             <div className="h-[2px] w-12 bg-[#fabf37]" />
-            {t('prod_intel') || "Production Intelligence"}
+            {t('prod_intel') || "Production Power"}
           </motion.div>
           <h2 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
-            {t('scaling_excellence') || "Scaling Excellence."}
+            {t('scaling_excellence') || "Manufacturing Excellence."}
           </h2>
           <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-2xl leading-relaxed uppercase tracking-widest pt-4">
-            {t('machinery_desc') || "Our facility is powered by world-class machinery ensuring global standards of precision and efficiency."}
+            {t('machinery_desc') || "World-class machinery powering high-speed production with unmatched precision and quality."}
           </p>
+        </div>
+
+        {/* Production Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+          {[
+            { value: "500K+", label: "Daily Capacity", icon: <Activity className="size-5" />, unit: "pcs/day" },
+            { value: "99.8%", label: "Uptime Rate", icon: <Gauge className="size-5" />, unit: "reliability" },
+            { value: "24/7", label: "Operations", icon: <Settings className="size-5" />, unit: "active" },
+            { value: "ISO 9001", label: "Certified", icon: <Database className="size-5" />, unit: "quality" }
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className={`bg-zinc-50 rounded-3xl p-6 md:p-8 border-2 transition-all duration-300 group hover:border-[#fabf37] ${
+                i === 1 ? 'border-[#fabf37]' : 'border-zinc-200'
+              }`}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-[#fabf37]">
+                  {stat.icon}
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">
+                  Unit {i + 1}
+                </span>
+              </div>
+
+              {/* Value */}
+              <div className="mb-2">
+                <div className="text-5xl md:text-6xl font-black italic tracking-tighter leading-none text-black">
+                  {stat.value}
+                </div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mt-1">
+                  {stat.unit}
+                </div>
+              </div>
+
+              {/* Label */}
+              <div className="mt-6 mb-4">
+                <h4 className="text-sm md:text-base font-black uppercase tracking-tight text-black">
+                  {stat.label}
+                </h4>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -92,45 +155,59 @@ export const MachineryShowcase = React.memo(function MachineryShowcase() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="relative overflow-hidden flex flex-col min-h-[420px] p-6 md:p-10 border border-zinc-100 group hover:border-[#fabf37] hover:bg-zinc-50 transition-all duration-500 rounded-[32px] bg-white"
+              className={`bg-white rounded-[32px] p-6 md:p-8 flex flex-col border-2 transition-all duration-300 ${
+                i === 0 ? 'border-[#fabf37]' : 'border-zinc-200 hover:border-[#fabf37]'
+              }`}
             >
-              {/* Background Machine Image */}
-              <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 -rotate-6 translate-x-12 translate-y-12 pointer-events-none overflow-hidden">
-                <img src={machine.image} alt="" className="w-full h-full object-cover grayscale" />
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className={`${i === 0 ? 'text-[#fabf37]' : 'text-zinc-400'}`}>
+                  {machine.icon}
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400">
+                  UNIT {i + 1}
+                </span>
               </div>
-              
-              <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="size-12 rounded-2xl bg-black flex items-center justify-center text-[#fabf37] shadow-xl group-hover:scale-110 transition-transform">
-                    {machine.icon}
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Unit 0{i + 1}</span>
-                </div>
 
-                <div className="mb-auto relative z-10">
-                  <p className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none mb-2 text-black drop-shadow-sm">{machine.val}</p>
-                  <p className="text-[12px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-8">{machine.unit}</p>
-                  
-                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-2 group-hover:text-[#fabf37] transition-colors text-black leading-tight">{machine.name}</h3>
-                  <p className="text-xs font-black text-[#fabf37] uppercase tracking-widest mb-6">{machine.type}</p>
+              {/* Value */}
+              <div className="mb-6">
+                <div className="text-6xl md:text-7xl font-black italic tracking-tighter leading-none text-black">
+                  {machine.val}
                 </div>
+                <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 mt-2">
+                  {machine.unit}
+                </div>
+              </div>
 
-                <div className="space-y-6 relative z-10">
-                  <p className="text-xs font-bold text-zinc-500 leading-relaxed uppercase tracking-wide">
-                    {machine.detail}
-                  </p>
-                  
-                  <div className="pt-6 border-t-2 border-zinc-100 space-y-3">
-                    {machine.specs.map((spec, si) => (
-                      <div key={si} className="flex items-center gap-3">
-                        <div className="size-1.5 bg-[#fabf37] rounded-full shadow-[0_0_10px_rgba(250,191,55,0.5)]" />
-                        <p className="text-[11px] md:text-xs font-black text-black uppercase tracking-wider">
-                          {spec}
-                        </p>
-                      </div>
-                    ))}
+              {/* Main Title */}
+              <div className="mb-6">
+                <h3 className={`text-xl md:text-2xl font-black uppercase tracking-tight mb-2 leading-tight ${
+                  i === 0 ? 'text-[#fabf37]' : 'text-black'
+                }`}>
+                  {machine.mainTitle}
+                </h3>
+                <p className="text-xs font-bold uppercase tracking-wide text-zinc-400">
+                  {machine.subtitle}
+                </p>
+              </div>
+
+              {/* Description */}
+              <p className="text-[10px] font-bold text-black leading-relaxed uppercase tracking-wide mb-6">
+                {machine.detail}
+              </p>
+
+              {/* Specs List */}
+              <div className="space-y-3 mt-auto">
+                {machine.specs.map((spec, si) => (
+                  <div key={si} className="flex items-start gap-2">
+                    <div className={`size-1.5 rounded-full mt-1.5 shrink-0 ${
+                      i === 0 ? 'bg-[#fabf37]' : 'bg-zinc-400'
+                    }`} />
+                    <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wide leading-relaxed">
+                      {spec}
+                    </p>
                   </div>
-                </div>
+                ))}
               </div>
             </motion.div>
           ))}

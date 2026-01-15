@@ -208,7 +208,7 @@ export function CompanyPage({ onPageChange }: { onPageChange: (page: string) => 
   ];
 
   return (
-    <div ref={containerRef} className="bg-white min-h-screen font-['Poppins',sans-serif] selection:bg-[#fabf37] selection:text-black overflow-hidden -mb-20 md:-mb-32">
+    <div ref={containerRef} className="bg-white min-h-screen font-['Poppins',sans-serif] selection:bg-[#fabf37] selection:text-black overflow-hidden">
       
       {/* Ambient Background Animation - More subtle */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -558,55 +558,6 @@ export function CompanyPage({ onPageChange }: { onPageChange: (page: string) => 
           </motion.div>
         </div>
       </section>
-
-      {/* 5. YELLOW FOOTER */}
-      <footer className="bg-[#fabf37] text-black py-16 px-6 md:px-16">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-           <div className="space-y-4">
-              <h4 className="text-xl font-black uppercase tracking-tight">Paperware</h4>
-              <p className="text-sm font-medium leading-relaxed max-w-xs opacity-80">
-                Redefining packaging with sustainability and precision engineering.
-              </p>
-           </div>
-           
-           <div>
-              <h5 className="font-bold uppercase tracking-widest text-xs mb-6">Quick Links</h5>
-              <ul className="space-y-3 text-sm font-medium">
-                {['Home', 'About Us', 'Services', 'Sustainability', 'Contact'].map(link => (
-                  <li key={link}><button className="hover:translate-x-1 transition-transform">{link}</button></li>
-                ))}
-              </ul>
-           </div>
-
-           <div>
-              <h5 className="font-bold uppercase tracking-widest text-xs mb-6">Our Products</h5>
-              <ul className="space-y-3 text-sm font-medium">
-                {['Industrial Boxes', 'Eco Mailers', 'Custom Inserts', 'Retail Packaging'].map(link => (
-                  <li key={link}><button className="hover:translate-x-1 transition-transform">{link}</button></li>
-                ))}
-              </ul>
-           </div>
-
-           <div>
-              <h5 className="font-bold uppercase tracking-widest text-xs mb-6">Get in Touch</h5>
-              <ul className="space-y-3 text-sm font-medium">
-                <li>hello@paperware.com</li>
-                <li>+1 (555) 0123-4567</li>
-                <li>123 Manufacturing Dr.<br/>Industrial District, NY</li>
-              </ul>
-              <div className="flex gap-4 mt-6">
-                {[Instagram, Linkedin, Twitter, Facebook].map((Icon, i) => (
-                   <button key={i} className="size-8 rounded-full bg-black/10 flex items-center justify-center hover:bg-black hover:text-white transition-colors">
-                     <Icon className="size-4" />
-                   </button>
-                ))}
-              </div>
-           </div>
-        </div>
-        <div className="border-t border-black/10 mt-16 pt-8 text-center text-xs font-bold uppercase tracking-widest opacity-60">
-           © 2024 Paperware Industries. All rights reserved.
-        </div>
-      </footer>
 
     </div>
   );

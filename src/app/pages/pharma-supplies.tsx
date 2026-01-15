@@ -1,3 +1,4 @@
+import image_370cc946765f24fecd2241c5798febf3f636cf5e from 'figma:asset/370cc946765f24fecd2241c5798febf3f636cf5e.png';
 import React from "react";
 import { motion } from "motion/react";
 import { 
@@ -15,9 +16,9 @@ const products = [
   { name: "Patient File", desc: "Durable medical record folders with antimicrobial coating.", category: "Record", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "22.00", icon: FolderOpen },
   { name: "X-Ray File", desc: "Large-format protective envelopes for diagnostic films.", category: "Record", image: "https://images.unsplash.com/photo-1584362923647-7847ad730b2c", price: "35.00", icon: FileText },
   { name: "Doctor's Prescription Pad", desc: "Secure serialized prescription pads with security features.", category: "Prescription", image: "https://images.unsplash.com/photo-1505751172107-573225a96220", price: "12.00", icon: ClipboardList },
-  { name: "Report Envelope", desc: "Privacy-guaranteed clinical report packaging.", category: "Envelope", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "8.50", icon: FileText },
-  { name: "Medicine Box", desc: "Precision-molded drug packaging with braille support.", category: "Packaging", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "14.50", icon: Pill },
-  { name: "Medicine Literature", desc: "Micro-folded dosage guides and safety leaflets.", category: "Print", image: "https://images.unsplash.com/photo-1550572017-738a8a40f286", price: "2.50", icon: BookOpen },
+  { name: "Report Envelope", desc: "Privacy-guaranteed clinical report packaging.", category: "Envelope", image: image_370cc946765f24fecd2241c5798febf3f636cf5e, price: "8.50", icon: FileText },
+  { name: "Medicine Box", desc: "Precision-molded drug packaging with braille support.", category: "Packaging", image: image_370cc946765f24fecd2241c5798febf3f636cf5e, price: "14.50", icon: Pill },
+  { name: "Medicine Literature", desc: "Micro-folded dosage guides and safety leaflets.", category: "Print", image: image_370cc946765f24fecd2241c5798febf3f636cf5e, price: "2.50", icon: BookOpen },
 ];
 
 export function PharmaSuppliesPage({ onProductClick }: { onProductClick: (p: any) => void }) {
@@ -56,7 +57,7 @@ export function PharmaSuppliesPage({ onProductClick }: { onProductClick: (p: any
           ].map((item, i) => (
             <div key={i} className="p-8 bg-white border border-black/5 rounded-[32px] flex flex-col items-center text-center space-y-4">
               <div className="text-emerald-500">{item.icon}</div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest">{item.title}</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-[rgb(0,0,0)]">{item.title}</h4>
               <p className="text-zinc-400 font-bold text-[10px] uppercase leading-relaxed">{item.desc}</p>
             </div>
           ))}

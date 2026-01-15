@@ -150,176 +150,91 @@ const testimonialsData = [
   }
 ];
 
-function TechnicalProtocolsSection() {
-  const containerRef = React.useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+// Removed TechnicalProtocolsSection function definition
 
-  const protocols = [
+
+function OperationalNodesSection() {
+  const [activeNode, setActiveNode] = React.useState(0);
+  
+  // Auto-cycle through nodes for the "telemetry" effect
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveNode(prev => (prev + 1) % 5);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const metrics = [
     { 
-      title: "Logistics Sync", 
-      code: "LOG_X_4", 
-      desc: "Real-time global inventory synchronization across all distribution clusters.",
-      icon: Box,
-      metric: "99.9% SYNC",
-      color: "#fabf37"
+      label: "SYSTEM THROUGHPUT", 
+      value: "4.2M", 
+      unit: "Units/Day", 
+      icon: Box, 
+      progress: 90 
     },
     { 
-      title: "Quality AI", 
-      code: "QC_VIS_9", 
-      desc: "Computer vision protocols for 0.001% defect tolerance in production lines.",
-      icon: Activity,
-      metric: "0.01ms LATENCY",
-      color: "#ffffff"
+      label: "ECO EFFICIENCY", 
+      value: "94.8", 
+      unit: "%Rating", 
+      icon: Wind, 
+      progress: 95 
     },
     { 
-      title: "Secure Node", 
-      code: "SEC_L_9", 
-      desc: "Multi-layered military grade encryption for proprietary blueprint protection.",
-      icon: Lock,
-      metric: "AES-256-GCM",
-      color: "#fabf37"
-    },
-    { 
-      title: "Data Integrity", 
-      code: "DB_IMMUT", 
-      desc: "Decentralized ledger protocols for immutable tracking of paperware batches.",
-      icon: Database,
-      metric: "BLOCK_VERIFIED",
-      color: "#ffffff"
+      label: "THERMAL LOAD", 
+      value: "32", 
+      unit: "°CAvg", 
+      icon: Thermometer, 
+      progress: 35 
     }
   ];
 
-  return (
-    <div ref={containerRef} className="relative h-[400vh] bg-black -mx-4">
-      {/* Sticky Background with Grid */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)]" />
-        </div>
-
-        {/* Cinematic HUD Header */}
-        <motion.div 
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]) }}
-          className="absolute top-20 flex flex-col items-center gap-4 z-20"
-        >
-          <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
-            <Terminal className="size-4 text-[#fabf37]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">System_Core_Protocols</span>
-          </div>
-          <h2 className="text-[40px] md:text-[80px] font-black text-white uppercase tracking-tighter leading-none text-center">
-            TECHNICAL <span className="text-[#fabf37]">PROTOCOLS</span>
-          </h2>
-        </motion.div>
-
-        {/* Centered Scroll Content */}
-        <div className="relative w-full max-w-7xl px-6 h-full flex items-center justify-center">
-          {protocols.map((protocol, i) => {
-            const start = i / protocols.length;
-            const end = (i + 1) / protocols.length;
-            
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const opacity = useTransform(scrollYProgress, [start, start + 0.1, end - 0.1, end], [0, 1, 1, 0]);
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const scale = useTransform(scrollYProgress, [start, start + 0.1, end - 0.1, end], [0.8, 1, 1, 0.8]);
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const y = useTransform(scrollYProgress, [start, start + 0.1, end - 0.1, end], [100, 0, 0, -100]);
-
-            return (
-              <motion.div
-                key={i}
-                style={{ opacity, scale, y }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-              >
-                <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center pointer-events-auto">
-                  {/* Left Side: Visual HUD */}
-                  <div className="relative aspect-square bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center overflow-hidden group">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#fabf3710_0%,transparent_70%)] group-hover:bg-[#fabf3720] transition-colors duration-700" />
-                    <protocol.icon 
-                      className="size-32 text-white/20 group-hover:text-[#fabf37] transition-all duration-700 transform group-hover:scale-110" 
-                      strokeWidth={1}
-                    />
-                    
-                    {/* Animated Ring */}
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                      className="absolute size-64 border border-dashed border-white/10 rounded-full"
-                    />
-                    
-                    <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                      <div className="space-y-1">
-                        <p className="text-[8px] font-black text-white/40 uppercase tracking-widest font-mono">Real-time telemetry</p>
-                        <p className="text-xl font-black text-[#fabf37] font-mono uppercase">{protocol.metric}</p>
-                      </div>
-                      <div className="size-12 border border-white/20 rounded-full flex items-center justify-center">
-                        <div className="size-2 bg-[#fabf37] rounded-full animate-ping" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Side: Info */}
-                  <div className="space-y-8">
-                    <div className="space-y-4">
-                      <div className="inline-block px-3 py-1 bg-[#fabf37] text-black text-[10px] font-black uppercase tracking-widest rounded">
-                        Protocol_{protocol.code}
-                      </div>
-                      <h3 className="text-[40px] md:text-[64px] font-black text-white uppercase tracking-tighter leading-none">
-                        {protocol.title}
-                      </h3>
-                      <p className="text-xl text-zinc-400 font-bold leading-relaxed italic">
-                        {protocol.desc}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      {[1, 2].map((_, idx) => (
-                        <div key={idx} className="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                          <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">Status_Check</p>
-                          <p className="text-xs font-bold text-white uppercase font-mono">Optimal_Condition</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-4 text-[#fabf37]">
-                      <div className="h-[1px] flex-1 bg-white/10" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">System_Verified</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Scroll Progress Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase">Start</span>
-          <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-            <motion.div 
-              style={{ scaleX: scrollYProgress }} 
-              className="h-full bg-[#fabf37] origin-left"
-            />
-          </div>
-          <span className="text-[10px] font-mono text-zinc-500 uppercase">End</span>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 export function ClientsPage({ 
   videoUrl, 
   productionStats: initialProductionStats, 
-  onPageChange 
-}: { 
+  onPageChange,
+  partnersData = []
+}: {  
   videoUrl?: string, 
   productionStats?: any, 
-  onPageChange?: (page: string) => void 
+  onPageChange?: (page: string) => void,
+  partnersData?: any[]
 }) {
+  // Use partnersData from props if available, otherwise fallback to static clientsData
+  // We explicitly prioritize admin data, but keep static as a robust fallback
+  const hasExternalData = partnersData && partnersData.length > 0;
+  
+  const displayClients = React.useMemo(() => {
+    if (hasExternalData) {
+      return partnersData.map(p => ({
+        img: p.logo || p.img, // Handle both 'logo' (admin) and 'img' (legacy) keys
+        category: p.category || "Others",
+        name: p.name // Preserve name if available
+      }));
+    }
+    return clientsData;
+  }, [partnersData, hasExternalData]);
+
+  // Dynamically generate categories from data, ensuring ALL is first
+  const dynamicCategories = React.useMemo(() => {
+    const uniqueCats = Array.from(new Set(displayClients.map(c => c.category.toUpperCase())));
+    // predefined order for standard categories if they exist
+    const standardOrder = ["BEVERAGE", "HOSPITALITY", "HEALTHCARE", "RETAIL", "OTHERS"];
+    
+    uniqueCats.sort((a, b) => {
+      const idxA = standardOrder.indexOf(a);
+      const idxB = standardOrder.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
+    return ["ALL", ...uniqueCats];
+  }, [displayClients]);
+
   const [activeTab, setActiveTab] = React.useState("ALL");
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [videoError, setVideoError] = React.useState(false);
@@ -328,7 +243,6 @@ export function ClientsPage({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const heroRef = React.useRef<HTMLDivElement>(null);
 
-  // Scroll Progress for 3D Hero Shrink Effect
   const { scrollYProgress: heroShrinkProgress, scrollY: heroScrollY } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
@@ -445,8 +359,8 @@ export function ClientsPage({
   }, [FEATURED_VIDEO_SOURCE]);
 
   const filteredClients = activeTab === "ALL" 
-    ? clientsData 
-    : clientsData.filter(c => c.category.toUpperCase() === activeTab);
+    ? displayClients 
+    : displayClients.filter(c => c.category.toUpperCase() === activeTab);
 
   return (
     <div className="relative pb-24 bg-white min-h-screen overflow-x-hidden selection:bg-[#fabf37] selection:text-black">
@@ -516,7 +430,7 @@ export function ClientsPage({
           transition={{ duration: 0.5 }}
           className="flex flex-wrap justify-center gap-3 md:gap-5 mb-20 md:mb-32 p-3 bg-zinc-100 rounded-[32px] border border-zinc-200 max-w-4xl mx-auto shadow-sm"
         >
-          {categories.map((cat, idx) => (
+          {dynamicCategories.map((cat, idx) => (
             <button
               key={cat}
               onClick={() => setActiveTab(cat)}
@@ -534,9 +448,10 @@ export function ClientsPage({
         {/* Infinite Marquee Logo Reel - Multi-row 5 Lines scrolling slowly */}
         <div className="mb-24 relative bg-zinc-50/50 py-20 -mx-4 px-4 border-y border-zinc-100 shadow-inner overflow-hidden">
           <div className="flex flex-col gap-6 md:gap-10 max-w-[1800px] mx-auto">
+            {/* Connected to Admin Data if available */}
             {[0, 1, 2, 3, 4].map((rowIndex) => {
               // Create unique sets of data for each row to look varied
-              const rowData = [...clientsData, ...clientsData, ...clientsData];
+              const rowData = [...displayClients, ...displayClients, ...displayClients];
               const direction = rowIndex % 2 === 0 ? 1 : -1;
               const duration = 80 + (rowIndex * 15); // Varied slow speeds
 
@@ -556,11 +471,10 @@ export function ClientsPage({
                         key={`${rowIndex}-${i}`} 
                         className="bg-white size-24 md:size-32 rounded-full p-5 md:p-7 flex items-center justify-center shadow-[0_8px_20px_-8px_rgba(0,0,0,0.08)] border border-zinc-100 shrink-0 hover:border-[#fabf37]/50 transition-colors cursor-pointer"
                       >
-                        <img 
+                        <ImageWithFallback 
                           src={client.img} 
                           alt="Client" 
                           className="w-full h-full object-contain"
-                          loading="lazy"
                         />
                       </div>
                     ))}
@@ -575,14 +489,191 @@ export function ClientsPage({
           <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#f4f4f5] to-transparent z-10 pointer-events-none" />
         </div>
 
+        {/* Client Growth Report Section - Compact White Tone */}
+        <div className="mb-16 py-12 bg-white relative overflow-hidden border-y border-zinc-100">
+          <div className="container mx-auto px-4 md:px-6 relative z-10">
+            {/* Compact Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#fabf37] rounded-lg">
+                  <TrendingUp className="size-4 text-black" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tight">
+                  Growth Timeline
+                </h3>
+              </div>
+              
+              <div className="flex items-center gap-4 text-xs font-mono">
+                <span className="text-zinc-400">+847% <span className="text-[#fabf37]">Total</span></span>
+                <span className="text-zinc-400">96.2% <span className="text-black">Retention</span></span>
+              </div>
+            </div>
+
+            {/* Horizontal Scrolling Compact Cards */}
+            <div className="relative overflow-hidden -mx-4 px-4">
+              <motion.div 
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ 
+                  duration: 35, 
+                  repeat: Infinity, 
+                  ease: "linear" 
+                }}
+                className="flex items-center gap-4 w-max"
+              >
+                {[
+                  { year: "2019", clients: "12", growth: "+100%" },
+                  { year: "2020", clients: "28", growth: "+133%" },
+                  { year: "2021", clients: "54", growth: "+93%" },
+                  { year: "2022", clients: "89", growth: "+65%" },
+                  { year: "2023", clients: "127", growth: "+43%" },
+                  { year: "2024", clients: "156", growth: "+23%" },
+                  { year: "2019", clients: "12", growth: "+100%" },
+                  { year: "2020", clients: "28", growth: "+133%" },
+                  { year: "2021", clients: "54", growth: "+93%" },
+                  { year: "2022", clients: "89", growth: "+65%" },
+                  { year: "2023", clients: "127", growth: "+43%" },
+                  { year: "2024", clients: "156", growth: "+23%" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    className="bg-zinc-50 border border-zinc-200 rounded-2xl p-5 min-w-[180px] shrink-0 hover:border-[#fabf37] hover:shadow-lg transition-all duration-300 group"
+                  >
+                    {/* Year */}
+                    <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">
+                      {item.year}
+                    </div>
+
+                    {/* Client Count */}
+                    <div className="text-4xl font-black text-black leading-none mb-1">
+                      {item.clients}
+                    </div>
+                    <div className="text-[9px] font-bold text-zinc-500 uppercase tracking-wide mb-3">
+                      Clients
+                    </div>
+
+                    {/* Growth Badge */}
+                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-[#fabf37]/10 rounded-full">
+                      <ChevronRight className="size-3 text-[#fabf37]" />
+                      <span className="text-[10px] font-black text-[#fabf37]">{item.growth}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Edge gradients */}
+              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+              <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            </div>
+
+          </div>
+        </div>
+
+        {/* CTA Banners Grid */}
+        <div className="mb-20 container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* All Products Banner */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              onClick={() => onPageChange?.('products')}
+              className="bg-gradient-to-br from-[#fabf37] to-[#f59e0b] rounded-3xl p-8 cursor-pointer group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff20_1px,transparent_1px),linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:40px_40px] opacity-30" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                    <Package className="size-6 text-white" />
+                  </div>
+                  <ArrowRight className="size-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-2">
+                  All Products
+                </h3>
+                <p className="text-sm text-white/80 font-medium">
+                  Explore our complete range of eco-friendly paper solutions
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Solutions Banner */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              onClick={() => onPageChange?.('solutions')}
+              className="bg-gradient-to-br from-black to-zinc-800 rounded-3xl p-8 cursor-pointer group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] opacity-30" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl">
+                    <Layers className="size-6 text-[#fabf37]" />
+                  </div>
+                  <ArrowRight className="size-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-2">
+                  Solutions
+                </h3>
+                <p className="text-sm text-zinc-400 font-medium">
+                  Custom packaging solutions tailored to your business needs
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Export Banner */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              onClick={() => onPageChange?.('export')}
+              className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-8 cursor-pointer group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff20_1px,transparent_1px),linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:40px_40px] opacity-30" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                    <Globe className="size-6 text-white" />
+                  </div>
+                  <ArrowRight className="size-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-2">
+                  Export
+                </h3>
+                <p className="text-sm text-white/80 font-medium">
+                  Interested in international expansion & export markets
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Contact Our Partners Banner */}
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              onClick={() => onPageChange?.('contact')}
+              className="bg-gradient-to-br from-zinc-50 to-zinc-100 border-2 border-zinc-200 rounded-3xl p-8 cursor-pointer group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] bg-[size:40px_40px]" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 bg-[#fabf37] rounded-xl">
+                    <Users className="size-6 text-black" />
+                  </div>
+                  <ArrowRight className="size-5 text-zinc-400 group-hover:text-black group-hover:translate-x-1 transition-all" />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tight mb-2">
+                  Contact Paperware
+                </h3>
+                <p className="text-sm text-zinc-600 font-medium">
+                  Get in touch with our team for inquiries and partnerships
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
         {/* Filtered Grid - Enhanced Visibility & Contrast */}
         <div className="mb-12 md:mb-20 relative bg-zinc-50/50 py-16 md:py-24 -mx-4 px-4 border-y border-zinc-100 shadow-inner">
           <AnimatePresence mode="wait">
             <motion.div 
               key={activeTab}
-              initial={{ opacity: 0, translateZ: -500 }}
-              animate={{ opacity: 1, translateZ: 0 }}
-              exit={{ opacity: 0, translateZ: 500 }}
+              initial={{ opacity: 0, z: -500 }}
+              animate={{ opacity: 1, z: 0 }}
+              exit={{ opacity: 0, z: 500 }}
               transition={{ type: "spring", stiffness: 80, damping: 20 }}
               className="relative h-[450px] md:h-[550px] overflow-hidden px-4"
               style={{ transformStyle: "preserve-3d", perspective: "2000px" }}
@@ -618,15 +709,16 @@ export function ClientsPage({
                           .map((client, i) => (
                             <motion.div
                               key={`${client.img}-${i}`}
+                              initial={{ z: 0 }}
                               whileHover={{ 
                                   scale: 1.1, 
-                                  translateZ: 100,
+                                  z: 100,
                                   boxShadow: "0 30px 60px -15px rgba(0,0,0,0.15)"
                               }}
                               className="bg-white size-28 md:size-36 rounded-full p-6 md:p-8 flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] border border-zinc-100 shrink-0 group hover:border-[#fabf37] transition-all duration-500 relative mx-auto"
                               style={{ transformStyle: "preserve-3d" }}
                             >
-                              <img 
+                              <ImageWithFallback 
                                 src={client.img} 
                                 alt="Client" 
                                 className="w-full h-full object-contain filter grayscale-[0.8] group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100"
@@ -664,7 +756,7 @@ export function ClientsPage({
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 max-w-3xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto relative z-10">
             <motion.div 
               initial="hidden"
               whileInView="show"
@@ -679,7 +771,7 @@ export function ClientsPage({
               className="flex flex-col gap-2"
             >
               {[testimonialsData[0], testimonialsData[1], testimonialsData[2]].map((item, i) => (
-                <TestimonialCard key={i} item={item} index={i} />
+                <TestimonialCard key={i} item={item} index={i} highlighted={i === 2} />
               ))}
             </motion.div>
 
@@ -704,7 +796,7 @@ export function ClientsPage({
                 style={{ rotateX: springTiltX, rotateY: springTiltY, perspective: 2000 }}
               >
                 <div 
-                  className="relative w-[320px] sm:w-[380px] md:w-[160px] aspect-[9/19] rounded-[48px] sm:rounded-[56px] md:rounded-[36px] overflow-hidden group border-[8px] md:border-[4px] border-zinc-950 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] bg-black transition-all duration-700"
+                  className="relative w-[360px] sm:w-[400px] md:w-[200px] lg:w-[200px] aspect-[9/19] rounded-[48px] sm:rounded-[56px] md:rounded-[36px] overflow-hidden group border-[8px] md:border-[4px] border-zinc-950 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] bg-black transition-all duration-700"
                   style={{ transformStyle: "preserve-3d" }}
                 >
                   {/* Sleek Dynamic Island */}
@@ -774,7 +866,7 @@ export function ClientsPage({
               className="flex flex-col gap-2"
             >
               {[testimonialsData[4], testimonialsData[5]].map((item, i) => (
-                <TestimonialCard key={i} item={item} index={i} />
+                <TestimonialCard key={i} item={item} index={i} highlighted={i === 1} />
               ))}
             </motion.div>
 
@@ -876,148 +968,13 @@ export function ClientsPage({
           </div>
         </div>
 
-        {/* Industry Impact Stats - Compact */}
-        <div className="bg-white rounded-[32px] md:rounded-[48px] border border-black/5 p-8 md:p-12 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 h-full w-1.5 bg-[#fabf37]" />
-          
-          <div className="text-center mb-12 space-y-3 relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-full border border-black/5">
-                <Activity className="size-3.5 text-[#fabf37] animate-pulse" />
-                <span className="text-[#fabf37] font-black uppercase tracking-[0.3em] text-[8px]">Global Operations</span>
-            </div>
-            <h2 className="text-[32px] font-black uppercase tracking-tight text-black">Impact Metrics</h2>
-          </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 relative z-10">
-            {[
-              { label: "Global Reach", val: "12+ Nations", desc: "Expanding distribution", icon: Globe },
-              { label: "Eco Savings", val: "40%", desc: "Plastic reduction", icon: Layers },
-              { label: "Port Logistics", val: "CTG / EU", desc: "Direct routes", icon: Share2 },
-              { label: "Quality", val: "ISO 9001", desc: "Global standards", icon: ShieldCheck },
-            ].map((stat, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="space-y-2 p-4 rounded-2xl hover:bg-zinc-50 transition-colors group"
-              >
-                <stat.icon className="size-5 text-zinc-300 group-hover:text-[#fabf37] transition-colors" />
-                <div className="text-xl md:text-2xl font-black text-black tracking-tight">{stat.val}</div>
-                <div className="text-[8px] font-black uppercase tracking-widest text-[#fabf37]">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
 
-          {/* Global Operations Hub */}
-          <div className="mt-32 space-y-12 relative z-10">
-            <div className="flex flex-col md:flex-row items-end justify-between gap-6 px-4">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-black text-[#fabf37] rounded-full border border-[#fabf37]/20">
-                  <Compass className="size-3.5" />
-                  <span className="text-[8px] font-black uppercase tracking-[0.3em]">Global_Network_v5.0</span>
-                </div>
-                <h2 className="text-[32px] md:text-[48px] font-black uppercase tracking-tighter leading-tight text-black">
-                  Operational <span className="text-[#fabf37]">Nodes</span> <br /> & Distribution
-                </h2>
-              </div>
-              <div className="text-right space-y-1">
-                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest">Active_Clusters: 08</p>
-                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest">Network_Stability: 99.9%</p>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4">
-              {/* Main Map Visualization Placeholder (Futuristic HUD Style) */}
-              <div className="lg:col-span-2 relative h-[400px] bg-black rounded-[32px] overflow-hidden border border-white/10 group">
-                <div className="absolute inset-0 opacity-30">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#fabf37]/20 via-transparent to-transparent" />
-                  <div className="grid grid-cols-12 h-full w-full">
-                    {[...Array(12)].map((_, i) => (
-                      <div key={i} className="border-r border-white/5 h-full" />
-                    ))}
-                  </div>
-                  <div className="grid grid-rows-8 h-full w-full absolute inset-0">
-                    {[...Array(8)].map((_, i) => (
-                      <div key={i} className="border-b border-white/5 w-full" />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Pulse Nodes */}
-                <div className="absolute inset-0">
-                  {[
-                    { t: '20%', l: '30%', n: 'London_Hub' },
-                    { t: '45%', l: '60%', n: 'Dubai_Logistics' },
-                    { t: '65%', l: '85%', n: 'Singapore_Node' },
-                    { t: '30%', l: '75%', n: 'Tokyo_Factory' },
-                    { t: '70%', l: '25%', n: 'NYC_Distribution' },
-                  ].map((node, i) => (
-                    <motion.div 
-                      key={i}
-                      style={{ top: node.t, left: node.l }}
-                      className="absolute group/node"
-                    >
-                      <div className="size-3 bg-[#fabf37] rounded-full animate-pulse shadow-[0_0_15px_rgba(250,191,55,1)]" />
-                      <div className="absolute top-4 left-1/2 -translate-x-1/2 opacity-0 group-hover/node:opacity-100 transition-opacity bg-black/80 backdrop-blur-md border border-[#fabf37]/50 p-2 rounded-lg pointer-events-none z-20">
-                        <p className="text-[8px] font-black text-[#fabf37] uppercase tracking-widest whitespace-nowrap">{node.n}</p>
-                        <p className="text-[6px] text-zinc-400 font-mono">STATUS: OPTIMAL</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <div className="absolute bottom-6 left-6 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Radio className="size-4 text-[#fabf37] animate-ping" />
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest font-mono">Real-time Telemetry Active</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats Sidebar */}
-              <div className="space-y-6">
-                {[
-                  { label: 'System Throughput', val: '4.2M', unit: 'Units/Day', progress: 85, icon: Box },
-                  { label: 'Eco Efficiency', val: '94.8', unit: '% Rating', progress: 94, icon: Wind },
-                  { label: 'Thermal Load', val: '32', unit: '°C Avg', progress: 45, icon: Thermometer },
-                ].map((stat, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="bg-white border border-zinc-100 p-6 rounded-[24px] shadow-sm space-y-4 group hover:border-[#fabf37]/30 transition-all"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="size-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 group-hover:bg-black group-hover:text-[#fabf37] transition-all">
-                        <stat.icon className="size-5" />
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">{stat.label}</p>
-                        <p className="text-2xl font-black text-black tracking-tighter">
-                          {stat.val}<span className="text-[10px] text-[#fabf37] ml-1">{stat.unit}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${stat.progress}%` }}
-                        transition={{ duration: 1.5, delay: 0.5 }}
-                        className="h-full bg-[#fabf37]"
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <TechnicalProtocolsSection />
-
-          {/* Futuristic Product Showcase Scroll */}
-          <div className="mt-20 md:mt-32 space-y-12 relative z-10">
+        {/* Technical Protocols Section - Removed as per request */}
+        
+        {/* Futuristic Product Showcase Scroll - In new container */}
+        <div className="bg-white rounded-[32px] md:rounded-[48px] border border-black/5 p-8 md:p-12 shadow-xl relative overflow-hidden mt-12 md:mt-20">
+          <div className="space-y-12 relative z-10">
             <div className="flex flex-col md:flex-row items-end justify-between gap-6 px-4">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-black text-[#fabf37] rounded-full border border-[#fabf37]/20">
@@ -1424,7 +1381,7 @@ function ProductCard({ product }: { product: any }) {
 
 // Removed unused MagneticButton for better performance
 
-function TestimonialCard({ item, index }: { item: any, index: number }) {
+function TestimonialCard({ item, index, highlighted = false }: { item: any, index: number, highlighted?: boolean }) {
   return (
     <motion.div
       variants={{
@@ -1432,14 +1389,14 @@ function TestimonialCard({ item, index }: { item: any, index: number }) {
         show: { opacity: 1, y: 0, scale: 1 }
       }}
       whileHover={{ y: -5, scale: 1.01 }}
-      className="bg-white p-4 md:p-5 rounded-[24px] border border-zinc-100 shadow-sm space-y-3 hover:border-[#fabf37]/40 transition-all duration-700 relative overflow-hidden group/card"
+      className="bg-white p-4 md:p-5 rounded-[24px] border border-zinc-100 shadow-sm space-y-3 hover:border-[#fabf37]/40 transition-all duration-700 relative overflow-hidden group/card h-full flex flex-col"
     >
       <div className="flex gap-0.5">
         {[...Array(item.stars)].map((_, i) => (
           <Star key={i} className="size-2.5 fill-[#fabf37] text-[#fabf37]" />
         ))}
       </div>
-      <p className="text-zinc-800 font-bold text-xs leading-snug tracking-tight italic">
+      <p className="text-zinc-800 font-bold text-xs leading-snug tracking-tight italic flex-grow">
         "{item.text}"
       </p>
       <div className="flex items-center justify-between pt-3 border-t border-zinc-50">

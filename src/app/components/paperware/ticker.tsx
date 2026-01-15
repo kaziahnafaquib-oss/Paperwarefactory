@@ -55,6 +55,22 @@ export const Ticker = React.memo(() => {
             <div className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-black">
               <Recycle className="size-4" /> {t('ticker_15')}
             </div>
+            <div className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-black">
+              MADE IN BANGLADESH
+              <motion.img 
+                src="https://flagcdn.com/bd.svg" 
+                alt="Bangladesh Flag" 
+                className="h-3 w-auto rounded-sm shadow-sm origin-left" 
+                animate={{ 
+                  skewY: [0, 10, 0, -10, 0],
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              /> 
+            </div>
             <div className="size-1.5 rounded-full bg-black/20" />
           </div>
         ))}

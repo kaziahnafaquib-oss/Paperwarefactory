@@ -28,6 +28,8 @@ const ProductionInventoryView = React.lazy(() => import("../components/admin/vie
 const RFQPipelineView = React.lazy(() => import("../components/admin/views/RFQPipelineView"));
 const ActiveOrdersView = React.lazy(() => import("../components/admin/views/ActiveOrdersView"));
 const ClientCRMView = React.lazy(() => import("../components/admin/views/LeadManagementView").then(module => ({ default: module.LeadManagementView })));
+const BrochureAnalyticsView = React.lazy(() => import("../components/admin/views/BrochureAnalyticsView").then(module => ({ default: module.BrochureAnalyticsView })));
+const BrochureUploadView = React.lazy(() => import("../components/admin/views/BrochureUploadView").then(module => ({ default: module.BrochureUploadView })));
 const NeuralCommLogView = React.lazy(() => import("../components/admin/views/NeuralCommLogView").then(module => ({ default: module.NeuralCommLogView })));
 const SustainabilityView = React.lazy(() => import("../components/admin/views/SustainabilityView"));
 const SecurityComplianceView = React.lazy(() => import("../components/admin/views/SecurityComplianceView"));
@@ -41,6 +43,7 @@ const ClientPortalView = React.lazy(() => import("../components/admin/views/Clie
 const MediaManagerView = React.lazy(() => import("../components/admin/views/MediaManagerView").then(module => ({ default: module.MediaManagerView })));
 const ShareStatsView = React.lazy(() => import("../components/admin/views/ShareStatsView").then(module => ({ default: module.ShareStatsView })));
 const UserEngagementView = React.lazy(() => import("../components/admin/views/UserEngagementView").then(module => ({ default: module.UserEngagementView })));
+const AboutUsMediaView = React.lazy(() => import("../components/admin/views/AboutUsMediaView"));
 
 import { 
   BarChart,
@@ -105,7 +108,13 @@ export default function AdminDashboard({
   careers,
   onUpdateCareers,
   clientProjects,
-  onUpdateClientProjects
+  onUpdateClientProjects,
+  partners,
+  onUpdatePartners,
+  brochureUrl,
+  onUpdateBrochure,
+  aboutUsVideos,
+  onUpdateAboutUsVideos
 }: { 
   onLogout: () => void, 
   heroVideoUrl?: string, 
@@ -127,7 +136,13 @@ export default function AdminDashboard({
   careers?: any[],
   onUpdateCareers?: (careers: any[]) => void,
   clientProjects?: any[],
-  onUpdateClientProjects?: (projects: any[]) => void
+  onUpdateClientProjects?: (projects: any[]) => void,
+  partners?: any[],
+  onUpdatePartners?: (partners: any[]) => void,
+  brochureUrl?: string,
+  onUpdateBrochure?: (url: string) => void,
+  aboutUsVideos?: any,
+  onUpdateAboutUsVideos?: (videos: any) => void
 }) {
   const { language, setLanguage, tone, setTone, t } = useLanguage();
   const [activeTab, setActiveTab] = React.useState("visitors");
@@ -320,9 +335,40 @@ export default function AdminDashboard({
       case "inventory": return <ProductionInventoryView />;
       case "orders": return <ActiveOrdersView />;
       case "clients": return <ClientCRMView />;
+      case "brochure-stats": return <BrochureAnalyticsView />;
+      case "brochure-upload": return <BrochureUploadView />;
       case "comm-log": return <NeuralCommLogView />;
       case "sustainability": return <SustainabilityView />;
       case "compliance": return <SecurityComplianceView />;
+      case "partners-cms": return (
+        <CMSView 
+          defaultCategory="Global Partners"
+          heroVideoUrl={heroVideoUrl} 
+          onUpdateHeroVideo={onUpdateHeroVideo} 
+          heroVideoMobileUrl={heroVideoMobileUrl}
+          onUpdateHeroVideoMobile={onUpdateHeroVideoMobile}
+          clientsVideoUrl={clientsVideoUrl}
+          onUpdateClientsVideo={onUpdateClientsVideo}
+          heroContent={heroContent}
+          onUpdateHeroContent={onUpdateHeroContent}
+          products={products}
+          onUpdateProducts={onUpdateProducts}
+          testimonials={testimonials}
+          onUpdateTestimonials={onUpdateTestimonials}
+          impactStats={impactStats}
+          onUpdateImpactStats={onUpdateImpactStats}
+          productionStats={productionStats}
+          onUpdateProductionStats={onUpdateProductionStats}
+          careers={careers}
+          onUpdateCareers={onUpdateCareers}
+          clientProjects={clientProjects}
+          onUpdateClientProjects={onUpdateClientProjects}
+          partners={partners}
+          onUpdatePartners={onUpdatePartners}
+          brochureUrl={brochureUrl}
+          onUpdateBrochure={onUpdateBrochure}
+        />
+      );
       case "cms": return (
         <CMSView 
           heroVideoUrl={heroVideoUrl} 
@@ -345,6 +391,10 @@ export default function AdminDashboard({
           onUpdateCareers={onUpdateCareers}
           clientProjects={clientProjects}
           onUpdateClientProjects={onUpdateClientProjects}
+          partners={partners}
+          onUpdatePartners={onUpdatePartners}
+          brochureUrl={brochureUrl}
+          onUpdateBrochure={onUpdateBrochure}
         />
       );
       case "social-media": return <SocialMediaView />;
@@ -354,6 +404,7 @@ export default function AdminDashboard({
       case "feedback": return <UserFeedbackView />;
       case "portal": return <ClientPortalView />;
       case "media": return <MediaManagerView products={products} />;
+      case "about-media": return <AboutUsMediaView aboutUsVideos={aboutUsVideos} onUpdateAboutUsVideos={onUpdateAboutUsVideos} />;
       default:
         return (
           <motion.div 

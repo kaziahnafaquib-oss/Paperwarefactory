@@ -373,7 +373,7 @@ export function CompliancePage() {
         </motion.div>
 
         {/* Dynamic Stats Grid with Extreme Floating & Depth */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-56" style={{ transformStyle: "preserve-3d" }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-32" style={{ transformStyle: "preserve-3d" }}>
           {stats.map((stat, i) => (
             <motion.div
               key={i}
@@ -382,27 +382,25 @@ export function CompliancePage() {
               transition={{ delay: i * 0.1, duration: 1, ease: "easeOut" }}
               viewport={{ once: true }}
               whileHover={{ 
-                y: -40, 
-                z: 150,
-                rotateX: 15,
-                rotateY: 10,
-                backgroundColor: "#000",
-                boxShadow: "0 80px 150px -30px rgba(0,0,0,0.5)"
+                y: -20, 
+                scale: 1.05,
+                rotateX: 8,
+                rotateY: 8,
               }}
-              className="bg-white p-14 rounded-[64px] border border-zinc-100 flex flex-col items-center text-center space-y-10 group transition-all duration-700 shadow-2xl relative overflow-hidden"
+              className="bg-white p-10 rounded-[48px] border border-zinc-100 flex flex-col items-center text-center space-y-8 group transition-all duration-700 shadow-2xl relative overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] hover:bg-zinc-50"
               style={{ transformStyle: "preserve-3d" }}
             >
               <div 
-                style={{ transform: "translateZ(80px)" }}
-                className="size-24 rounded-[36px] bg-zinc-50 flex items-center justify-center text-black group-hover:bg-[#fabf37] group-hover:rotate-[35deg] transition-all duration-700 shadow-xl"
+                style={{ transform: "translateZ(40px)" }}
+                className="size-20 rounded-[32px] bg-zinc-50 flex items-center justify-center text-black group-hover:bg-[#fabf37] group-hover:rotate-12 transition-all duration-700 shadow-xl"
               >
-                <stat.icon className="size-8" />
+                <stat.icon className="size-7" />
               </div>
-              <div className="space-y-1">
-                <div className="text-5xl font-black group-hover:text-white transition-colors leading-none tracking-tighter">
-                  {stat.value}<span className="text-[#fabf37]">{stat.unit}</span>
+              <div className="space-y-3" style={{ transform: "translateZ(20px)" }}>
+                <div className="text-xl md:text-2xl font-black text-black group-hover:text-[#fabf37] transition-colors leading-none tracking-tighter">
+                  {stat.value}<span className="text-[#fabf37] group-hover:text-black">{stat.unit}</span>
                 </div>
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 group-hover:text-[#fabf37]">
+                <div className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500 group-hover:text-zinc-700 transition-colors">
                   {stat.label}
                 </div>
               </div>

@@ -1,11 +1,19 @@
-import React from "react";
-import { motion } from "motion/react";
+import React, { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useLanguage } from "../context/LanguageContext";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { projectId, publicAnonKey } from "@/utils/supabase/info";
 import { Leaf, Recycle, Droplets, Sun, Wind, Globe, TrendingDown, ArrowUpRight } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   AreaChart, Area, PieChart, Pie, Cell 
 } from "recharts";
+import bannerImage from "figma:asset/5c87293e5521da72382b054681e7166a818841e9.png";
+import exampleImage from 'figma:asset/de22a1513e35499b5f2c79ba9800a59dbb7543f8.png';
+import { JourneySection } from "../components/sustainability/JourneySection";
+import { GreenCupSection } from "../components/sustainability/GreenCupSection";
+import { StorySection } from "../components/sustainability/StorySection";
+import { ProcessStepsSection } from "../components/sustainability/ProcessStepsSection";
 
 const impactData = [
   { month: 'Jan', co2: 45, water: 120 },
@@ -24,37 +32,215 @@ const materialData = [
 
 export function SustainabilityPage() {
   const { t } = useLanguage();
+  const heroRef = React.useRef(null);
+  const { scrollY } = useScroll();
+  const [videoUrl, setVideoUrl] = React.useState("");
+  const [videoError, setVideoError] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log('🎬 Fetching video URL from backend...');
+    fetch(`https://${projectId}.supabase.co/functions/v1/make-server-bf34c9a5/sustainability/hero-video`, {
+        headers: { Authorization: `Bearer ${publicAnonKey}` }
+    })
+    .then(res => {
+        console.log('📡 Backend response status:', res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log('📦 Backend data received:', data);
+        if (data.url) {
+            console.log('✅ Video URL found:', data.url);
+            setVideoUrl(data.url);
+        } else {
+            console.warn('⚠️ No video URL in backend response');
+        }
+    })
+    .catch(err => {
+        console.error('❌ Error fetching video URL:', err);
+        setVideoError(true);
+    });
+  }, []);
+  
+  // Parallax effect for text
+  // const textY = useTransform(scrollY, [0, 500], [0, 200]);
+  // const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <div className="relative pt-32 md:pt-40 pb-24 bg-[#fdfaf3] min-h-screen">
-      <div className="container mx-auto px-4">
-        {/* Dashboard Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 mb-12 md:mb-16">
-          <div className="space-y-4">
-            <span className="text-[#fabf37] font-black uppercase tracking-[0.4em] text-[10px] md:text-xs">Sustainability Engine</span>
-            <h1 className="text-[38px] md:text-[52px] lg:text-[72px] font-black uppercase tracking-tighter leading-[0.9] text-black">
-              {t('impact_dashboard')}
-            </h1>
-          </div>
-          <div className="w-full md:w-auto bg-black text-white p-6 md:p-8 rounded-[32px] md:rounded-[40px] flex flex-wrap items-center gap-6 md:gap-10">
-            <div className="flex-1 md:flex-none">
-              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">{t('carbon_offset')}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-xl md:text-3xl font-black">1.2K Tons</span>
-                <TrendingDown className="text-[#fabf37] size-4 md:size-5" />
-              </div>
+    <div className="relative bg-[#fdfaf3] min-h-screen">
+      {/* Full Screen Hero Banner */}
+      <div ref={heroRef} className="relative min-h-screen w-full overflow-hidden bg-zinc-900 flex flex-col justify-end pb-8">
+        {/* Forest Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                {videoUrl ? (
+                    (() => {
+                        const getYouTubeId = (url: string) => {
+                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                            const match = url.match(regExp);
+                            return (match && match[2].length === 11) ? match[2] : null;
+                        };
+                        const videoId = getYouTubeId(videoUrl);
+
+                        if (videoId) {
+                             return (
+                                <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-emerald-950 via-zinc-900 to-black">
+                                    <div className="absolute inset-0 opacity-30">
+                                        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse" />
+                                        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-500/20 rounded-full blur-[100px] animate-pulse delay-700" />
+                                    </div>
+                                </div>
+                             );
+                        }
+                        
+                        return (
+                            <video 
+                                key={videoUrl}
+                                src={videoUrl}
+                                className="w-full h-full object-cover opacity-80"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="auto"
+                                onLoadedData={(e) => {
+                                    console.log('🎥 Video loaded successfully!');
+                                    const video = e.currentTarget;
+                                    video.play().catch(err => console.error('❌ Video autoplay error:', err));
+                                }}
+                                onError={(e) => {
+                                    console.error('❌ Video loading failed:', e);
+                                    console.error('Video URL:', videoUrl);
+                                    setVideoError(true);
+                                }}
+                                onPlay={() => console.log('▶️ Video is playing!')}
+                                onPause={() => console.log('⏸️ Video paused')}
+                            />
+                        );
+                    })()
+                ) : (
+                    <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-gradient-to-br from-emerald-950 via-zinc-900 to-black">
+                        <div className="absolute inset-0 opacity-30">
+                            <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse" />
+                            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-500/20 rounded-full blur-[100px] animate-pulse delay-700" />
+                        </div>
+                    </div>
+                )}
             </div>
-            <div className="hidden md:block h-10 w-[1px] bg-white/10" />
-            <div className="flex-1 md:flex-none">
-              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">{t('eco_perf')}</p>
-              <div className="flex items-center gap-2">
-                <span className="text-xl md:text-3xl font-black">A+ Grade</span>
-                <Globe className="text-[#fabf37] size-4 md:size-5 animate-pulse" />
-              </div>
-            </div>
-          </div>
         </div>
 
+        {/* Content Container */}
+        <div className="relative z-10 container mx-auto px-4 md:px-8 flex flex-col gap-12 justify-end h-full pt-32">
+            
+            {/* Header and Stat Card Section */}
+            <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+                <motion.h1 
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="text-4xl md:text-6xl font-medium text-white max-w-2xl leading-tight drop-shadow-lg"
+                >
+                    Empowering <br/>
+                    <span className="text-[#fabf37]">sustainable practices</span>
+                </motion.h1>
+
+                <motion.div 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl max-w-xs shadow-xl"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="size-8 bg-white/20 rounded-lg flex items-center justify-center shadow-inner shrink-0">
+                            <Leaf className="text-white size-4 drop-shadow-md" />
+                        </div>
+                        <div>
+                            <span className="text-xl font-bold text-white block mb-0.5 drop-shadow-md">96%</span>
+                            <p className="text-white/90 leading-tight drop-shadow-sm text-[10px]">
+                                of our product range is environmentally friendly, recyclable, or biodegradable.
+                            </p>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Card 1 */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="bg-[#9DC88D] p-4 rounded-xl h-[160px] flex flex-col justify-center relative overflow-hidden group"
+                >
+                    <h3 className="text-sm font-bold text-white mb-1.5 relative z-10 leading-tight">Sustainable Corporate Governance</h3>
+                    <p className="text-white/90 text-[10px] font-medium leading-relaxed relative z-10">
+                        Dedicated to transparency, accountability, ethical practices, stakeholder engagement, and continuous improvement.
+                    </p>
+                </motion.div>
+
+                {/* Card 2 */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="bg-[#4D8B55] p-4 rounded-xl h-[160px] flex flex-col justify-center relative overflow-hidden group"
+                >
+                    <h3 className="text-sm font-bold text-white mb-1.5 relative z-10 leading-tight">Ethical Supply Chain</h3>
+                    <p className="text-white/90 text-[10px] font-medium leading-relaxed relative z-10">
+                        Our supply chain starts with ethical, eco-friendly suppliers who share our values and commitment to the planet.
+                    </p>
+                </motion.div>
+
+                {/* Card 3 */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    className="bg-[#1A5336] p-4 rounded-xl h-[160px] flex flex-col justify-center relative overflow-hidden group"
+                >
+                    <h3 className="text-sm font-bold text-white mb-1.5 relative z-10 leading-tight">Material Reduction and Replacement</h3>
+                    <p className="text-white/80 text-[10px] font-medium leading-relaxed relative z-10">
+                        Minimizing material usage and replacing non-renewable resources with sustainable, biodegradable alternatives.
+                    </p>
+                </motion.div>
+
+                {/* Card 4 */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="bg-[#0D3B2E] p-4 rounded-xl h-[160px] flex flex-col justify-center relative overflow-hidden group"
+                >
+                    <h3 className="text-sm font-bold text-white mb-1.5 relative z-10 leading-tight">Paperware Happiness Project</h3>
+                    <p className="text-white/70 text-[10px] font-medium leading-relaxed relative z-10">
+                        Initiative aimed to promote employee happiness by encouraging work-life balance and uplifting the community.
+                    </p>
+                </motion.div>
+            </div>
+        </div>
+      </div>
+
+      {/* New Journey Section */}
+      <div className="bg-[#fdfaf3] relative z-10 pt-12 lg:pt-24 px-4 md:px-8 container mx-auto pb-0">
+        <JourneySection />
+      </div>
+
+      {/* Green Cup Section */}
+      <div className="bg-[#fdfaf3] relative z-10 pb-12 lg:pb-24 px-4 md:px-8 container mx-auto pt-0">
+        <GreenCupSection />
+      </div>
+
+      {/* Story Section */}
+      <div className="bg-[#fdfaf3] relative z-10 pb-0 px-4 md:px-8 container mx-auto pt-0">
+        <StorySection />
+      </div>
+
+      {/* Process Steps Section */}
+      <div className="bg-[#fdfaf3] relative z-10 pb-12 lg:pb-24 pt-8 lg:pt-12">
+        <ProcessStepsSection />
+      </div>
+
+      <div className="container mx-auto px-4 py-24 relative z-10 bg-[#fdfaf3]">
         {/* Impact Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
           {[

@@ -252,10 +252,13 @@ export const Navbar = React.memo(({
         </AnimatePresence>
 
         <div className="fixed top-0 left-0 right-0 flex flex-col items-center pointer-events-none z-[5000]">
-          <div className="w-full h-8 bg-[#fabf37] flex items-center justify-between px-4 md:px-8 pointer-events-auto relative z-[5001] shadow-md">
+          <div className="w-full h-8 bg-[#fabf37]/90 backdrop-blur-sm flex items-center justify-between px-4 md:px-8 pointer-events-auto relative z-[5001] shadow-sm border-b border-white/10">
             <div className="flex items-center gap-2">
               <Cpu className="size-3 text-black" />
               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black">Factory Automation: Active</span>
+              <span className="hidden md:flex items-center gap-2 ml-4 px-2 py-0.5 bg-black/5 rounded text-[9px] font-black uppercase tracking-[0.2em] text-black">
+                 Made In Bangladesh <img src="https://flagcdn.com/bd.svg" className="w-3 h-auto" alt="BD" />
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="hidden md:inline-block text-[9px] font-black uppercase tracking-[0.2em] text-black/60">System v4.0</span>
@@ -815,39 +818,49 @@ export const Navbar = React.memo(({
                <div className="flex flex-col gap-2">
                  {links.map((link) => (
                    <div key={link.id} className="border-b border-black/10 last:border-0 pb-2 last:pb-0">
-                     <button 
-                       onClick={(e) => {
-                         e.stopPropagation();
-                         if (link.hasDropdown || link.isMega) {
-                           setMobileExpanded(mobileExpanded === link.id ? null : link.id);
-                         } else {
-                           handleInternalPageChange(link.id || "home");
-                         }
-                       }}
-                       className="w-full flex items-center justify-between py-1.5 text-left"
-                     >
-                       <span className="text-[12px] font-bold uppercase tracking-wider text-black">{link.name}</span>
-                       {(link.hasDropdown || link.isMega) && <ChevronDown className={`size-3.5 transition-transform ${mobileExpanded === link.id ? 'rotate-180' : ''}`} />}
-                     </button>
-                     
-                     <AnimatePresence>
-                       {(mobileExpanded === link.id && (link.hasDropdown || link.isMega)) && (
-                         <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pl-3">
-                           {link.isMega ? link.categories?.map((cat: any) => (
-                             <div key={cat.id} className="py-1.5">
-                               <div className="text-[9px] font-black uppercase text-[#fabf37] mb-0.5">{cat.title}</div>
-                               {cat.items.map((item: string) => (
-                                 <button key={item} onClick={() => handleInternalPageChange(cat.id)} className="block w-full text-left py-0.5 text-[10px] text-black/70 hover:text-black">{item}</button>
-                               ))}
-                             </div>
-                           )) : link.items?.map((item: any) => (
-                             <button key={item.id + item.name} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-1.5 text-[10px] font-bold uppercase text-black/70 hover:text-black">
-                               {item.name}
-                             </button>
-                           ))}
-                         </motion.div>
+                     <div className="flex items-center justify-between gap-2">
+                       {/* Clicking text navigates directly */}
+                       <button 
+                         onClick={() => handleInternalPageChange(link.id || "home")}
+                         className="flex-1 text-left py-1.5 text-[12px] font-bold uppercase tracking-wider text-black hover:text-[#fabf37] transition-colors"
+                       >
+                         {link.name}
+                       </button>
+                       
+                       {/* Clicking arrow toggles dropdown */}
+                       {(link.hasDropdown || link.isMega) && (
+                         <button 
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setMobileExpanded(mobileExpanded === link.id ? null : link.id);
+                             console.log('Mobile arrow clicked:', link.id, 'New state:', mobileExpanded === link.id ? null : link.id);
+                           }}
+                           className={`size-8 flex items-center justify-center rounded-lg transition-all ${
+                             mobileExpanded === link.id ? 'bg-[#fabf37] text-black' : 'bg-black/10 text-black/40 hover:bg-black/20'
+                           }`}
+                         >
+                           <ChevronDown className={`size-3.5 transition-transform ${mobileExpanded === link.id ? 'rotate-180' : ''}`} />
+                         </button>
                        )}
-                     </AnimatePresence>
+                     </div>
+                     
+                     {/* Dropdown content */}
+                     {(mobileExpanded === link.id && (link.hasDropdown || link.isMega)) && (
+                       <div className="overflow-hidden pl-3 pt-2 bg-white/20 rounded-lg mt-2 p-2">
+                         {link.isMega ? link.categories?.map((cat: any) => (
+                           <div key={cat.id} className="py-1.5">
+                             <div className="text-[9px] font-black uppercase text-[#fabf37] mb-0.5">{cat.title}</div>
+                             {cat.items.map((item: string, idx: number) => (
+                               <button key={idx} onClick={() => handleInternalPageChange(cat.id)} className="block w-full text-left py-0.5 text-[10px] text-black/70 hover:text-black">{item}</button>
+                             ))}
+                           </div>
+                         )) : link.items?.map((item: any) => (
+                           <button key={item.id + item.name} onClick={() => handleInternalPageChange(item.id)} className="block w-full text-left py-1.5 text-[10px] font-bold uppercase text-black/70 hover:text-black">
+                             {item.name}
+                           </button>
+                         ))}
+                       </div>
+                     )}
                    </div>
                  ))}
                </div>

@@ -146,7 +146,7 @@ export function UserEngagementView() {
            <div className="space-y-6">
               <div className="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 flex flex-col h-[300px]">
                  <h4 className="text-lg font-black text-white uppercase tracking-tight mb-4">Traffic Sources</h4>
-                 <div className="flex-1 w-full min-h-0">
+                 <div className="flex-1 w-full min-h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                        <BarChart data={sourceData} layout="vertical" barSize={24}>
                           <XAxis type="number" hide />

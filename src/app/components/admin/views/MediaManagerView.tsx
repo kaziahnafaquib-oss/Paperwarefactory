@@ -84,6 +84,8 @@ interface MediaManagerViewProps {
   products?: any[];
 }
 
+import { UploadMediaModal } from "../upload-media-modal";
+
 export function MediaManagerView({ products = [] }: MediaManagerViewProps) {
   // Merge products into initial media if they exist
   const productMedia = React.useMemo(() => {
@@ -104,8 +106,7 @@ export function MediaManagerView({ products = [] }: MediaManagerViewProps) {
   const [media, setMedia] = React.useState([...initialMedia, ...productMedia]);
   const [selectedMedia, setSelectedMedia] = React.useState<any>(null);
   const [filter, setFilter] = React.useState("All");
-  const [isUploading, setIsUploading] = React.useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
 
   // Update media when productMedia changes (initial load or updates)
   React.useEffect(() => {
@@ -117,33 +118,24 @@ export function MediaManagerView({ products = [] }: MediaManagerViewProps) {
   }, [productMedia]);
 
   const handleUploadClick = () => {
-    fileInputRef.current?.click();
+    setIsUploadModalOpen(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    toast.info("Uploading Media...", { description: `Processing ${file.name}` });
-
-    // Simulate upload delay
-    setTimeout(() => {
-      const newMedia = {
-        id: Date.now(),
-        type: file.type.startsWith("video") ? "video" : "image",
-        name: file.name,
-        url: URL.createObjectURL(file), // Temporary blob URL for preview
-        size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
-        date: "Just now",
-        dimensions: "Original",
-        stats: { views: 0, downloads: 0, shares: 0 },
-        settings: { public: true, allowDownload: true, expiration: "" }
-      };
-      setMedia(prev => [newMedia, ...prev]);
-      setIsUploading(false);
-      toast.success("Upload Complete");
-    }, 1500);
+  const handleModalUpload = (files: File[]) => {
+    const newMediaItems = files.map(file => ({
+      id: Date.now() + Math.random(),
+      type: file.type.startsWith("video") ? "video" : "image",
+      name: file.name,
+      url: URL.createObjectURL(file),
+      size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+      date: "Just now",
+      dimensions: "Original",
+      stats: { views: 0, downloads: 0, shares: 0 },
+      settings: { public: true, allowDownload: true, expiration: "" }
+    }));
+    
+    setMedia(prev => [...newMediaItems, ...prev]);
+    toast.success(`${files.length} Asset${files.length > 1 ? 's' : ''} Uploaded Successfully`);
   };
 
   const handleDelete = (id: any) => {
@@ -176,12 +168,16 @@ export function MediaManagerView({ products = [] }: MediaManagerViewProps) {
           onClick={handleUploadClick}
           className="px-5 py-2.5 bg-[#fabf37] text-black font-black uppercase text-[10px] tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(250,191,55,0.3)]"
         >
-          {isUploading ? <span className="animate-spin">⏳</span> : <Upload className="size-4" />}
+          <Upload className="size-4" />
           <span>Upload Asset</span>
         </button>
       }
     >
-      <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*,video/*" />
+      <UploadMediaModal 
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={handleModalUpload}
+      />
       
       <div className="flex gap-6 h-[calc(100vh-200px)]">
          {/* Main Grid Area */}

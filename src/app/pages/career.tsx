@@ -98,6 +98,12 @@ const faqs = [
 
 const departments = ["All", "Engineering", "Production", "Design", "Logistics", "Management"];
 
+const technologies = [
+  "Industry 4.0", "AI Integration", "Smart Logistics", 
+  "Robotic Automation", "Eco-Engineering", "Data Analytics", 
+  "Sustainable Materials", "Cloud ERP", "IoT Sensors"
+];
+
 // Animation Variants
 const containerVariants = {
   hidden: { opacity: 0 },
